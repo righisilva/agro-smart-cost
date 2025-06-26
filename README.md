@@ -5,7 +5,7 @@ npm init -y
 
 npm install solc ethers dotenv
 npm install axios
-
+npm install ethers@5
 
 node index.js
 
