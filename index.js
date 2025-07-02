@@ -27,9 +27,67 @@ const input = {
     },
 };
 
-const output = JSON.parse(solc.compile(JSON.stringify(input)));
+
+
+// Função que resolve imports, inclusive os do node_modules (ex: @openzeppelin)
+function findImports(importPath) {
+    try {
+        const resolvedPath = require.resolve(importPath);
+        const contents = fs.readFileSync(resolvedPath, 'utf8');
+        return { contents };
+    } catch (err) {
+        return { error: `Import not found: ${importPath}` };
+    }
+}
+
+
+// // Função que resolve imports, inclusive os do node_modules (ex: @openzeppelin)
+// function findImports(importPath) {
+//     try {
+//         // Suporta imports do tipo 'node_modules/@openzeppelin/...'
+//         if (importPath.startsWith('@')) {
+//             const fullPath = path.resolve('node_modules', importPath);
+//             return {
+//                 contents: fs.readFileSync(fullPath, 'utf8')
+//             };
+//         }
+
+//         // Caminhos relativos
+//         const relativePath = path.resolve(path.dirname(filePath), importPath);
+//         if (fs.existsSync(relativePath)) {
+//             return {
+//                 contents: fs.readFileSync(relativePath, 'utf8')
+//             };
+//         }
+
+//         return { error: `Arquivo não encontrado: ${importPath}` };
+//     } catch (e) {
+//         return { error: e.message };
+//     }
+// }
+
+
+const compiled = solc.compile(JSON.stringify(input), { import: findImports });
+const output = JSON.parse(compiled);
+
+// Verifica se houve erro de compilação
+if (!output.contracts || !output.contracts[path.basename(filePath)]) {
+    console.error("❌ Erro ao compilar o contrato. Verifique se os imports estão corretos.");
+    if (output.errors) {
+        for (const error of output.errors) {
+            console.error(error.formattedMessage);
+        }
+    }
+    process.exit(1);
+}
+
+// Captura o nome do contrato principal
 const contractName = Object.keys(output.contracts[path.basename(filePath)])[0];
 const contract = output.contracts[path.basename(filePath)][contractName];
+
+
+
+
 const abi = contract.abi;
 const bytecode = contract.evm.bytecode.object;
 
