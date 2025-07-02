@@ -39,27 +39,6 @@ async function getTokenPrices() {
     return res.data;
 }
 
-async function getGasPricesFromNetworks() {
-  const gasPrices = {};
-  for (const [key, net] of Object.entries(networks)) {
-      if (key === "localhost") continue;
-
-      try {
-          const provider = new ethers.providers.JsonRpcProvider(net.rpc);
-          const gasPrice = await provider.getGasPrice();
-          gasPrices[net.token] = {
-              name: net.name,
-              gasPrice,
-              tokenId: net.token
-          };
-      } catch (err) {
-          console.warn(`⚠️ Falha ao buscar gasPrice da rede ${net.name}: ${err.message}`);
-      }
-  }
-  return gasPrices;
-}
-
-
 async function main() {
     console.log(`🔌 Conectando ao Hardhat local...`);
 
@@ -116,25 +95,16 @@ async function main() {
         return;
     }
 
+    const gasPrice = await provider.getGasPrice();
+    const prices = await getTokenPrices();
+
     console.log(`📦 Gas usado no deploy: ${deployTxReceipt.gasUsed}`);
-
-    const gasPricesByNetwork = await getGasPricesFromNetworks();
-    const tokenPrices = await getTokenPrices();
-
-    for (const [token, data] of Object.entries(gasPricesByNetwork)) {
-        const tokenPrice = tokenPrices[token];
-        if (!tokenPrice) continue;
-
-        const costInToken = ethers.utils.formatEther(deployTxReceipt.gasUsed.mul(data.gasPrice));
-        const costUSD = parseFloat(costInToken) * tokenPrice.usd;
-        const costBRL = parseFloat(costInToken) * tokenPrice.brl;
-
-        console.log(`🌍 ${data.name}`);
-        console.log (`   🪙  Cotação de 1 ${token}: U$$: ${tokenPrice.usd.toFixed(2)} - R$: ${tokenPrice.brl.toFixed(2)} `)
-        console.log(`   ⛽ gasPrice: ${ethers.utils.formatUnits(data.gasPrice, "gwei")} gwei`);
-        console.log(`   💰 Custo estimado de deploy: ${costInToken} ${token} ≈ $${costUSD.toFixed(2)} / R$${costBRL.toFixed(2)}\n`);
-}
-
+    for (const [token, price] of Object.entries(prices)) {
+        const costInToken = ethers.utils.formatEther(deployTxReceipt.gasUsed.mul(gasPrice));
+        const costUSD = parseFloat(costInToken) * price.usd;
+        const costBRL = parseFloat(costInToken) * price.brl;
+        console.log(`💰 Custo do deploy em ${token}: ${costInToken} ${token} ≈ $${costUSD.toFixed(2)} / R$${costBRL.toFixed(2)}`);
+    }
     console.log();
 
     console.log(`📌 Populando estado inicial (se necessário)...`);
@@ -150,53 +120,40 @@ async function main() {
     console.log(`🔍 Estimando GÁS para funções públicas...\n`);
 
     for (const item of abi) {
-      if (item.type === "function" && !["view", "pure"].includes(item.stateMutability)) {
-        const functionName = item.name;
-    
-        const fakeArgs = item.inputs.map((input, index) => {
-          if (input.type.startsWith("uint")) return 1;
-          if (input.type.startsWith("int")) return -1;
-          if (input.type === "address") return signer;
-          if (input.type === "string") return "exemplo";
-          if (input.type === "bool") return false;
-          if (input.type === "bytes32") return ethers.utils.formatBytes32String("ex");
-          if (input.type.startsWith("bytes")) return "0x1234";
-          if (input.type === "uint256[]") return [1, 2, 3];
-          if (input.type === "address[]") return [signer, signer];
-          if (input.type === "string[]") return ["um", "dois"];
-          if (input.type === "bool[]") return [true, false];
-          return null;
-        });
-    
-        try {
-          const estimatedGas = await deployedContract.estimateGas[functionName](...fakeArgs);
-          const tx = await deployedContract[functionName](...fakeArgs);
-          const receipt = await tx.wait();
-          const realGasUsed = receipt.gasUsed;
-    
-          console.log(`🔧 Função: ${functionName}`);
-          console.log(`   📍 Gas estimado:     ${estimatedGas}`);
-          console.log(`   ✅ Gas real usado:   ${realGasUsed}`);
-    
-          for (const [token, data] of Object.entries(gasPricesByNetwork)) {
-            const tokenPrice = tokenPrices[token];
-            if (!tokenPrice) continue;
-            const costInToken = ethers.utils.formatEther(realGasUsed.mul(data.gasPrice));
-            const costUSD = parseFloat(costInToken) * tokenPrice.usd;
-            const costBRL = parseFloat(costInToken) * tokenPrice.brl;
-    
-            console.log(`   💰 ${token.toUpperCase()}: ${costInToken} ${token}`);
-            console.log(`       ≈ $${costUSD.toFixed(2)} / R$${costBRL.toFixed(2)}`);
-          }
-    
-          console.log("-------------------------------------------------------\n");
-    
-        } catch (err) {
-          console.warn(`⚠️ Erro ao executar "${functionName}": ${err.message}`);
+        if (item.type === "function" && item.stateMutability !== "view" && item.stateMutability !== "pure") {
+            const functionName = item.name;
+            const fakeArgs = item.inputs.map((input, index) => {
+                if (input.type.startsWith("uint")) return 1;
+                if (input.type.startsWith("int")) return -1;
+                if (input.type === "address") return signer;
+                if (input.type === "string") return "exemplo";
+                if (input.type === "bool") return false;
+                if (input.type === "bytes32") return ethers.utils.formatBytes32String("ex");
+                if (input.type.startsWith("bytes")) return "0x1234";
+                if (input.type === "uint256[]") return [1, 2, 3];
+                if (input.type === "address[]") return [signer, signer];
+                if (input.type === "string[]") return ["um", "dois"];
+                if (input.type === "bool[]") return [true, false];
+                return null;
+            });
+
+            try {
+                const estimatedGasFn = await deployedContract.estimateGas[functionName](...fakeArgs);
+                console.log(`🔧 Função: ${functionName}`);
+                console.log(`   📦 Gas estimado: ${estimatedGasFn}`);
+
+                for (const [token, price] of Object.entries(prices)) {
+                    const costInToken = ethers.utils.formatEther(estimatedGasFn.mul(gasPrice));
+                    const costUSD = parseFloat(costInToken) * price.usd;
+                    const costBRL = parseFloat(costInToken) * price.brl;
+                    console.log(`   💰 ${token}: ${costInToken} ${token} ≈ $${costUSD.toFixed(2)} / R$${costBRL.toFixed(2)}`);
+                }
+                console.log();
+            } catch (err) {
+                console.warn(`⚠️ Erro ao estimar função "${functionName}": ${err.message}`);
+            }
         }
-      }
     }
-    
 }
 
 main();
