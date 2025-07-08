@@ -1,10 +1,30 @@
 require("dotenv").config();
 const fs = require("fs");
 const path = require("path");
+const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 const axios = require("axios");
 const solc = require("solc");
 const { ethers } = require("ethers");
 const networks = require("./networks.json");
+
+const csvFilePath = path.resolve(__dirname, "relatorio_gas.csv");
+const csvWriter = createCsvWriter({
+    path: csvFilePath,
+    header: [
+      { id: 'timestamp', title: 'Timestamp' },
+      { id: 'rede', title: 'Rede' },
+      { id: 'token', title: 'Token' },
+      { id: 'cotacaoUsd', title: 'Cotação USD' },
+      { id: 'cotacaoBrl', title: 'Cotação BRL' },
+      { id: 'funcao', title: 'Função' },
+      { id: 'gas', title: 'Gas Usado' },
+      { id: 'gasPrice', title: 'Preço do Gas (em gwei)' },
+      { id: 'custoToken', title: 'Custo (token)' },
+      { id: 'usd', title: 'USD' },
+      { id: 'brl', title: 'BRL' },
+    ],
+    append: fs.existsSync(csvFilePath), // Se já existe, apenas adiciona
+  });
 
 const filePath = process.argv[2];
 if (!filePath) {
@@ -191,7 +211,28 @@ async function main() {
         console.log (`   🪙  Cotação de 1 ${token}: U$$: ${tokenPrice.usd.toFixed(2)} - R$: ${tokenPrice.brl.toFixed(2)} `)
         console.log(`   ⛽ gasPrice: ${ethers.utils.formatUnits(data.gasPrice, "gwei")} gwei`);
         console.log(`   💰 Custo estimado de deploy: ${costInToken} ${token} ≈ $${costUSD.toFixed(2)} / R$${costBRL.toFixed(2)}\n`);
-}
+
+
+        const now = new Date().toISOString(); // Timestamp ISO
+        await csvWriter.writeRecords([
+            {
+            timestamp: now,
+            rede: data.name,
+            token: token,
+            cotacaoUsd: tokenPrice.usd.toFixed(4),
+            cotacaoBrl: tokenPrice.brl.toFixed(4),
+            funcao: "Deploy",
+            gas: deployTxReceipt.gasUsed,
+            gasPrice: ethers.utils.formatUnits(data.gasPrice, "gwei"),
+            custoToken: costInToken,
+            usd: costUSD.toFixed(4),
+            brl: costBRL.toFixed(4)
+
+            }
+        ]);
+      }
+
+
 
     console.log();
 
@@ -245,7 +286,28 @@ async function main() {
     
             console.log(`   💰 ${token.toUpperCase()}: ${costInToken} ${token}`);
             console.log(`       ≈ $${costUSD.toFixed(2)} / R$${costBRL.toFixed(2)}`);
+
+            const now = new Date().toISOString(); // Timestamp ISO
+            await csvWriter.writeRecords([
+                {
+                timestamp: now,
+                rede: data.name,
+                token: data.name,
+                cotacaoUsd: tokenPrice.usd.toFixed(4),
+                cotacaoBrl: tokenPrice.brl.toFixed(4),
+                funcao: functionName,
+                gas: realGasUsed,
+                gasPrice: ethers.utils.formatUnits(data.gasPrice, "gwei"),
+                custoToken: costInToken,
+                usd: costUSD.toFixed(4),
+                brl: costBRL.toFixed(4)
+
+
+                }
+            ]);
           }
+
+          
     
           console.log("-------------------------------------------------------\n");
     
