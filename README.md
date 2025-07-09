@@ -16,3 +16,69 @@ npm install csv-writer --legacy-peer-deps
 
 ```
 
+Executar automaticamente:
+
+```python
+crontab -e
+```
+Na primeira vez, ele pode pedir que você escolha um editor (como nano — pode aceitar o padrão).
+
+Adicione esta linha no fim do arquivo:
+
+```python
+* * * * * cd /media/fabio/Arquivos/Documentos/MES/gas-estimator && /usr/bin/node index.js Contrato.sol >> cron.log 2>&1
+```
+Para parar:
+
+```python
+crontab -r
+```
+
+Instale o pm2:
+
+```python
+sudo npm install -g pm2
+```
+
+Inicie o node com:
+
+```python
+pm2 start --name hardhat-node "npx hardhat node"
+pm2 save
+```
+
+Configure o startup script para o sistema operacional
+
+pm2 startup
+Dar o comando sugerido
+
+[PM2] Freeze a process list on reboot via:
+```python
+pm2 save
+```
+
+[PM2] Remove init script via:
+```python
+pm2 unstartup systemd
+```
+
+
+Verifique status:
+
+```python
+pm2 status
+```
+
+Para logs:
+
+```python
+pm2 logs hardhat-node
+```
+
+Para parar:
+
+```python
+pm2 stop hardhat-node
+```
+
+
