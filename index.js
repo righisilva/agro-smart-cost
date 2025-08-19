@@ -124,6 +124,9 @@ async function getGasPricesFromNetworks() {
 
       try {
           const provider = new ethers.providers.JsonRpcProvider(net.rpc);
+          const networkInfo = await provider.getNetwork();
+
+          console.log(`✅ Conectado à ${net.name} (chainId: ${networkInfo.chainId})`);
           const gasPrice = await provider.getGasPrice();
           gasPrices[net.token] = {
               name: net.name,
@@ -210,7 +213,7 @@ async function main() {
         console.log(`🌍 ${data.name}`);
         console.log (`   🪙  Cotação de 1 ${token}: U$$: ${tokenPrice.usd.toFixed(2)} - R$: ${tokenPrice.brl.toFixed(2)} `)
         console.log(`   ⛽ gasPrice: ${ethers.utils.formatUnits(data.gasPrice, "gwei")} gwei`);
-        console.log(`   💰 Custo estimado de deploy: ${costInToken} ${token} ≈ $${costUSD.toFixed(2)} / R$${costBRL.toFixed(2)}\n`);
+        console.log(`   💰 Custo estimado de deploy: ${costInToken} ${token} ≈ $${costUSD.toFixed(4)} / R$${costBRL.toFixed(4)}\n`);
 
 
         const now = new Date().toISOString(); // Timestamp ISO
@@ -285,7 +288,7 @@ async function main() {
             const costBRL = parseFloat(costInToken) * tokenPrice.brl;
     
             console.log(`   💰 ${token.toUpperCase()}: ${costInToken} ${token}`);
-            console.log(`       ≈ $${costUSD.toFixed(2)} / R$${costBRL.toFixed(2)}`);
+            console.log(`       ≈ $${costUSD.toFixed(4)} / R$${costBRL.toFixed(4)}`);
 
             const now = new Date().toISOString(); // Timestamp ISO
             await csvWriter.writeRecords([

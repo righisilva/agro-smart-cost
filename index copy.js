@@ -153,7 +153,7 @@ async function runForNetwork(netKey) {
   
     // Imprime no console os resultados
     console.log(`📦 Gas estimado: ${estimatedGas}`);
-    console.log(`💰 Custo: ${costInToken} ${net.token} ≈ $${costUSD.toFixed(2)} / R$${costBRL.toFixed(2)}\n`);
+    console.log(`💰 Custo: ${costInToken} ${net.token} ≈ $${costUSD.toFixed(4)} / R$${costBRL.toFixed(4)}\n`);
     
   // Imprime no console qual contrato está sendo analisado
   console.log(`🔍 Estimando funções públicas do contrato ${contractName}...\n`);
@@ -212,7 +212,7 @@ async function runForNetwork(netKey) {
         // Imprime os dados da função analisada
         console.log(`🔧 Função: ${functionName}`);
         console.log(`   📦 Gas: ${estimatedGasFn}`);
-        console.log(`   💰 Custo estimado: ${costFn} ${net.token} ≈ $${costFnUSD.toFixed(2)} / R$${costFnBRL.toFixed(2)}\n`);
+        console.log(`   💰 Custo estimado: ${costFn} ${net.token} ≈ $${costFnUSD.toFixed(4)} / R$${costFnBRL.toFixed(4)}\n`);
       } catch (err) {
         // Se deu erro (por exemplo, tipo de dado inválido), imprime uma mensagem
         console.log(`⚠️  Não foi possível estimar a função "${functionName}": ${err.message}\n`);
