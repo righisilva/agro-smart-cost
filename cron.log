@@ -3220,3 +3220,2958 @@ Node.js v20.18.1
        ≈ $0.0002 / R$0.0010
 -------------------------------------------------------
 
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4133.67 - R$: 22734.00 
+   ⛽ gasPrice: 0.232844032 gwei
+   💰 Custo estimado de deploy: 0.000120880513524736 ethereum ≈ $0.4997 / R$2.7481
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 834.11 - R$: 4587.28 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0433 / R$0.2381
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.30 
+   ⛽ gasPrice: 27.000000107 gwei
+   💰 Custo estimado de deploy: 0.014016996055548836 matic-network ≈ $0.0033 / R$0.0182
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000006550368308224 ethereum
+       ≈ $0.0271 / R$0.1489
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0023 / R$0.0129
+   💰 MATIC-NETWORK: 0.000759564003010124 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000006203197856512 ethereum
+       ≈ $0.0256 / R$0.1410
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0022 / R$0.0122
+   💰 MATIC-NETWORK: 0.000719307002850587 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4347.83 - R$: 23787.00 
+   ⛽ gasPrice: 0.666995017 gwei
+   💰 Custo estimado de deploy: 0.000346269129085516 ethereum ≈ $1.5055 / R$8.2367
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 846.29 - R$: 4630.04 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0439 / R$0.2404
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.33 
+   ⛽ gasPrice: 27.000000107 gwei
+   💰 Custo estimado de deploy: 0.014016996055548836 matic-network ≈ $0.0034 / R$0.0186
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000018763903818244 ethereum
+       ≈ $0.0816 / R$0.4463
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.000759564003010124 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000017769414247897 ethereum
+       ≈ $0.0773 / R$0.4227
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0123
+   💰 MATIC-NETWORK: 0.000719307002850587 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4295.49 - R$: 23506.00 
+   ⛽ gasPrice: 0.559143627 gwei
+   💰 Custo estimado de deploy: 0.000290278295669796 ethereum ≈ $1.2469 / R$6.8233
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 851.89 - R$: 4661.71 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0442 / R$0.2420
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.32 
+   ⛽ gasPrice: 27.000000087 gwei
+   💰 Custo estimado de deploy: 0.014016996045165876 matic-network ≈ $0.0034 / R$0.0185
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000015729828514764 ethereum
+       ≈ $0.0676 / R$0.3697
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000759564002447484 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000014896145366907 ethereum
+       ≈ $0.0640 / R$0.3501
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000719307002317767 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4347.71 - R$: 23794.00 
+   ⛽ gasPrice: 0.477961759 gwei
+   💰 Custo estimado de deploy: 0.000248132891261332 ethereum ≈ $1.0788 / R$5.9041
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 868.51 - R$: 4753.12 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0451 / R$0.2468
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.34 
+   ⛽ gasPrice: 27.000000092 gwei
+   💰 Custo estimado de deploy: 0.014016996047761616 matic-network ≈ $0.0034 / R$0.0188
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000013446020204188 ethereum
+       ≈ $0.0585 / R$0.3199
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0134
+   💰 MATIC-NETWORK: 0.000759564002588144 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000012733379221519 ethereum
+       ≈ $0.0554 / R$0.3030
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0127
+   💰 MATIC-NETWORK: 0.000719307002450972 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4356.15 - R$: 23896.00 
+   ⛽ gasPrice: 0.418905736 gwei
+   💰 Custo estimado de deploy: 0.000217474075032928 ethereum ≈ $0.9473 / R$5.1968
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 874.26 - R$: 4795.74 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0454 / R$0.2490
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.34 
+   ⛽ gasPrice: 27.001000086 gwei
+   💰 Custo estimado de deploy: 0.014017515192646728 matic-network ≈ $0.0034 / R$0.0188
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000011784656165152 ethereum
+       ≈ $0.0513 / R$0.2816
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0135
+   💰 MATIC-NETWORK: 0.000759592134419352 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000011160067712776 ethereum
+       ≈ $0.0486 / R$0.2667
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0128
+   💰 MATIC-NETWORK: 0.000719333643291126 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4348.72 - R$: 23813.00 
+   ⛽ gasPrice: 0.379993287 gwei
+   💰 Custo estimado de deploy: 0.000197272754959476 ethereum ≈ $0.8579 / R$4.6977
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 878.47 - R$: 4810.33 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0456 / R$0.2497
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.25 - R$: 1.35 
+   ⛽ gasPrice: 27.000000097 gwei
+   💰 Custo estimado de deploy: 0.014016996050357356 matic-network ≈ $0.0034 / R$0.0189
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000010689971149884 ethereum
+       ≈ $0.0465 / R$0.2546
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0135
+   💰 MATIC-NETWORK: 0.000759564002728804 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000010123401158967 ethereum
+       ≈ $0.0440 / R$0.2411
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0128
+   💰 MATIC-NETWORK: 0.000719307002584177 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+⚠️ Falha ao buscar gasPrice da rede Ethereum: could not detect network (event="noNetwork", code=NETWORK_ERROR, version=providers/5.8.0)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 842.14 - R$: 4611.48 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0437 / R$0.2394
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.30 
+   ⛽ gasPrice: 27.000000093 gwei
+   💰 Custo estimado de deploy: 0.014016996048280764 matic-network ≈ $0.0033 / R$0.0182
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.000759564002616276 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0022 / R$0.0123
+   💰 MATIC-NETWORK: 0.000719307002477613 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4261.20 - R$: 23331.00 
+   ⛽ gasPrice: 0.310150045 gwei
+   💰 Custo estimado de deploy: 0.00016101377556166 ethereum ≈ $0.6861 / R$3.7566
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 840.20 - R$: 4600.34 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0436 / R$0.2388
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.31 
+   ⛽ gasPrice: 27.000000094 gwei
+   💰 Custo estimado de deploy: 0.014016996048799912 matic-network ≈ $0.0033 / R$0.0184
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.00000872514106594 ethereum
+       ≈ $0.0372 / R$0.2036
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000759564002644408 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000008262707348845 ethereum
+       ≈ $0.0352 / R$0.1928
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0022 / R$0.0123
+   💰 MATIC-NETWORK: 0.000719307002504254 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4223.09 - R$: 23135.00 
+   ⛽ gasPrice: 0.346102697 gwei
+   💰 Custo estimado de deploy: 0.000179678522942156 ethereum ≈ $0.7588 / R$4.1569
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 835.53 - R$: 4577.14 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0434 / R$0.2376
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.29 
+   ⛽ gasPrice: 27.000000088 gwei
+   💰 Custo estimado de deploy: 0.014016996045685024 matic-network ≈ $0.0033 / R$0.0181
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000009736561072004 ethereum
+       ≈ $0.0411 / R$0.2253
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000759564002475616 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000009220521950777 ethereum
+       ≈ $0.0389 / R$0.2133
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0022 / R$0.0122
+   💰 MATIC-NETWORK: 0.000719307002344408 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4245.01 - R$: 23250.00 
+   ⛽ gasPrice: 0.361878156 gwei
+   💰 Custo estimado de deploy: 0.000187868320931088 ethereum ≈ $0.7975 / R$4.3679
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 838.41 - R$: 4592.05 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0435 / R$0.2384
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.30 
+   ⛽ gasPrice: 27.000000106 gwei
+   💰 Custo estimado de deploy: 0.014016996055029688 matic-network ≈ $0.0033 / R$0.0182
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000010180356284592 ethereum
+       ≈ $0.0432 / R$0.2367
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000759564002981992 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000009640795953996 ethereum
+       ≈ $0.0409 / R$0.2241
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0022 / R$0.0122
+   💰 MATIC-NETWORK: 0.000719307002823946 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4242.17 - R$: 23192.00 
+   ⛽ gasPrice: 0.161802033 gwei
+   💰 Custo estimado de deploy: 0.000083999201827884 ethereum ≈ $0.3563 / R$1.9481
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 838.73 - R$: 4585.33 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0435 / R$0.2380
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.30 
+   ⛽ gasPrice: 27.000000091 gwei
+   💰 Custo estimado de deploy: 0.014016996047242468 matic-network ≈ $0.0033 / R$0.0182
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000004551814792356 ethereum
+       ≈ $0.0193 / R$0.1056
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000759564002560012 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000004310567961153 ethereum
+       ≈ $0.0183 / R$0.1000
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0022 / R$0.0122
+   💰 MATIC-NETWORK: 0.000719307002424331 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0B306BF915C4d645ff596e518fAf3F9669b97016
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4251.43 - R$: 23244.00 
+   ⛽ gasPrice: 0.175291265 gwei
+   💰 Custo estimado de deploy: 0.00009100210964222 ethereum ≈ $0.3869 / R$2.1153
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 841.38 - R$: 4600.09 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0437 / R$0.2388
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.30 
+   ⛽ gasPrice: 27.207000097 gwei
+   💰 Custo estimado de deploy: 0.014124459686357356 matic-network ≈ $0.0034 / R$0.0184
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.00000493129386698 ethereum
+       ≈ $0.0210 / R$0.1146
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000765387326728804 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000004669934590865 ethereum
+       ≈ $0.0199 / R$0.1085
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0022 / R$0.0123
+   💰 MATIC-NETWORK: 0.000724821689584177 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4749.55 - R$: 25770.00 
+   ⛽ gasPrice: 3.916882298 gwei
+   💰 Custo estimado de deploy: 0.002033441611242104 ethereum ≈ $9.6579 / R$52.4018
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 883.94 - R$: 4795.98 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0459 / R$0.2490
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.25 - R$: 1.36 
+   ⛽ gasPrice: 28.077664368 gwei
+   💰 Custo estimado de deploy: 0.014576463301318464 matic-network ≈ $0.0037 / R$0.0198
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000110189732807336 ethereum
+       ≈ $0.5234 / R$2.8396
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0135
+   💰 MATIC-NETWORK: 0.000789880854000576 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000104349661301018 ethereum
+       ≈ $0.4956 / R$2.6891
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0024 / R$0.0128
+   💰 MATIC-NETWORK: 0.000748017056427888 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4800.49 - R$: 26016.00 
+   ⛽ gasPrice: 4.158852299 gwei
+   💰 Custo estimado de deploy: 0.002159059853321252 ethereum ≈ $10.3645 / R$56.1701
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 893.28 - R$: 4841.06 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0464 / R$0.2513
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.25 - R$: 1.36 
+   ⛽ gasPrice: 29.999472783 gwei
+   💰 Custo estimado de deploy: 0.015574166296348884 matic-network ≈ $0.0039 / R$0.0212
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000116996832875468 ethereum
+       ≈ $0.5616 / R$3.0438
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0136
+   💰 MATIC-NETWORK: 0.000843945168331356 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000110795984097659 ethereum
+       ≈ $0.5319 / R$2.8825
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000799215954411903 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4789.17 - R$: 25961.00 
+   ⛽ gasPrice: 2.230104162 gwei
+   💰 Custo estimado de deploy: 0.001157754115493976 ethereum ≈ $5.5447 / R$30.0565
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 893.86 - R$: 4845.36 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0464 / R$0.2515
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.25 - R$: 1.36 
+   ⛽ gasPrice: 29.000017107 gwei
+   💰 Custo estimado de deploy: 0.015055300881064836 matic-network ≈ $0.0038 / R$0.0205
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000062737290285384 ethereum
+       ≈ $0.3005 / R$1.6287
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0136
+   💰 MATIC-NETWORK: 0.000815828481254124 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000059412204979842 ethereum
+       ≈ $0.2845 / R$1.5424
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000772589455747587 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4841.88 - R$: 26249.00 
+   ⛽ gasPrice: 1.964851536 gwei
+   💰 Custo estimado de deploy: 0.001020048745211328 ethereum ≈ $4.9390 / R$26.7753
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 894.98 - R$: 4851.94 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0465 / R$0.2519
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.25 - R$: 1.37 
+   ⛽ gasPrice: 29.000000097 gwei
+   💰 Custo estimado de deploy: 0.015055292050357356 matic-network ≈ $0.0038 / R$0.0206
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000055275203410752 ethereum
+       ≈ $0.2676 / R$1.4509
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0136
+   💰 MATIC-NETWORK: 0.000815828002728804 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000052345609770576 ethereum
+       ≈ $0.2535 / R$1.3740
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000772589002584177 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4840.04 - R$: 26234.00 
+   ⛽ gasPrice: 1.338160664 gwei
+   💰 Custo estimado de deploy: 0.000694703432394272 ethereum ≈ $3.3624 / R$18.2248
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 894.90 - R$: 4850.63 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0465 / R$0.2518
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.25 - R$: 1.38 
+   ⛽ gasPrice: 29.000000099 gwei
+   💰 Custo estimado de deploy: 0.015055292051395652 matic-network ≈ $0.0038 / R$0.0208
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000037645135799648 ethereum
+       ≈ $0.1822 / R$0.9876
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0136
+   💰 MATIC-NETWORK: 0.000815828002785068 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000035649938249624 ethereum
+       ≈ $0.1725 / R$0.9352
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000772589002637459 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4848.25 - R$: 26283.00 
+   ⛽ gasPrice: 1.958046036 gwei
+   💰 Custo estimado de deploy: 0.001016515683497328 ethereum ≈ $4.9283 / R$26.7171
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 898.55 - R$: 4871.18 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0466 / R$0.2529
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.26 - R$: 1.38 
+   ⛽ gasPrice: 177.535133699 gwei
+   💰 Custo estimado de deploy: 0.092167009589568452 matic-network ≈ $0.0235 / R$0.1272
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000055083751084752 ethereum
+       ≈ $0.2671 / R$1.4478
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0137
+   💰 MATIC-NETWORK: 0.004994418381220268 matic-network
+       ≈ $0.0013 / R$0.0069
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000052164304445076 ethereum
+       ≈ $0.2529 / R$1.3710
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.004729713496875059 matic-network
+       ≈ $0.0012 / R$0.0065
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4591.59 - R$: 24841.00 
+   ⛽ gasPrice: 0.288968304 gwei
+   💰 Custo estimado de deploy: 0.000150017317084992 ethereum ≈ $0.6888 / R$3.7266
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 864.61 - R$: 4677.98 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0449 / R$0.2429
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.29 
+   ⛽ gasPrice: 26.000000117 gwei
+   💰 Custo estimado de deploy: 0.013497848060740316 matic-network ≈ $0.0032 / R$0.0174
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000008129256328128 ethereum
+       ≈ $0.0373 / R$0.2019
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000731432003291444 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000007698404586864 ethereum
+       ≈ $0.0353 / R$0.1912
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000692666003116997 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4574.95 - R$: 24752.00 
+   ⛽ gasPrice: 0.310683557 gwei
+   💰 Custo estimado de deploy: 0.000161290747249436 ethereum ≈ $0.7379 / R$3.9923
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 864.91 - R$: 4679.44 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0449 / R$0.2429
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.29 
+   ⛽ gasPrice: 26.000000101 gwei
+   💰 Custo estimado de deploy: 0.013497848052433948 matic-network ≈ $0.0032 / R$0.0174
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000008740149825524 ethereum
+       ≈ $0.0400 / R$0.2163
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000731432002841332 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000008276920642037 ethereum
+       ≈ $0.0379 / R$0.2049
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000692666002690741 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4441.17 - R$: 24044.00 
+   ⛽ gasPrice: 1.806278771 gwei
+   💰 Custo estimado de deploy: 0.000937726011407108 ethereum ≈ $4.1646 / R$22.5467
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 855.79 - R$: 4633.15 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0444 / R$0.2405
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.23 - R$: 1.27 
+   ⛽ gasPrice: 29.877809841 gwei
+   💰 Custo estimado de deploy: 0.015511005223335468 matic-network ≈ $0.0036 / R$0.0197
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000050814234385772 ethereum
+       ≈ $0.2257 / R$1.2218
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.000840522546447012 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000048121072738211 ethereum
+       ≈ $0.2137 / R$1.1570
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0123
+   💰 MATIC-NETWORK: 0.000795974731974081 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4369.61 - R$: 23658.00 
+   ⛽ gasPrice: 2.50957458 gwei
+   💰 Custo estimado de deploy: 0.00130284062405784 ethereum ≈ $5.6929 / R$30.8226
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 842.12 - R$: 4559.40 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0437 / R$0.2367
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.23 - R$: 1.25 
+   ⛽ gasPrice: 29.91308718 gwei
+   💰 Custo estimado de deploy: 0.01552931938332264 matic-network ≈ $0.0036 / R$0.0194
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.00007059935208456 ethereum
+       ≈ $0.3085 / R$1.6702
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0128
+   💰 MATIC-NETWORK: 0.00084151496854776 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.00006685757638578 ethereum
+       ≈ $0.2921 / R$1.5817
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0022 / R$0.0121
+   💰 MATIC-NETWORK: 0.00079691455556238 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4372.34 - R$: 23656.00 
+   ⛽ gasPrice: 0.867799404 gwei
+   💰 Custo estimado de deploy: 0.000450516324987792 ethereum ≈ $1.9698 / R$10.6574
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 841.29 - R$: 4551.72 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0437 / R$0.2363
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.23 - R$: 1.26 
+   ⛽ gasPrice: 29.00000011 gwei
+   💰 Custo estimado de deploy: 0.01505529205710628 matic-network ≈ $0.0035 / R$0.0190
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000024412932833328 ethereum
+       ≈ $0.1067 / R$0.5775
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0128
+   💰 MATIC-NETWORK: 0.00081582800309452 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000023119043921964 ethereum
+       ≈ $0.1011 / R$0.5469
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0022 / R$0.0121
+   💰 MATIC-NETWORK: 0.00077258900293051 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4553.49 - R$: 24793.00 
+   ⛽ gasPrice: 0.844971149 gwei
+   💰 Custo estimado de deploy: 0.000438665082061052 ethereum ≈ $1.9975 / R$10.8758
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 856.18 - R$: 4661.83 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0444 / R$0.2420
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.32 
+   ⛽ gasPrice: 25.000001288 gwei
+   💰 Custo estimado de deploy: 0.012978700668662624 matic-network ≈ $0.0031 / R$0.0171
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000023770728363668 ethereum
+       ≈ $0.1082 / R$0.5893
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000703300036234016 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000022510876380509 ethereum
+       ≈ $0.1025 / R$0.5581
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000666025034313608 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4517.02 - R$: 24550.00 
+   ⛽ gasPrice: 0.644188627 gwei
+   💰 Custo estimado de deploy: 0.000334429237329796 ethereum ≈ $1.5106 / R$8.2102
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 850.55 - R$: 4622.65 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0442 / R$0.2400
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.31 
+   ⛽ gasPrice: 25.00000023 gwei
+   💰 Custo estimado de deploy: 0.01297870011940404 matic-network ≈ $0.0031 / R$0.0170
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000018122314454764 ethereum
+       ≈ $0.0819 / R$0.4449
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.00070330000647036 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000017161829211907 ethereum
+       ≈ $0.0775 / R$0.4213
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0123
+   💰 MATIC-NETWORK: 0.00066602500612743 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4546.95 - R$: 24720.00 
+   ⛽ gasPrice: 0.733022814 gwei
+   💰 Custo estimado de deploy: 0.000380547327842472 ethereum ≈ $1.7303 / R$9.4071
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 855.55 - R$: 4651.18 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0444 / R$0.2415
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.32 
+   ⛽ gasPrice: 25.000001791 gwei
+   💰 Custo estimado de deploy: 0.012978700929794068 matic-network ≈ $0.0031 / R$0.0171
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000020621397803448 ethereum
+       ≈ $0.0938 / R$0.5098
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000703300050384412 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000019528460787774 ethereum
+       ≈ $0.0888 / R$0.4827
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000666025047714031 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4589.77 - R$: 24938.00 
+   ⛽ gasPrice: 0.63936637 gwei
+   💰 Custo estimado de deploy: 0.00033192577225276 ethereum ≈ $1.5235 / R$8.2776
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 859.07 - R$: 4667.66 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0446 / R$0.2423
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.33 
+   ⛽ gasPrice: 26.000000113 gwei
+   💰 Custo estimado de deploy: 0.013497848058663724 matic-network ≈ $0.0033 / R$0.0180
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.00001798665472084 ethereum
+       ≈ $0.0826 / R$0.4486
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000731432003178916 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.00001703335946317 ethereum
+       ≈ $0.0782 / R$0.4248
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000692666003010433 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4586.39 - R$: 24915.00 
+   ⛽ gasPrice: 0.400019518 gwei
+   💰 Custo estimado de deploy: 0.000207669332730664 ethereum ≈ $0.9525 / R$5.1741
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 862.22 - R$: 4683.93 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0448 / R$0.2432
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.25 - R$: 1.34 
+   ⛽ gasPrice: 26.000000098 gwei
+   💰 Custo estimado de deploy: 0.013497848050876504 matic-network ≈ $0.0033 / R$0.0181
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000011253349080376 ethereum
+       ≈ $0.0516 / R$0.2804
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000731432002756936 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000010656919979038 ethereum
+       ≈ $0.0489 / R$0.2655
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000692666002610818 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0B306BF915C4d645ff596e518fAf3F9669b97016
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4603.37 - R$: 25003.00 
+   ⛽ gasPrice: 0.331661404 gwei
+   💰 Custo estimado de deploy: 0.000172181354563792 ethereum ≈ $0.7926 / R$4.3051
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 862.34 - R$: 4683.80 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0448 / R$0.2432
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.25 - R$: 1.34 
+   ⛽ gasPrice: 25.968000092 gwei
+   💰 Custo estimado de deploy: 0.013481235311761616 matic-network ≈ $0.0033 / R$0.0181
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000009330298617328 ethereum
+       ≈ $0.0430 / R$0.2333
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000730531778588144 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000008835791463964 ethereum
+       ≈ $0.0407 / R$0.2209
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000691813490450972 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4634.04 - R$: 25123.00 
+   ⛽ gasPrice: 0.841695465 gwei
+   💰 Custo estimado de deploy: 0.00043696451726382 ethereum ≈ $2.0249 / R$10.9779
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 866.08 - R$: 4695.27 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0450 / R$0.2438
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.33 
+   ⛽ gasPrice: 26.000000122 gwei
+   💰 Custo estimado de deploy: 0.013497848063336056 matic-network ≈ $0.0033 / R$0.0180
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.00002367857682138 ethereum
+       ≈ $0.1097 / R$0.5949
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000731432003432104 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000022423608883065 ethereum
+       ≈ $0.1039 / R$0.5633
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000692666003250202 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4594.33 - R$: 24915.00 
+   ⛽ gasPrice: 0.722853518 gwei
+   💰 Custo estimado de deploy: 0.000375267958162664 ethereum ≈ $1.7241 / R$9.3498
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 863.86 - R$: 4684.69 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0448 / R$0.2432
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.32 
+   ⛽ gasPrice: 26.000357377 gwei
+   💰 Custo estimado de deploy: 0.013498033531554796 matic-network ≈ $0.0033 / R$0.0178
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000020335315168376 ethereum
+       ≈ $0.0934 / R$0.5067
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000731442053729764 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000019257540573038 ethereum
+       ≈ $0.0885 / R$0.4798
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000692675520880657 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4567.81 - R$: 24747.00 
+   ⛽ gasPrice: 0.657944286 gwei
+   💰 Custo estimado de deploy: 0.000341570460188328 ethereum ≈ $1.5602 / R$8.4528
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 861.01 - R$: 4664.81 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0447 / R$0.2422
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.31 
+   ⛽ gasPrice: 25.993480661 gwei
+   💰 Custo estimado de deploy: 0.013494463498196828 matic-network ≈ $0.0033 / R$0.0177
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000018509288653752 ethereum
+       ≈ $0.0845 / R$0.4580
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000731248597955252 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000017528293723326 ethereum
+       ≈ $0.0801 / R$0.4338
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000692492318289701 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4592.09 - R$: 24877.00 
+   ⛽ gasPrice: 0.420548187 gwei
+   💰 Custo estimado de deploy: 0.000218326750184676 ethereum ≈ $1.0026 / R$5.4313
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 864.08 - R$: 4681.09 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0449 / R$0.2430
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.31 
+   ⛽ gasPrice: 25.929898066 gwei
+   💰 Custo estimado de deploy: 0.013461454721167768 matic-network ≈ $0.0033 / R$0.0176
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000011830861596684 ethereum
+       ≈ $0.0543 / R$0.2943
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000729459892392712 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000011203824249867 ethereum
+       ≈ $0.0514 / R$0.2787
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000690798414376306 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4520.15 - R$: 24488.00 
+   ⛽ gasPrice: 1.284428706 gwei
+   💰 Custo estimado de deploy: 0.000666808593862488 ethereum ≈ $3.0141 / R$16.3288
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 859.84 - R$: 4658.25 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0446 / R$0.2418
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.30 
+   ⛽ gasPrice: 26.000000111 gwei
+   💰 Custo estimado de deploy: 0.013497848057625428 matic-network ≈ $0.0032 / R$0.0175
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000036133548357192 ethereum
+       ≈ $0.1633 / R$0.8848
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000731432003122652 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000034218465156546 ethereum
+       ≈ $0.1547 / R$0.8379
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000692666002957151 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4522.91 - R$: 24505.00 
+   ⛽ gasPrice: 0.746333796 gwei
+   💰 Custo estimado de deploy: 0.000387457697525808 ethereum ≈ $1.7524 / R$9.4947
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 858.16 - R$: 4649.43 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0446 / R$0.2414
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.31 
+   ⛽ gasPrice: 26.001000113 gwei
+   💰 Custo estimado de deploy: 0.013498367206663724 matic-network ≈ $0.0033 / R$0.0177
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000020995862349072 ethereum
+       ≈ $0.0950 / R$0.5145
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000731460135178916 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000019883078659236 ethereum
+       ≈ $0.0899 / R$0.4872
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000692692644010433 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4488.76 - R$: 24264.00 
+   ⛽ gasPrice: 0.66157424 gwei
+   💰 Custo estimado de deploy: 0.00034345494354752 ethereum ≈ $1.5417 / R$8.3336
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 875.88 - R$: 4734.64 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0455 / R$0.2458
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.31 
+   ⛽ gasPrice: 25.833374275 gwei
+   💰 Custo estimado de deploy: 0.0134113445881177 matic-network ≈ $0.0033 / R$0.0176
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.00001861140651968 ethereum
+       ≈ $0.0835 / R$0.4516
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0133
+   💰 MATIC-NETWORK: 0.0007267444851043 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.00001762499932784 ethereum
+       ≈ $0.0791 / R$0.4277
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0126
+   💰 MATIC-NETWORK: 0.000688226924060275 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4483.19 - R$: 24239.00 
+   ⛽ gasPrice: 0.301564236 gwei
+   💰 Custo estimado de deploy: 0.000156556469990928 ethereum ≈ $0.7019 / R$3.7948
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 870.95 - R$: 4708.89 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0452 / R$0.2445
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.32 
+   ⛽ gasPrice: 25.999399995 gwei
+   💰 Custo estimado de deploy: 0.01349753650860426 matic-network ≈ $0.0033 / R$0.0178
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000008483605087152 ethereum
+       ≈ $0.0380 / R$0.2056
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0025 / R$0.0132
+   💰 MATIC-NETWORK: 0.00073141512065934 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000008033972811276 ethereum
+       ≈ $0.0360 / R$0.1947
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000692650015266795 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4450.48 - R$: 24060.00 
+   ⛽ gasPrice: 0.291338903 gwei
+   💰 Custo estimado de deploy: 0.000151248008814644 ethereum ≈ $0.6731 / R$3.6390
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 868.97 - R$: 4697.80 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0451 / R$0.2439
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.31 
+   ⛽ gasPrice: 25.696005191 gwei
+   💰 Custo estimado de deploy: 0.013340029702897268 matic-network ≈ $0.0032 / R$0.0175
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000008195946019196 ethereum
+       ≈ $0.0365 / R$0.1972
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000722880018033212 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000007761559714823 ethereum
+       ≈ $0.0345 / R$0.1867
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000684567274293431 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4457.20 - R$: 24116.00 
+   ⛽ gasPrice: 0.28160916 gwei
+   💰 Custo estimado de deploy: 0.00014619683219568 ethereum ≈ $0.6516 / R$3.5257
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 869.61 - R$: 4705.13 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0451 / R$0.2443
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.32 
+   ⛽ gasPrice: 25.027044779 gwei
+   💰 Custo estimado de deploy: 0.012992740242928292 matic-network ≈ $0.0032 / R$0.0172
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.00000792222888912 ethereum
+       ≈ $0.0353 / R$0.1911
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000704060823722828 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.00000750234963156 ethereum
+       ≈ $0.0334 / R$0.1809
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000666745499957339 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4335.28 - R$: 23534.00 
+   ⛽ gasPrice: 0.694229963 gwei
+   💰 Custo estimado de deploy: 0.000360408096831524 ethereum ≈ $1.5625 / R$8.4818
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 858.27 - R$: 4659.10 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0446 / R$0.2419
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.31 
+   ⛽ gasPrice: 25.014615012 gwei
+   💰 Custo estimado de deploy: 0.012986287354249776 matic-network ≈ $0.0031 / R$0.0170
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000019530077319116 ethereum
+       ≈ $0.0847 / R$0.4596
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000703711149517584 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000018494980444283 ethereum
+       ≈ $0.0802 / R$0.4353
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000666414358534692 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4334.95 - R$: 23527.00 
+   ⛽ gasPrice: 0.380532747 gwei
+   💰 Custo estimado de deploy: 0.000197552814539556 ethereum ≈ $0.8564 / R$4.6478
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 856.99 - R$: 4651.21 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0445 / R$0.2415
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.30 
+   ⛽ gasPrice: 26.000029977 gwei
+   💰 Custo estimado de deploy: 0.013497863562499596 matic-network ≈ $0.0032 / R$0.0175
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000010705147238604 ethereum
+       ≈ $0.0464 / R$0.2519
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000731432843312964 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000010137772912827 ethereum
+       ≈ $0.0439 / R$0.2385
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000692666798617257 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4315.09 - R$: 23408.00 
+   ⛽ gasPrice: 0.339556437 gwei
+   💰 Custo estimado de deploy: 0.000176280045155676 ethereum ≈ $0.7607 / R$4.1264
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 854.33 - R$: 4634.48 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0444 / R$0.2406
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.29 
+   ⛽ gasPrice: 25.24373162 gwei
+   💰 Custo estimado de deploy: 0.01310523278305976 matic-network ≈ $0.0031 / R$0.0169
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000009552401685684 ethereum
+       ≈ $0.0412 / R$0.2236
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.00071015665793384 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000009046123038117 ethereum
+       ≈ $0.0390 / R$0.2118
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0123
+   💰 MATIC-NETWORK: 0.00067251825408842 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4343.32 - R$: 23546.00 
+   ⛽ gasPrice: 0.325222265 gwei
+   💰 Custo estimado de deploy: 0.00016883848843022 ethereum ≈ $0.7333 / R$3.9755
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 858.69 - R$: 4655.02 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0446 / R$0.2417
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.30 
+   ⛽ gasPrice: 25.446420901 gwei
+   💰 Custo estimado de deploy: 0.013210458517912348 matic-network ≈ $0.0032 / R$0.0172
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.00000914915275898 ethereum
+       ≈ $0.0397 / R$0.2154
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000715858712786932 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000008664246361865 ethereum
+       ≈ $0.0376 / R$0.2040
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000677918099223541 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4322.34 - R$: 23468.00 
+   ⛽ gasPrice: 0.386362467 gwei
+   💰 Custo estimado de deploy: 0.000200579302018116 ethereum ≈ $0.8670 / R$4.7072
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 855.96 - R$: 4647.35 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0444 / R$0.2413
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.29 
+   ⛽ gasPrice: 25.000000405 gwei
+   💰 Custo estimado de deploy: 0.01297870021025494 matic-network ≈ $0.0031 / R$0.0167
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000010869148921644 ethereum
+       ≈ $0.0470 / R$0.2551
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.00070330001139346 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000010293082483347 ethereum
+       ≈ $0.0445 / R$0.2416
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000666025010789605 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0B306BF915C4d645ff596e518fAf3F9669b97016
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4363.63 - R$: 23701.00 
+   ⛽ gasPrice: 0.278589741 gwei
+   💰 Custo estimado de deploy: 0.000144629306860668 ethereum ≈ $0.6311 / R$3.4279
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 858.75 - R$: 4664.19 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0446 / R$0.2421
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.24 - R$: 1.31 
+   ⛽ gasPrice: 25.000000141 gwei
+   💰 Custo estimado de deploy: 0.012978700073199868 matic-network ≈ $0.0031 / R$0.0170
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000007837286593812 ethereum
+       ≈ $0.0342 / R$0.1858
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000703300003966612 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000007421909289981 ethereum
+       ≈ $0.0324 / R$0.1759
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000666025003756381 matic-network
+       ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4355.59 - R$: 23716.00 
+   ⛽ gasPrice: 3.588128724 gwei
+   💰 Custo estimado de deploy: 0.001862769850807152 ethereum ≈ $8.1135 / R$44.1774
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 847.61 - R$: 4615.25 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0440 / R$0.2396
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.28 - R$: 1.50 
+   ⛽ gasPrice: 25.000002351 gwei
+   💰 Custo estimado de deploy: 0.012978701220516948 matic-network ≈ $0.0036 / R$0.0195
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000100941237263568 ethereum
+       ≈ $0.4397 / R$2.3939
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.000703300066138332 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000095591337336084 ethereum
+       ≈ $0.4164 / R$2.2670
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0123
+   💰 MATIC-NETWORK: 0.000666025062632991 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4326.67 - R$: 23560.00 
+   ⛽ gasPrice: 2.239561194 gwei
+   💰 Custo estimado de deploy: 0.001162663714742712 ethereum ≈ $5.0305 / R$27.3924
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 845.48 - R$: 4603.99 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0439 / R$0.2390
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.27 - R$: 1.49 
+   ⛽ gasPrice: 25.527078642 gwei
+   💰 Custo estimado de deploy: 0.013252331822837016 matic-network ≈ $0.0036 / R$0.0197
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000063003335509608 ethereum
+       ≈ $0.2726 / R$1.4844
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.000718127776356744 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000059664149769354 ethereum
+       ≈ $0.2581 / R$1.4057
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0123
+   💰 MATIC-NETWORK: 0.000680066902101522 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4348.20 - R$: 23669.00 
+   ⛽ gasPrice: 0.996163626 gwei
+   💰 Custo estimado de deploy: 0.000517156354110648 ethereum ≈ $2.2487 / R$12.2406
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 847.06 - R$: 4610.98 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0440 / R$0.2394
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.27 - R$: 1.50 
+   ⛽ gasPrice: 25.483436816 gwei
+   💰 Custo estimado de deploy: 0.013229675256152768 matic-network ≈ $0.0036 / R$0.0198
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000028024075126632 ethereum
+       ≈ $0.1219 / R$0.6633
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.000716900044507712 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000026538795160266 ethereum
+       ≈ $0.1154 / R$0.6281
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0123
+   💰 MATIC-NETWORK: 0.000678904240215056 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4367.69 - R$: 23766.00 
+   ⛽ gasPrice: 1.021428766 gwei
+   💰 Custo estimado de deploy: 0.000530272701011368 ethereum ≈ $2.3161 / R$12.6025
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 848.85 - R$: 4618.82 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0441 / R$0.2398
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.27 - R$: 1.49 
+   ⛽ gasPrice: 25.000000176 gwei
+   💰 Custo estimado de deploy: 0.012978700091370048 matic-network ≈ $0.0035 / R$0.0193
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000028734834045112 ethereum
+       ≈ $0.1255 / R$0.6829
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.000703300004951232 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000027211883755006 ethereum
+       ≈ $0.1189 / R$0.6467
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0123
+   💰 MATIC-NETWORK: 0.000666025004688816 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4280.86 - R$: 23284.00 
+   ⛽ gasPrice: 1.363686449 gwei
+   💰 Custo estimado de deploy: 0.000707955092625452 ethereum ≈ $3.0307 / R$16.4840
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 844.59 - R$: 4593.15 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0438 / R$0.2385
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.27 - R$: 1.48 
+   ⛽ gasPrice: 25.000000144 gwei
+   💰 Custo estimado de deploy: 0.012978700074757312 matic-network ≈ $0.0035 / R$0.0192
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000038363227183268 ethereum
+       ≈ $0.1642 / R$0.8932
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0129
+   💰 MATIC-NETWORK: 0.000703300004051008 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000036329970687809 ethereum
+       ≈ $0.1555 / R$0.8459
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0122
+   💰 MATIC-NETWORK: 0.000666025003836304 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x5FbDB2315678afecb367f032d93F642f64180aa3
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4466.90 - R$: 24410.00 
+   ⛽ gasPrice: 0.67489643 gwei
+   💰 Custo estimado de deploy: 0.00035037113184164 ethereum ≈ $1.5651 / R$8.5526
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 858.43 - R$: 4691.08 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0446 / R$0.2435
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.28 - R$: 1.54 
+   ⛽ gasPrice: 25.000002833 gwei
+   💰 Custo estimado de deploy: 0.012978701470746284 matic-network ≈ $0.0037 / R$0.0200
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.00001898618636876 ethereum
+       ≈ $0.0848 / R$0.4635
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000703300079697956 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.00001797991579163 ethereum
+       ≈ $0.0803 / R$0.4389
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000666025075473953 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4475.19 - R$: 24433.00 
+   ⛽ gasPrice: 0.703930782 gwei
+   💰 Custo estimado de deploy: 0.000365444257613736 ethereum ≈ $1.6354 / R$8.9289
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 860.32 - R$: 4696.98 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0447 / R$0.2438
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.28 - R$: 1.54 
+   ⛽ gasPrice: 25.000000586 gwei
+   💰 Custo estimado de deploy: 0.012978700304220728 matic-network ≈ $0.0037 / R$0.0200
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000019802980759224 ethereum
+       ≈ $0.0886 / R$0.4838
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000703300016485352 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000018753419963262 ethereum
+       ≈ $0.0839 / R$0.4582
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000666025015611626 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4468.34 - R$: 24401.00 
+   ⛽ gasPrice: 0.934808808 gwei
+   💰 Custo estimado de deploy: 0.000485304123055584 ethereum ≈ $2.1685 / R$11.8419
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 858.96 - R$: 4690.70 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0446 / R$0.2435
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.28 - R$: 1.53 
+   ⛽ gasPrice: 25.24618156 gwei
+   💰 Custo estimado de deploy: 0.01310650466451088 matic-network ≈ $0.0037 / R$0.0201
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000026298041386656 ethereum
+       ≈ $0.1175 / R$0.6417
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.00071022557964592 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000024904241453928 ethereum
+       ≈ $0.1113 / R$0.6077
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.00067258352293996 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x8A791620dd6260079BF849Dc5567aDC3F2FdC318
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4475.89 - R$: 24413.00 
+   ⛽ gasPrice: 0.848749531 gwei
+   💰 Custo estimado de deploy: 0.000440626621519588 ethereum ≈ $1.9722 / R$10.7570
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 857.38 - R$: 4676.49 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0445 / R$0.2428
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.28 - R$: 1.54 
+   ⛽ gasPrice: 25.246181187 gwei
+   💰 Custo estimado de deploy: 0.013106504470868676 matic-network ≈ $0.0037 / R$0.0202
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000023877021806092 ethereum
+       ≈ $0.1069 / R$0.5829
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0132
+   💰 MATIC-NETWORK: 0.000710225569152684 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000022611536255371 ethereum
+       ≈ $0.1012 / R$0.5520
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0125
+   💰 MATIC-NETWORK: 0.000672583513002867 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4465.75 - R$: 24343.00 
+   ⛽ gasPrice: 0.432089225 gwei
+   💰 Custo estimado de deploy: 0.0002243182569803 ethereum ≈ $1.0017 / R$5.4606
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 854.29 - R$: 4656.76 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0444 / R$0.2418
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.28 - R$: 1.54 
+   ⛽ gasPrice: 25.500000996 gwei
+   💰 Custo estimado de deploy: 0.013238274517071408 matic-network ≈ $0.0037 / R$0.0204
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.0000121555340777 ethereum
+       ≈ $0.0543 / R$0.2959
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000717366028019472 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000011511289043225 ethereum
+       ≈ $0.0514 / R$0.2802
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000679345526534436 matic-network
+       ≈ $0.0002 / R$0.0010
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0x0B306BF915C4d645ff596e518fAf3F9669b97016
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4464.91 - R$: 24336.00 
+   ⛽ gasPrice: 0.320441854 gwei
+   💰 Custo estimado de deploy: 0.000166356747620392 ethereum ≈ $0.7428 / R$4.0485
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 854.78 - R$: 4658.90 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0444 / R$0.2419
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.28 - R$: 1.53 
+   ⛽ gasPrice: 26.000000094 gwei
+   💰 Custo estimado de deploy: 0.013497848048799912 matic-network ≈ $0.0038 / R$0.0207
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000009014670236728 ethereum
+       ≈ $0.0402 / R$0.2194
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0131
+   💰 MATIC-NETWORK: 0.000731432002644408 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000008536891432414 ethereum
+       ≈ $0.0381 / R$0.2078
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0124
+   💰 MATIC-NETWORK: 0.000692666002504254 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+✅ Contrato deployado: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+
+📦 Gas usado no deploy: 519148
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+🌍 Ethereum
+   🪙  Cotação de 1 ethereum: U$$: 4296.35 - R$: 23496.00 
+   ⛽ gasPrice: 1.419327754 gwei
+   💰 Custo estimado de deploy: 0.000736841164833592 ethereum ≈ $3.1657 / R$17.3128
+
+🌍 BNB Chain
+   🪙  Cotação de 1 binancecoin: U$$: 845.05 - R$: 4621.40 
+   ⛽ gasPrice: 0.1 gwei
+   💰 Custo estimado de deploy: 0.0000519148 binancecoin ≈ $0.0439 / R$0.2399
+
+🌍 Polygon
+   🪙  Cotação de 1 matic-network: U$$: 0.28 - R$: 1.52 
+   ⛽ gasPrice: 28.006059527 gwei
+   💰 Custo estimado de deploy: 0.014539289791322996 matic-network ≈ $0.0040 / R$0.0221
+
+
+📌 Populando estado inicial (se necessário)...
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado:     28132
+   ✅ Gas real usado:   28132
+   💰 ETHEREUM: 0.000039928528375528 ethereum
+       ≈ $0.1715 / R$0.9382
+   💰 BINANCECOIN: 0.0000028132 binancecoin
+       ≈ $0.0024 / R$0.0130
+   💰 MATIC-NETWORK: 0.000787866466613564 matic-network
+       ≈ $0.0002 / R$0.0012
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado:     26641
+   ✅ Gas real usado:   26641
+   💰 ETHEREUM: 0.000037812310694314 ethereum
+       ≈ $0.1625 / R$0.8884
+   💰 BINANCECOIN: 0.0000026641 binancecoin
+       ≈ $0.0023 / R$0.0123
+   💰 MATIC-NETWORK: 0.000746109431858807 matic-network
+       ≈ $0.0002 / R$0.0011
+-------------------------------------------------------
+
