@@ -14,6 +14,8 @@ npm install @openzeppelin/contracts
 npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox --legacy-peer-deps
 npm install csv-writer --legacy-peer-deps
 npm install googleapis --legacy-peer-deps
+npm install express --legacy-peer-deps
+npm install multer --legacy-peer-deps
 
 ```
 

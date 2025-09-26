@@ -4,25 +4,24 @@
     "rpc": "https://eth-sepolia.g.alchemy.com/v2/SXV93ZvdgiRgj2zUR1n80DZrweCKm08j",
     "token": "eth"
   },
-    "ethereum": {
-      "name": "Ethereum",
-      "rpc": "https://eth.llamarpc.com",
-      "token": "ethereum"
-    },
-    "bsc": {
-      "name": "BNB Chain",
-      "rpc": "https://bsc-dataseed.binance.org",
-      "token": "binancecoin"
-    },
-    "polygon": {
-      "name": "Polygon",
-      "rpc": "https://polygon-rpc.com",
-      "token": "matic-network"
-    },
-    "localhost": {
-    "name": "Local Hardhat",
-    "rpc": "http://127.0.0.1:8545",
-    "token": "ETH"
-    }
+  "ethereum": {
+    "name": "Ethereum",
+    "rpc": "https://eth.llamarpc.com",
+    "token": "ethereum"
+  },
+  "bsc": {
+    "name": "BNB Chain",
+    "rpc": "https://bsc-dataseed.binance.org",
+    "token": "binancecoin"
+  },
+  "polygon": {
+    "name": "Polygon",
+    "rpc": "https://polygon-rpc.com",
+    "token": "matic-network"
+  },
+  "localhost": {
+  "name": "Local Hardhat",
+  "rpc": "http://127.0.0.1:8545",
+  "token": "ETH"
   }
-  
+}
