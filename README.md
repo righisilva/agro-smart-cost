@@ -3,7 +3,7 @@ sudo apt install npm
 npm install ou npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox --legacy-peer-deps
 npx hardhat node
 node index.js caminho_do_contrato
-
+node server.js
 ``` 
 ```
 mkdir gas-estimator 
@@ -16,6 +16,8 @@ npm install csv-writer --legacy-peer-deps
 npm install googleapis --legacy-peer-deps
 npm install express --legacy-peer-deps
 npm install multer --legacy-peer-deps
+npm install better-sqlite3 --legacy-peer-deps
+npm install csv-parser better-sqlite3 --legacy-peer-deps
 
 ```
 

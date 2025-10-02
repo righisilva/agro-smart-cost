@@ -1,99 +1,65 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <title>Gas Estimator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #1e1e1e;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-
-        h1 {
-            color: #4CAF50;
-        }
-
-        form {
-            margin-bottom: 20px;
-        }
-
-        input[type="file"] {
-            margin-right: 10px;
-        }
-
-        pre {
-            width: 100%;
-            max-width: 900px;
-            background: #222;
-            padding: 15px;
-            border-radius: 8px;
-            overflow-y: auto;
-            height: 500px;
-            box-sizing: border-box;
-        }
-
-        .success {
-            color: #4CAF50;
-        }
-
-        .warning {
-            color: #FFC107;
-        }
-
-        .error {
-            color: #F44336;
-        }
-
-        .info {
-            color: #2196F3;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Dashboard SmartAgro Avançado</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+select, label { margin-right: 10px; }
+canvas { max-width: 800px; margin-bottom: 40px; }
+</style>
 </head>
-
 <body>
-    <h1>Gas Estimator</h1>
-    <form id="uploadForm">
-        <input type="file" id="contrato" name="contrato" accept=".sol" required />
-        <button type="submit">Enviar</button>
-    </form>
-    <pre id="log"></pre>
+<h1>Dashboard SmartAgro Avançado</h1>
 
-    <script>
-        const form = document.getElementById("uploadForm");
-        const logElem = document.getElementById("log");
+<div>
+  <label>Região:
+    <select id="filtroRegiao">
+      <option value="">Todas</option>
+      <option>Brasil</option>
+      <option>Sul</option>
+      <option>RS</option>
+      <option>Alegrete</option>
+    </select>
+  </label>
 
-        form.addEventListener("submit", async (e) => {
-            e.preventDefault();
-            logElem.textContent = ""; // limpa logs
-            const fileInput = document.getElementById("contrato");
-            if (!fileInput.files.length) return alert("Selecione um arquivo Solidity.");
+  <label>Classificação:
+    <select id="filtroClassificacao">
+      <option value="">Todas</option>
+      <option>Agricultura</option>
+      <option>Pecuária</option>
+      <option>Silvicultura</option>
+      <option>Extração Vegetal</option>
+      <option>Aquicultura</option>
+      <option>Agroindústria</option>
+    </select>
+  </label>
 
-            const formData = new FormData();
-            formData.append("contrato", fileInput.files[0]);
+  <label>Familiar:
+    <select id="filtroFamiliar">
+      <option value="">Todos</option>
+      <option value="1">Sim</option>
+      <option value="0">Não</option>
+    </select>
+  </label>
 
-            // Envia via fetch e lê streaming
-            const response = await fetch("/analisar", {
-                method: "POST",
-                body: formData
-            });
+  <label>Obrigatório:
+    <select id="filtroObrigatorio">
+      <option value="">Todos</option>
+      <option value="1">Sim</option>
+      <option value="0">Não</option>
+    </select>
+  </label>
+  
 
-            const reader = response.body.getReader();
-            const decoder = new TextDecoder("utf-8");
+  <button onclick="atualizarDashboard()">Atualizar</button>
+</div>
 
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-                logElem.innerHTML += decoder.decode(value, { stream: true });
-                logElem.scrollTop = logElem.scrollHeight;
-            }
-        });
-    </script>
+<canvas id="graficoVendas"></canvas>
+<canvas id="graficoEstabelecimentos"></canvas>
+
+<script src="app.js"></script>
 </body>
-
 </html>
+

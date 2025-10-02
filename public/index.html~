@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Smart Agro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Dashboard Smart Agro</h1>
+
+    <div>
+        <label>Região:
+            <select id="filtroRegiao">
+                <option value="">Todas</option>
+                <option value="Brasil">Brasil</option>
+                <option value="Sul">Sul</option>
+                <option value="RS">RS</option>
+                <option value="Alegrete">Alegrete</option>
+            </select>
+        </label>
+
+        <label>Classificação:
+            <select id="filtroClassificacao">
+                <option value="">Todas</option>
+                <option value="Agricultura">Agricultura</option>
+                <option value="Pecuária">Pecuária</option>
+                <option value="Silvicultura">Silvicultura</option>
+                <option value="Agroindústria">Agroindústria</option>
+                <option value="Aquicultura">Aquicultura</option>
+                <option value="Extração Vegetal">Extração Vegetal</option>
+            </select>
+        </label>
+
+        <label>Familiar:
+            <select id="filtroFamiliar">
+                <option value="">Todos</option>
+                <option value="1">Familiar</option>
+                <option value="0">Não Familiar</option>
+            </select>
+        </label>
+
+        <label>Obrigatório INC:
+            <select id="filtroObrigatorio">
+                <option value="">Todos</option>
+                <option value="1">Sim</option>
+                <option value="0">Não</option>
+            </select>
+        </label>
+
+        <label>Top N produtos:
+            <input type="number" id="topN" min="0" value="0" style="width:60px;">
+        </label>
+
+        <button onclick="atualizarDashboard()">Atualizar</button>
+    </div>
+
+    <hr>
+
+    <div style="overflow-x:auto; max-width: 1000px; margin-bottom: 40px;">
+        <canvas id="graficoVendas"></canvas>
+    </div>
+
+    <div style="overflow-x:auto; max-width: 1000px; margin-bottom: 40px;">
+        <canvas id="graficoEstabelecimentos"></canvas>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+

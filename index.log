@@ -30277,3 +30277,51 @@ Node.js v20.18.1
 -------------------------------------------------------
 
 ✅ Análise concluída!
+🔌 Conectando ao Hardhat local...
+✅ Conectado à unknown (chainId: 31337)
+🚀 Fazendo deploy REAL na Hardhat local...
+⏳ Aguardando confirmação do deploy...
+
+✅ Contrato deployado: 0x56fC17a65ccFEC6B7ad0aDe9BD9416CB365B9BE8
+📦 Gas usado no deploy: 519148
+
+✅ Conectado à Sepolia Testnet (chainId: 11155111)
+✅ Conectado à Ethereum (chainId: 1)
+✅ Conectado à BNB Chain (chainId: 56)
+✅ Conectado à Polygon (chainId: 137)
+
+
+🌍 Ethereum
+   🪙 Cotação de 1 ethereum: U$4045.55 / R$21602.00
+   ⛽ gasPrice: 0.884430881 gwei
+   💰 Custo estimado de deploy: 0.000459150523009388 ethereum ≈ $1.8575 / R$9.9186
+
+🌍 BNB Chain
+   🪙 Cotação de 1 binancecoin: U$963.60 / R$5145.33
+   ⛽ gasPrice: 0.05 gwei
+   💰 Custo estimado de deploy: 0.0000259574 binancecoin ≈ $0.0250 / R$0.1336
+
+🌍 Polygon
+   🪙 Cotação de 1 matic-network: U$0.22 / R$1.19
+   ⛽ gasPrice: 26.815539364 gwei
+   💰 Custo estimado de deploy: 0.013921233629741872 matic-network ≈ $0.0031 / R$0.0166
+
+🔍 Estimando GÁS para funções públicas...
+
+🔧 Função: setNome
+   📍 Gas estimado: 28132
+   ✅ Gas real usado: 28132
+   💰 ETHEREUM: 0.000024880809544292 ethereum ≈ $0.1007 / R$0.5375
+   💰 BINANCECOIN: 0.0000014066 binancecoin ≈ $0.0014 / R$0.0072
+   💰 MATIC-NETWORK: 0.000754374753388048 matic-network ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+🔧 Função: setPreco
+   📍 Gas estimado: 26641
+   ✅ Gas real usado: 26641
+   💰 ETHEREUM: 0.000023562123100721 ethereum ≈ $0.0953 / R$0.5090
+   💰 BINANCECOIN: 0.00000133205 binancecoin ≈ $0.0013 / R$0.0069
+   💰 MATIC-NETWORK: 0.000714392784196324 matic-network ≈ $0.0002 / R$0.0009
+-------------------------------------------------------
+
+✅ Análise concluída!

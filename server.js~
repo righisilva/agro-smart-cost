@@ -1,25 +1,23 @@
 const express = require("express");
 const Database = require("better-sqlite3");
 const app = express();
-
-app.use(express.static("public")); // serve index.html e app.js
-
 const db = new Database("smartagro.db");
 
-// Endpoint para buscar dados filtrados
+// Para permitir requisições do frontend
+app.use(express.static("."));
+
+// Rota para fornecer os dados filtrados
 app.get("/api/ibge", (req, res) => {
     const { regiao, classificacao, familiar, obrigatorio } = req.query;
 
     let query = `
-        SELECT i.id, r.nome AS regiao, p.nome AS produto, c.nome AS classificacao,
-               i.estabelecimentos, i.valor_vendas, i.familiar, i.obrigatorio
+        SELECT i.*, p.nome AS produto, c.nome AS classificacao
         FROM ibge_dados i
         JOIN produtos p ON i.produto_id = p.id
         JOIN classificacoes_ibge c ON p.classificacao_id = c.id
         JOIN regioes r ON i.regiao_id = r.id
         WHERE 1=1
     `;
-
     const params = {};
 
     if (regiao) {
@@ -30,18 +28,26 @@ app.get("/api/ibge", (req, res) => {
         query += " AND c.nome = @classificacao";
         params.classificacao = classificacao;
     }
-    if (familiar !== undefined) {
+    if (familiar) {
         query += " AND i.familiar = @familiar";
-        params.familiar = Number(familiar);
+        params.familiar = familiar === "1" ? 1 : 0;
     }
-    if (obrigatorio !== undefined) {
+    if (obrigatorio) {
         query += " AND i.obrigatorio = @obrigatorio";
-        params.obrigatorio = Number(obrigatorio);
+        params.obrigatorio = obrigatorio === "1" ? 1 : 0;
     }
 
-    const dados = db.prepare(query).all(params);
-    res.json(dados);
+    try {
+        const dados = db.prepare(query).all(params);
+        res.json(dados);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
 });
 
-app.listen(3000, () => console.log("🌍 Dashboard rodando em http://localhost:3000"));
+// Servidor
+app.listen(3000, () => {
+    console.log("🌍 Dashboard rodando em http://localhost:3000");
+});
 
