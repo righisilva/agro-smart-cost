@@ -5,12 +5,19 @@ async function atualizarDashboard() {
     const classificacao = document.getElementById("filtroClassificacao").value;
     const familiar = document.getElementById("filtroFamiliar").value;
     const obrigatorio = document.getElementById("filtroObrigatorio").value;
+    const top = document.getElementById("filtroTop").value; // NOVO
+    const orderBy = document.getElementById("filtroOrderBy").value;
+
 
     const params = new URLSearchParams();
     if (regiao) params.append("regiao", regiao);
     if (classificacao) params.append("classificacao", classificacao);
     if (familiar) params.append("familiar", familiar);
     if (obrigatorio) params.append("obrigatorio", obrigatorio);
+    if (top) params.append("top", top); // NOVO
+    if (orderBy) params.append("orderBy", orderBy); // 'valor_vendas' ou 'estabelecimentos'
+
+
 
     const res = await fetch("/api/ibge?" + params.toString());
     const dados = await res.json();

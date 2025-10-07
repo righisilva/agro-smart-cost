@@ -1,17 +1,28 @@
+// server.js
 const express = require("express");
+const multer = require("multer");
+const fs = require("fs");
+const path = require("path");
 const Database = require("better-sqlite3");
+const { analisarContrato } = require("./index.js");
+
+const { analisarContratoManual, getDeployedContract } = require("./contractService");
+const { ethers } = require("ethers");
+
 const app = express();
+const upload = multer({ dest: "uploads/" });
+
+// --- 1️⃣ Dashboard IBGE ---
+app.use("/", express.static("public"));
 const db = new Database("smartagro.db");
 
-// Para permitir requisições do frontend
-app.use(express.static("."));
-
-// Rota para fornecer os dados filtrados
+// Atualizado: agora suporta ordenar e limitar os resultados
 app.get("/api/ibge", (req, res) => {
-    const { regiao, classificacao, familiar, obrigatorio } = req.query;
+    const { regiao, classificacao, familiar, obrigatorio, top, orderBy } = req.query;
 
     let query = `
-        SELECT i.*, p.nome AS produto, c.nome AS classificacao
+        SELECT i.id, r.nome AS regiao, p.nome AS produto, c.nome AS classificacao,
+               i.estabelecimentos, i.valor_vendas, i.familiar, i.obrigatorio
         FROM ibge_dados i
         JOIN produtos p ON i.produto_id = p.id
         JOIN classificacoes_ibge c ON p.classificacao_id = c.id
@@ -19,35 +30,227 @@ app.get("/api/ibge", (req, res) => {
         WHERE 1=1
     `;
     const params = {};
+    if (regiao) { query += " AND r.nome = @regiao"; params.regiao = regiao; }
+    if (classificacao) { query += " AND c.nome = @classificacao"; params.classificacao = classificacao; }
+    if (familiar !== undefined) { query += " AND i.familiar = @familiar"; params.familiar = Number(familiar); }
+    if (obrigatorio !== undefined) { query += " AND i.obrigatorio = @obrigatorio"; params.obrigatorio = Number(obrigatorio); }
 
-    if (regiao) {
-        query += " AND r.nome = @regiao";
-        params.regiao = regiao;
-    }
-    if (classificacao) {
-        query += " AND c.nome = @classificacao";
-        params.classificacao = classificacao;
-    }
-    if (familiar) {
-        query += " AND i.familiar = @familiar";
-        params.familiar = familiar === "1" ? 1 : 0;
-    }
-    if (obrigatorio) {
-        query += " AND i.obrigatorio = @obrigatorio";
-        params.obrigatorio = obrigatorio === "1" ? 1 : 0;
-    }
+    let dados = db.prepare(query).all(params);
+
+    // Escolhe a chave para ordenar
+    const chaveOrdenacao = orderBy === "estabelecimentos" ? "estabelecimentos" : "valor_vendas";
+
+    // Agrupa por produto
+    const agregados = {};
+    dados.forEach(d => {
+        agregados[d.produto] = (agregados[d.produto] || 0) + (d[chaveOrdenacao] || 0);
+    });
+
+    // Ordena do maior para o menor
+    let produtosOrdenados = Object.entries(agregados)
+        .sort((a, b) => b[1] - a[1]);
+
+    // Limita ao top N se fornecido
+    const topN = top ? Number(top) : produtosOrdenados.length;
+    produtosOrdenados = produtosOrdenados.slice(0, topN);
+
+    // Reconstrói o array de objetos para enviar
+    const resultado = produtosOrdenados.map(([produto, valor]) => {
+        const registros = dados.filter(d => d.produto === produto);
+        return registros.reduce((acc, r) => ({
+            ...r,
+            [chaveOrdenacao]: valor
+        }), registros[0]);
+    });
+
+    res.json(resultado);
+});
+
+
+// --- 2️⃣ Gas Estimator automático ---
+app.use("/gas", express.static("gas-estimator"));
+
+app.post("/analisar", upload.single("contrato"), async (req, res) => {
+    if (!req.file) return res.status(400).send("❌ Nenhum arquivo enviado.");
+
+    res.writeHead(200, {
+        "Content-Type": "text/html; charset=utf-8",
+        "Transfer-Encoding": "chunked"
+    });
+
+    const log = (msg) => {
+        console.log(msg);
+        res.write(msg.replace(/\n/g, "<br>") + "<br>");
+    };
 
     try {
-        const dados = db.prepare(query).all(params);
-        res.json(dados);
+        await analisarContrato(req.file.path, log);
+        fs.unlink(req.file.path, err => {
+            if (err) console.warn("⚠️ Não foi possível deletar arquivo temporário:", err.message);
+        });
+        res.write("<br>✅ Análise concluída!<br>");
+        res.end();
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: err.message });
+        res.write(`<br>❌ Erro: ${err.message}<br>`);
+        res.end();
     }
 });
 
-// Servidor
-app.listen(3000, () => {
-    console.log("🌍 Dashboard rodando em http://localhost:3000");
+// --- 3️⃣ Interface de Contratos (execução manual) ---
+app.use("/interface", express.static(path.join(__dirname, "interface-contratos")));
+app.use(express.json());
+
+// // --- 1️⃣ Carregar ABI e deploy automático ---
+// app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
+//   const solc = require("solc");
+//   const { analisarContratoManual } = require("./contractService"); // ✅ importa a função que faz o deploy
+
+//   try {
+//     if (!req.file) {
+//       return res.status(400).send("❌ Nenhum arquivo enviado.");
+//     }
+
+//     const filePath = req.file.path;
+//     const source = fs.readFileSync(filePath, "utf8");
+
+//     // 🔧 Faz o deploy e mede o gas antes de gerar a ABI
+//     const deployedInfo = await analisarContratoManual(filePath, console.log);
+
+//     if (!deployedInfo || !deployedInfo.address) {
+//       return res.status(500).send("❌ Erro ao fazer deploy do contrato.");
+//     }
+
+//     // 🧩 Compila novamente para extrair a ABI
+//     const input = {
+//       language: "Solidity",
+//       sources: {
+//         [path.basename(filePath)]: { content: source }
+//       },
+//       settings: {
+//         outputSelection: { "*": { "*": ["abi"] } }
+//       }
+//     };
+
+//     // Função para resolver imports locais e pacotes npm
+//     function findImports(importPath) {
+//       // console.log("📂 Procurando import:", importPath);
+//       try {
+//         // 1️⃣ Caminho relativo ao arquivo que está sendo compilado
+//         const baseDir = path.dirname(filePath);
+//         let resolvedPath = path.resolve(baseDir, importPath);
+//         if (fs.existsSync(resolvedPath)) {
+//           return { contents: fs.readFileSync(resolvedPath, "utf8") };
+//         }
+
+//         // 2️⃣ Caminho dentro da pasta contracts
+//         const contractsDir = path.resolve(__dirname, "contracts");
+//         resolvedPath = path.resolve(contractsDir, importPath);
+//         if (fs.existsSync(resolvedPath)) {
+//           return { contents: fs.readFileSync(resolvedPath, "utf8") };
+//         }
+
+//         // 3️⃣ Pacote npm
+//         const npmResolved = require.resolve(importPath);
+//         return { contents: fs.readFileSync(npmResolved, "utf8") };
+
+//       } catch (err) {
+//         return { error: `Import não encontrado: ${importPath}` };
+//       }
+//     }
+
+
+
+//     // Compila com suporte a imports locais
+//     const compiled = solc.compile(JSON.stringify(input), { import: findImports });
+//     const output = JSON.parse(compiled);
+
+
+//     if (output.errors) {
+//       const hasError = output.errors.some(e => e.severity === "error");
+//       output.errors.forEach(e => console.log(e.formattedMessage));
+//       if (hasError) {
+//         return res.status(500).send("❌ Erro ao compilar contrato. Veja o console para detalhes.");
+//       }
+//     }
+
+//     // Extrai o nome e a ABI do contrato
+//     const contractsObj = output.contracts[path.basename(filePath)];
+//     if (!contractsObj) {
+//       return res.status(500).send("❌ Contrato não encontrado no output da compilação.");
+//     }
+
+//     const contractName = Object.keys(contractsObj)[0];
+//     const abi = contractsObj[contractName].abi;
+
+//     // ✅ Retorna tudo para o frontend
+//     res.json({
+//       abi,
+//       contractName,
+//       deployedAddress: deployedInfo.address,
+//       deployGas: deployedInfo.gasUsed.toString()
+//     });
+
+//   } catch (err) {
+//     console.error("Erro ao compilar ou deployar contrato:", err);
+//     res.status(500).send("❌ Erro inesperado ao compilar ou deployar contrato.");
+//   }
+// });
+
+
+// // --- 2️⃣ Executar funções do contrato deployado ---
+// app.post("/api/execute-function", async (req, res) => {
+//   const { nomeFuncao, args } = req.body;
+//   const contract = getDeployedContract();
+
+//   if (!contract) return res.status(400).send("❌ Nenhum contrato deployado ainda.");
+
+//   try {
+//     const processedArgs = args.map(arg => {
+//       if (!isNaN(arg)) return Number(arg);
+//       if (arg === "true") return true;
+//       if (arg === "false") return false;
+//       return arg;
+//     });
+
+//     const estimatedGas = await contract.estimateGas[nomeFuncao](...processedArgs);
+//     const tx = await contract[nomeFuncao](...processedArgs);
+//     const receipt = await tx.wait();
+
+//     res.json({
+//       funcao: nomeFuncao,
+//       gasEstimado: estimatedGas.toString(),
+//       gasReal: receipt.gasUsed.toString()
+//     });
+
+//   } catch (err) {
+//     res.status(500).send(`⚠️ Erro ao executar "${nomeFuncao}": ${err.message}`);
+//   }
+// });
+
+// //console.log("Ethers object:", ethers);
+
+
+// // Novo endpoint para pegar accounts do Hardhat
+// app.get("/api/accounts", async (req, res) => {
+//   try {
+//     // console.log("Listando contas do Hardhat...");
+//     const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
+//     const accounts = await provider.listAccounts();
+//     // console.log("Accounts encontradas:", accounts);
+//     res.json(accounts);
+//   } catch (err) {
+//     res.status(500).send("Erro ao obter contas: " + err.message);
+//   }
+// });
+
+// --- Servidor ---
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`
+🌍 Servidor unificado rodando!
+- Dashboard IBGE:      http://localhost:${PORT}/
+- Gas Estimator:       http://localhost:${PORT}/gas
+- Interface Contratos: http://localhost:${PORT}/interface
+`);
 });
 

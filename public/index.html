@@ -52,6 +52,18 @@ canvas { max-width: 800px; margin-bottom: 40px; }
     </select>
   </label>
   
+  <label>Top N produtos:
+    <input type="number" id="filtroTop" min="1" placeholder="Ex: 10">
+  </label>
+  
+  <label>Ordenar por:
+    <select id="filtroOrderBy">
+      <option value="valor_vendas">Valor Vendido</option>
+      <option value="estabelecimentos">Estabelecimentos</option>
+    </select>
+ </label>
+
+
 
   <button onclick="atualizarDashboard()">Atualizar</button>
 </div>

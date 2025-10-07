@@ -7,27 +7,38 @@ const solc = require("solc");
 const { ethers } = require("ethers");
 const networks = require("./networks.json");
 
+// ------------------------------
 // CSV
+// ------------------------------
 const csvFilePath = path.resolve(__dirname, "relatorio_gas.csv");
 const csvWriter = createCsvWriter({
     path: csvFilePath,
     header: [
-      { id: 'timestamp', title: 'Timestamp' },
-      { id: 'rede', title: 'Rede' },
-      { id: 'token', title: 'Token' },
-      { id: 'cotacaoUsd', title: 'Cotação USD' },
-      { id: 'cotacaoBrl', title: 'Cotação BRL' },
-      { id: 'funcao', title: 'Função' },
-      { id: 'gas', title: 'Gas Usado' },
-      { id: 'gasPrice', title: 'Preço do Gas (em gwei)' },
-      { id: 'custoToken', title: 'Custo (token)' },
-      { id: 'usd', title: 'USD' },
-      { id: 'brl', title: 'BRL' },
+        { id: 'timestamp', title: 'Timestamp' },
+        { id: 'rede', title: 'Rede' },
+        { id: 'token', title: 'Token' },
+        { id: 'cotacaoUsd', title: 'Cotação USD' },
+        { id: 'cotacaoBrl', title: 'Cotação BRL' },
+        { id: 'funcao', title: 'Função' },
+        { id: 'gas', title: 'Gas Usado' },
+        { id: 'gasPrice', title: 'Preço do Gas (em gwei)' },
+        { id: 'custoToken', title: 'Custo (token)' },
+        { id: 'usd', title: 'USD' },
+        { id: 'brl', title: 'BRL' },
     ],
     append: fs.existsSync(csvFilePath),
 });
 
+// ------------------------------
+// Contrato deployado em memória
+// ------------------------------
+let deployedContract = null;
+function setDeployedContract(contract) { deployedContract = contract; }
+function getDeployedContract() { return deployedContract; }
+
+// ------------------------------
 // Função principal
+// ------------------------------
 async function analisarContrato(filePath, log = console.log) {
     if (!filePath) throw new Error("❌ Por favor, informe o caminho do arquivo Solidity.");
 
@@ -114,15 +125,18 @@ async function analisarContrato(filePath, log = console.log) {
         }
     }) || [];
 
+    // ------------------------------
     // Deploy
+    // ------------------------------
     log("🚀 Fazendo deploy REAL na Hardhat local...");
-    let deployTx, deployTxReceipt, deployedContract;
+    let deployTx, deployTxReceipt;
     try {
         deployTx = await factory.deploy(...fakeArgs);
         log("⏳ Aguardando confirmação do deploy...\n");
         deployTxReceipt = await deployTx.deployTransaction.wait();
-        deployedContract = await deployTx.deployed();
-        log(`✅ Contrato deployado: ${deployedContract.address}`);
+        const contractInstance = await deployTx.deployed();
+        setDeployedContract(contractInstance); // <-- salva globalmente
+        log(`✅ Contrato deployado: ${contractInstance.address}`);
     } catch (err) { log(`❌ Falha no deploy: ${err.message}`); return; }
 
     log(`📦 Gas usado no deploy: ${deployTxReceipt.gasUsed}\n`);
@@ -131,7 +145,9 @@ async function analisarContrato(filePath, log = console.log) {
     const tokenPrices = await getTokenPrices();
     log(`\n`);
 
+    // ------------------------------
     // Cálculo de custos deploy
+    // ------------------------------
     for (const [token, data] of Object.entries(gasPricesByNetwork)) {
         const tokenPrice = tokenPrices[token]; if (!tokenPrice) continue;
         const costInToken = ethers.utils.formatEther(deployTxReceipt.gasUsed.mul(data.gasPrice));
@@ -143,47 +159,55 @@ async function analisarContrato(filePath, log = console.log) {
         log(`   💰 Custo estimado de deploy: ${costInToken} ${token} ≈ $${costUSD.toFixed(4)} / R$${costBRL.toFixed(4)}\n`);
     }
 
+    // ------------------------------
     // Estimativa de gas para funções públicas
+    // ------------------------------
     log("🔍 Estimando GÁS para funções públicas...\n");
-    for (const item of abi) {
-        if (item.type === "function" && !["view", "pure"].includes(item.stateMutability)) {
-            const functionName = item.name;
-            const args = item.inputs.map((input, i) => {
-                if (input.type.startsWith("uint")) return 1;
-                if (input.type.startsWith("int")) return -1;
-                if (input.type === "address") return signer;
-                if (input.type === "string") return "exemplo";
-                if (input.type === "bool") return false;
-                if (input.type === "bytes32") return ethers.utils.formatBytes32String("ex");
-                if (input.type.startsWith("bytes")) return "0x1234";
-                if (input.type.endsWith("[]")) return [1,2,3]; 
-                return null;
-            });
 
-            try {
-                const estimatedGas = await deployedContract.estimateGas[functionName](...args);
-                const tx = await deployedContract[functionName](...args);
-                const receipt = await tx.wait();
-                log(`🔧 Função: ${functionName}`);
-                log(`   📍 Gas estimado: ${estimatedGas}`);
-                log(`   ✅ Gas real usado: ${receipt.gasUsed}`);
+    const deployedContractInstance = getDeployedContract();
+    const txFunctions = abi.filter(
+        item => item.type === "function" && !["view", "pure"].includes(item.stateMutability)
+    );
 
-                for (const [token, data] of Object.entries(gasPricesByNetwork)) {
-                    const tokenPrice = tokenPrices[token]; if (!tokenPrice) continue;
-                    const costInToken = ethers.utils.formatEther(receipt.gasUsed.mul(data.gasPrice));
-                    const costUSD = parseFloat(costInToken) * tokenPrice.usd;
-                    const costBRL = parseFloat(costInToken) * tokenPrice.brl;
-                    log(`   💰 ${token.toUpperCase()}: ${costInToken} ${token} ≈ $${costUSD.toFixed(4)} / R$${costBRL.toFixed(4)}`);
-                }
-                log("-------------------------------------------------------\n");
-            } catch (err) {
-                log(`⚠️ Erro ao executar "${functionName}": ${err.message}`);
+    for (const item of txFunctions) {
+        const functionName = item.name;
+        const args = item.inputs.map((input, i) => {
+            if (input.type.startsWith("uint")) return 1;
+            if (input.type.startsWith("int")) return -1;
+            if (input.type === "address") return signer;
+            if (input.type === "string") return "exemplo";
+            if (input.type === "bool") return false;
+            if (input.type === "bytes32") return ethers.utils.formatBytes32String("ex");
+            if (input.type.startsWith("bytes")) return "0x1234";
+            if (input.type.endsWith("[]")) return [1,2,3];
+            return null;
+        });
+
+        try {
+            const estimatedGas = await deployedContractInstance.estimateGas[functionName](...args);
+            const tx = await deployedContractInstance[functionName](...args);
+            const receipt = await tx.wait();
+            log(`🔧 Função: ${functionName}`);
+            log(`   📍 Gas estimado: ${estimatedGas}`);
+            log(`   ✅ Gas real usado: ${receipt.gasUsed}`);
+
+            for (const [token, data] of Object.entries(gasPricesByNetwork)) {
+                const tokenPrice = tokenPrices[token]; if (!tokenPrice) continue;
+                const costInToken = ethers.utils.formatEther(receipt.gasUsed.mul(data.gasPrice));
+                const costUSD = parseFloat(costInToken) * tokenPrice.usd;
+                const costBRL = parseFloat(costInToken) * tokenPrice.brl;
+                log(`   💰 ${token.toUpperCase()}: ${costInToken} ${token} ≈ $${costUSD.toFixed(4)} / R$${costBRL.toFixed(4)}`);
             }
+            log("-------------------------------------------------------\n");
+        } catch (err) {
+            log(`⚠️ Erro ao executar "${functionName}": ${err.message}`);
         }
     }
 }
 
+// ------------------------------
 // CLI
+// ------------------------------
 if (require.main === module) {
     const filePath = process.argv[2];
     if (!filePath) {
@@ -196,4 +220,8 @@ if (require.main === module) {
         .catch(err => console.error("❌ Erro:", err.message));
 }
 
-module.exports = { analisarContrato };
+// ------------------------------
+// Exportações
+// ------------------------------
+module.exports = { analisarContrato, getDeployedContract, setDeployedContract };
+
