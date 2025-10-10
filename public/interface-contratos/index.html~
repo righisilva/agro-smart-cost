@@ -95,6 +95,21 @@ async function carregarContrato() {
     `Funções detectadas: ${abi.length}\n` +
     `🚀 Contrato deployado: ${deployedAddress}\n` +
     `⛽ Gas usado no deploy: ${deployGas}`;
+    
+    const { custosPorRede } = data; // pega do JSON retornado pelo backend
+
+    // Mostrar custos por rede no log
+    if (custosPorRede) {
+      const logArea = document.getElementById("log");
+      logArea.textContent += `\n\n🌍 Custos por rede:`;
+      for (const [token, info] of Object.entries(custosPorRede)) {
+        logArea.textContent +=
+          `\n  ${info.name}: ${info.custoTotalToken} ${info.token}` +
+          `  ≈ ${info.custoUSD} / ${info.custoBRL}` +
+          `  (gasPrice: ${info.gasPrice})` +
+          `  | Cotação: U$${info.cotacao?.usd ?? "N/A"} / R$${info.cotacao?.brl ?? "N/A"}`;
+      }
+    }
 
   const funcoesDiv = document.getElementById("funcoes");
   funcoesDiv.innerHTML = "";
@@ -133,31 +148,57 @@ async function carregarContrato() {
 // --- Gerar valores fake para cada tipo ---
 function fakeValueForType(type, idx, accounts) {
   switch(type) {
-    case "string": return `fake_string_${idx}`;
+    case "string":
+      return `fake_string_${idx}`;
+
     case "uint8":
+      return (idx % 255); // até 254
     case "uint16":
+      return (1000 + idx) % 65535;
     case "uint32":
     case "uint64":
     case "uint128":
     case "uint256":
-    case "uint": return 1000 + idx;
+    case "uint":
+      return 1000 + idx;
+
     case "int8":
+      return (idx % 127);
     case "int16":
+      return (1000 + idx) % 32767;
     case "int32":
     case "int64":
     case "int128":
     case "int256":
-    case "int": return 1000 + idx;
-    case "address": return accounts[idx % accounts.length];
-    case "bool": return idx % 2 === 0;
-    case "bytes32": return ethers.utils.formatBytes32String(`val${idx}`);
-    case "bytes": return ethers.utils.toUtf8Bytes(`data${idx}`);
-    case "string[]": return [`str1_${idx}`, `str2_${idx}`];
-    case "uint256[]": return [1 + idx, 2 + idx];
-    case "address[]": return accounts.slice(0,2);
-    default: return "";
+    case "int":
+      return 1000 + idx;
+
+    case "address":
+      return accounts[idx % accounts.length];
+
+    case "bool":
+      return idx % 2 === 0;
+
+    case "bytes32":
+      return ethers.utils.formatBytes32String(`val${idx}`);
+
+    case "bytes":
+      return ethers.utils.toUtf8Bytes(`data${idx}`);
+
+    case "string[]":
+      return [`str1_${idx}`, `str2_${idx}`];
+
+    case "uint256[]":
+      return [1 + idx, 2 + idx];
+
+    case "address[]":
+      return accounts.slice(0, 2);
+
+    default:
+      return "";
   }
 }
+
 
 // --- Botão de pré-preencher funções ---
 document.getElementById("prefill-btn").addEventListener("click", async () => {
@@ -187,25 +228,55 @@ document.getElementById("prefill-btn").addEventListener("click", async () => {
 });
 
 // --- Executar função do contrato ---
+
 async function executarFuncao(nomeFuncao, numArgs) {
-  if (!contratoDeployado) return alert("Contrato ainda não deployado.");
+    if (!contratoDeployado) return alert("Contrato ainda não deployado.");
 
-  const args = [];
-  for (let i = 0; i < numArgs; i++) {
-    args.push(document.getElementById(`${nomeFuncao}_arg${i}`).value);
-  }
+    const args = [];
+    for (let i = 0; i < numArgs; i++) {
+        args.push(document.getElementById(`${nomeFuncao}_arg${i}`).value);
+    }
 
-  const logArea = document.getElementById("log");
-  logArea.textContent += `\n⚙️ Executando ${nomeFuncao}(${args.join(", ")})...`;
+    const logArea = document.getElementById("log");
+    logArea.textContent += `\n⚙️ Executando ${nomeFuncao}(${args.join(", ")})...\n`;
 
-  const res = await fetch("/api/execute-function", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ nomeFuncao, args })
-  });
+    try {
+        const res = await fetch("/api/execute-function", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nomeFuncao, args })
+        });
 
-  const out = await res.text();
-  logArea.textContent += `\n${out}\n`;
+        if (!res.ok) {
+            const msg = await res.text();
+            logArea.textContent += `\n❌ Erro: ${msg}\n`;
+            return;
+        }
+
+        const out = await res.json(); // lê o JSON retornado pelo backend
+
+        logArea.textContent += `\n✅ Função executada: ${out.funcao}`;
+        logArea.textContent += `\n⛽ Gas estimado: ${out.gasEstimado}`;
+        logArea.textContent += `\n🔥 Gas real usado: ${out.gasReal}`;
+
+        // Mostrar custo por rede (com valores em USD e BRL)
+        if (out.custosPorRede) {
+            logArea.textContent += `\n\n🌍 Custos por rede:`;
+            for (const [key, info] of Object.entries(out.custosPorRede)) {
+                if (info.error) {
+                    logArea.textContent += `\n  ⚠️ ${info.name}: erro ao consultar (${info.error})`;
+                } else {
+                    logArea.textContent +=
+                        `\n  ${info.name}: ${info.custoTotalToken}` +
+                        `  ≈ ${info.custoUSD} / ${info.custoBRL}`;
+                }
+            }
+        }
+
+        logArea.textContent += `\n--------------------------------------------\n`;
+    } catch (err) {
+        logArea.textContent += `\n❌ Erro inesperado: ${err.message}\n`;
+    }
 }
 </script>
 </body>

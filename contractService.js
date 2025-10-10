@@ -24,12 +24,47 @@ const networks = require("./networks.json");
 // Variável que armazenará o contrato deployado em memória
 let deployedContract = null;
 
+
+
+
 /**
  * Retorna o contrato que foi deployado (ou null se ainda não tiver deploy)
  */
 function getDeployedContract() {
     return deployedContract;
 }
+
+/**
+ * Busca preços dos tokens em USD e BRL via CoinGecko
+ */
+async function getTokenPrices() {
+    const url = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,matic-network&vs_currencies=usd,brl";
+    try {
+        const res = await axios.get(url);
+        return res.data; // Ex: { ethereum: { usd: 2400, brl: 12800 }, ... }
+    } catch (err) {
+        console.error("⚠️ Erro ao buscar preços dos tokens:", err.message);
+        return {};
+    }
+}
+
+async function getGasPricesFromNetworks() {
+    const gasPrices = {};
+    for (const [key, net] of Object.entries(networks)) {
+        if (key === "localhost") continue;
+        try {
+            const provider = new ethers.providers.JsonRpcProvider(net.rpc);
+            const networkInfo = await provider.getNetwork();
+            console.log(`✅ Conectado à ${net.name} (chainId: ${networkInfo.chainId})`);
+            const gasPrice = await provider.getGasPrice();
+            gasPrices[net.token] = { name: net.name, gasPrice, tokenId: net.token };
+        } catch (err) {
+            console.log(`⚠️ Falha ao buscar gasPrice da rede ${net.name}: ${err.message}`);
+        }
+    }
+    return gasPrices;
+}
+
 
 /**
  * Função principal para analisar e deployar um contrato Solidity manualmente
@@ -156,5 +191,5 @@ function setDeployedContract(contract) {
 }
 
 // Exporta funções para uso externo
-module.exports = { analisarContratoManual, getDeployedContract };
+module.exports = { analisarContratoManual, getDeployedContract, getGasPricesFromNetworks, getTokenPrices };
 

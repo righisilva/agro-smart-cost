@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard SmartAgro Avançado</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; }
+select, label { margin-right: 10px; }
+canvas { max-width: 800px; margin-bottom: 40px; }
+</style>
+</head>
+<body>
+<h1>Dashboard SmartAgro Avançado</h1>
+
+<div>
+  <label>Região:
+    <select id="filtroRegiao">
+      <option value="">Todas</option>
+      <option>Brasil</option>
+      <option>Sul</option>
+      <option>RS</option>
+      <option>Alegrete</option>
+    </select>
+  </label>
+
+  <label>Classificação:
+    <select id="filtroClassificacao">
+      <option value="">Todas</option>
+      <option>Agricultura</option>
+      <option>Pecuária</option>
+      <option>Silvicultura</option>
+      <option>Extração Vegetal</option>
+      <option>Aquicultura</option>
+      <option>Agroindústria</option>
+    </select>
+  </label>
+
+  <label>Familiar:
+    <select id="filtroFamiliar">
+      <option value="">Todos</option>
+      <option value="1">Sim</option>
+      <option value="0">Não</option>
+    </select>
+  </label>
+
+  <label>Obrigatório:
+    <select id="filtroObrigatorio">
+      <option value="">Todos</option>
+      <option value="1">Sim</option>
+      <option value="0">Não</option>
+    </select>
+  </label>
+  
+  <label>Top N produtos:
+    <input type="number" id="filtroTop" min="1" placeholder="Ex: 10">
+  </label>
+  
+  <label>Ordenar por:
+    <select id="filtroOrderBy">
+      <option value="valor_vendas">Valor Vendido</option>
+      <option value="estabelecimentos">Estabelecimentos</option>
+    </select>
+ </label>
+
+
+
+  <button onclick="atualizarDashboard()">Atualizar</button>
+</div>
+
+<canvas id="graficoVendas"></canvas>
+<canvas id="graficoEstabelecimentos"></canvas>
+
+<script src="app.js"></script>
+</body>
+</html>
+

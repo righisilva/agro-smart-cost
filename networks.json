@@ -1,9 +1,4 @@
 {
-  "sepolia": {
-    "name": "Sepolia Testnet",
-    "rpc": "https://eth-sepolia.g.alchemy.com/v2/SXV93ZvdgiRgj2zUR1n80DZrweCKm08j",
-    "token": "eth"
-  },
   "ethereum": {
     "name": "Ethereum",
     "rpc": "https://eth.llamarpc.com",
