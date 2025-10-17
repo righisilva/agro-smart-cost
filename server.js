@@ -244,10 +244,6 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
         if (!deployedInfo || !deployedInfo.address) {
             return res.status(500).send("❌ Erro ao fazer deploy do contrato.");
         }
-        
-        const contractId = salvarContractNoDB(path.basename(filePath), deployedInfo.address);
-        deployedInfo.id = contractId;
-        currentDeployedContract = deployedInfo;
 
         // ------------------------------
         // 🔹 Buscar gasPrices e preços dos tokens (uma vez só)
@@ -295,7 +291,15 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
 
         const contractName = Object.keys(contractsObj)[0];
         const abi = contractsObj[contractName].abi;
-
+        console.log(contractName);
+        
+        
+        
+        const contractId = salvarContractNoDB( contractName , deployedInfo.address);
+        // const contractId = salvarContractNoDB(path.basename(filePath), deployedInfo.address);
+        deployedInfo.id = contractId;
+        currentDeployedContract = deployedInfo;
+        
         // ------------------------------
         // 🔹 Calcular custo total do deploy por rede
         // ------------------------------
@@ -430,26 +434,180 @@ app.get("/api/accounts", async (req, res) => {
 
 app.use("/results", express.static(path.join(__dirname, "public/results")));
 
-// Endpoint para retornar resultados do DB
+// --- Endpoint combinado: IBGE + Custos de Contrato ---
 app.get("/api/results", (req, res) => {
+  try {
+    const {
+      regiao,
+      classificacao,
+      familiar,
+      obrigatorio,
+      top,
+      orderBy,
+      contract,
+      network,
+      functionName,
+    } = req.query;
+
+    // --- 1️⃣ Query base do IBGE ---
+    let queryIBGE = `
+      SELECT i.id, r.nome AS regiao, p.nome AS produto, c.nome AS classificacao,
+             i.estabelecimentos, i.valor_vendas, i.familiar, i.obrigatorio
+      FROM ibge_dados i
+      JOIN produtos p ON i.produto_id = p.id
+      JOIN classificacoes_ibge c ON p.classificacao_id = c.id
+      JOIN regioes r ON i.regiao_id = r.id
+      WHERE 1=1
+    `;
+    const paramsIBGE = {};
+
+    // --- Filtros IBGE (iguais ao endpoint original) ---
+    if (regiao) { queryIBGE += " AND r.nome = @regiao"; paramsIBGE.regiao = regiao; }
+    if (classificacao) { queryIBGE += " AND c.nome = @classificacao"; paramsIBGE.classificacao = classificacao; }
+    if (familiar !== undefined) { queryIBGE += " AND i.familiar = @familiar"; paramsIBGE.familiar = Number(familiar); }
+    if (obrigatorio !== undefined) { queryIBGE += " AND i.obrigatorio = @obrigatorio"; paramsIBGE.obrigatorio = Number(obrigatorio); }
+
+    const dadosIBGE = db.prepare(queryIBGE).all(paramsIBGE);
+    if (!dadosIBGE.length) return res.json([]);
+
+    // --- 2️⃣ Query base dos contratos ---
+    let queryContratos = `
+      SELECT 
+        c.id AS contract_id, 
+        c.name AS contract_name,
+        f.name AS function_name,
+        n.name AS network,
+        d.cost_usd, 
+        d.cost_brl
+      FROM contracts c
+      JOIN contract_functions f ON f.contract_id = c.id
+      JOIN contract_function_costs d ON d.function_id = f.id
+      JOIN networks n ON n.id = d.network_id
+      WHERE 1=1
+    `;
+    const paramsContratos = {};
+
+    // --- Filtros Contratos ---
+    if (contract) { queryContratos += " AND c.name LIKE @contract"; paramsContratos.contract = `%${contract}%`; }
+    if (network) { queryContratos += " AND n.name LIKE @network"; paramsContratos.network = `%${network}%`; }
+    if (functionName) { queryContratos += " AND f.name LIKE @functionName"; paramsContratos.functionName = `%${functionName}%`; }
+
+    const dadosContratos = db.prepare(queryContratos).all(paramsContratos);
+    if (!dadosContratos.length) return res.json([]);
+
+    // --- 3️⃣ Cálculo do custo médio dos contratos selecionados ---
+    // const custoMedioBRL =
+      // dadosContratos.reduce((acc, d) => acc + (d.cost_brl || 0), 0) / dadosContratos.length;
+    const custoTotalBRL = dadosContratos.reduce((acc, d) => acc + (d.cost_brl || 0), 0);
+
+    const chaveOrdenacao =
+      orderBy === "estabelecimentos" ? "estabelecimentos" : "valor_vendas";
+
+    // --- 4️⃣ Agregação de produtos (quantidade × custo) ---
+    const agregados = {};
+    dadosIBGE.forEach(d => {
+      const baseValor = d[chaveOrdenacao] || 0;
+      agregados[d.produto] = (agregados[d.produto] || 0) + baseValor * custoTotalBRL;
+    });
+
+    // --- 5️⃣ Ordenação e Top N ---
+    let produtosOrdenados = Object.entries(agregados).sort((a, b) => b[1] - a[1]);
+    const topN = top ? Number(top) : produtosOrdenados.length;
+    produtosOrdenados = produtosOrdenados.slice(0, topN);
+
+    // --- 6️⃣ Montagem do resultado final ---
+    const resultado = produtosOrdenados.map(([produto, totalEstimado]) => {
+      const ref = dadosIBGE.find(d => d.produto === produto);
+      return {
+        produto,
+        regiao: ref.regiao,
+        classificacao: ref.classificacao,
+        familiar: ref.familiar,
+        obrigatorio: ref.obrigatorio,
+        total_estimado_brl: totalEstimado.toFixed(2),
+        custo_medio_contrato_brl: custoTotalBRL.toFixed(2),
+      };
+    });
+
+    res.json(resultado);
+
+  } catch (err) {
+    console.error("Erro em /api/results:", err);
+    res.status(500).send("Erro ao gerar resultados combinados");
+  }
+});
+
+// 🔹 Listar contratos
+app.get("/api/contracts-list", (req, res) => {
     try {
-        // Exemplo: buscar contratos e deploys
-        const query = `
-            SELECT c.id, c.name, c.address, f.name AS function,
-                   d.gas_used, d.cost_usd, d.cost_brl
-            FROM contracts c
-            LEFT JOIN contract_functions f ON f.contract_id = c.id
-            LEFT JOIN contract_function_costs d ON d.function_id = f.id
-            ORDER BY c.id DESC
-            LIMIT 100
-        `;
-        const rows = db.prepare(query).all();
-        res.json(rows);
+        const rows = db.prepare("SELECT DISTINCT name FROM contracts ORDER BY name").all();
+        res.json(rows.map(r => r.name));
     } catch (err) {
-        console.error(err);
-        res.status(500).send("Erro ao buscar resultados do DB");
+        console.error("Erro ao listar contratos:", err);
+        res.status(500).send("Erro ao listar contratos");
     }
 });
+
+// 🔹 Listar redes
+app.get("/api/networks-list", (req, res) => {
+    try {
+        const rows = db.prepare("SELECT DISTINCT name FROM networks ORDER BY name").all();
+        res.json(rows.map(r => r.name));
+    } catch (err) {
+        console.error("Erro ao listar redes:", err);
+        res.status(500).send("Erro ao listar redes");
+    }
+});
+
+// 🔹 Listar funções de um contrato específico (ou todas se não for passado)
+app.get("/api/functions-list", (req, res) => {
+    try {
+        const { contract } = req.query;
+        let query = `
+            SELECT DISTINCT f.name
+            FROM contract_functions f
+            JOIN contracts c ON c.id = f.contract_id
+            WHERE 1=1
+        `;
+        const params = {};
+
+        if (contract) {
+            query += " AND c.name = @contract";
+            params.contract = contract;
+        }
+
+        query += " ORDER BY f.name";
+
+        const rows = db.prepare(query).all(params);
+        res.json(rows.map(r => r.name));
+    } catch (err) {
+        console.error("Erro ao listar funções:", err);
+        res.status(500).send("Erro ao listar funções");
+    }
+});
+
+
+
+// // Endpoint para retornar resultados do DB
+// app.get("/api/results", (req, res) => {
+//     try {
+//         // Exemplo: buscar contratos e deploys
+//         const query = `
+//             SELECT c.id, c.name, c.address, f.name AS function,
+//                    d.gas_used, d.cost_usd, d.cost_brl
+//             FROM contracts c
+//             LEFT JOIN contract_functions f ON f.contract_id = c.id
+//             LEFT JOIN contract_function_costs d ON d.function_id = f.id
+//             ORDER BY c.id DESC
+//             LIMIT 100
+//         `;
+//         const rows = db.prepare(query).all();
+//         res.json(rows);
+//     } catch (err) {
+//         console.error(err);
+//         res.status(500).send("Erro ao buscar resultados do DB");
+//     }
+// });
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));

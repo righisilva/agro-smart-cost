@@ -1,62 +1,293 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Resultados - SmartAgro</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 2rem; background: #f9f9f9; }
-  table { border-collapse: collapse; width: 100%; }
-  th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
-  th { background-color: #eee; }
-</style>
+    <meta charset="UTF-8">
+    <title>Resultados Combinados - SmartAgro</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        label, select, input, button {
+            margin: 5px;
+        }
+        canvas {
+            width: 90vw;            /* 90% da largura da tela */
+            max-width: 1200px;      /* limita largura máxima */
+            height: 500px;          /* altura fixa para evitar crescimento infinito */
+            display: block;
+            margin: 40px auto;
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        table {
+            border-collapse: collapse;
+            width: 90%;
+            margin: 20px auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #eee;
+        }
+        .container {
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<h1>Resultados do Banco de Dados</h1>
-<table id="resultTable">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nome</th>
-      <th>Endereço</th>
-      <th>Função</th>
-      <th>Gas Usado</th>
-      <th>Custo USD</th>
-      <th>Custo BRL</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <h1>Resultados Combinados: IBGE × Custos Blockchain</h1>
 
-<script>
-async function loadResults() {
-  try {
-    const res = await fetch('/api/results');
-    const data = await res.json();
+    <div class="container">
+        <label>Região:
+            <select id="filtroRegiao" required>
+                <option value="" disabled selected hidden>Selecione...</option>
+                <option>Brasil</option>
+                <option>Sul</option>
+                <option>RS</option>
+                <option>Alegrete</option>
+            </select>
+        </label>
 
-    const tbody = document.querySelector("#resultTable tbody");
-    tbody.innerHTML = "";
+        <label>Classificação:
+            <select id="filtroClassificacao">
+                <option value="">Todas</option>
+                <option>Agricultura</option>
+                <option>Pecuária</option>
+                <option>Silvicultura</option>
+                <option>Extração Vegetal</option>
+                <option>Aquicultura</option>
+                <option>Agroindústria</option>
+            </select>
+        </label>
 
-    data.forEach(row => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${row.id}</td>
-        <td>${row.name}</td>
-        <td>${row.address}</td>
-        <td>${row.function}</td>
-        <td>${row.gas_used}</td>
-        <td>${row.cost_usd?.toFixed(4) ?? 'N/A'}</td>
-        <td>${row.cost_brl?.toFixed(4) ?? 'N/A'}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  } catch(err) {
-    console.error(err);
-    alert("Erro ao carregar resultados.");
-  }
-}
+        <label>Familiar:
+            <select id="filtroFamiliar" required>
+                <option value="" disabled selected hidden>Selecione...</option>
+                <option value="1">Sim</option>
+                <option value="0">Não</option>
+            </select>
+        </label>
 
-loadResults();
-</script>
+        <label>Obrigatório:
+            <select id="filtroObrigatorio" required>
+                <option value="" disabled selected hidden>Selecione...</option>
+                <option value="1">Sim</option>
+                <option value="0">Não</option>
+            </select>
+        </label>
+
+        <label>Contrato:
+            <select id="filtroContrato" required>
+                <option value="" disabled selected hidden>Selecione...</option>
+            </select>
+        </label>
+
+        <label>Rede:
+            <select id="filtroRede">
+                <option value="">Todas</option>
+            </select>
+        </label>
+
+        <label>Função:
+            <select id="filtroFuncao">
+                <option value="">Todas</option>
+            </select>
+        </label>
+
+        <label>Top N:
+            <input type="number" id="filtroTop" min="1" placeholder="10">
+        </label>
+
+        <label>Ordenar por:
+            <select id="filtroOrderBy">
+                <option value="valor_vendas">Valor Vendido</option>
+                <option value="estabelecimentos">Estabelecimentos</option>
+            </select>
+        </label>
+
+        <button onclick="carregarResultados()">Gerar Resultados</button>
+    </div>
+
+    <canvas id="graficoResultados"></canvas>
+
+    <table id="tabelaResultados">
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Região</th>
+                <th>Classificação</th>
+                <th>Familiar</th>
+                <th>Obrigatório</th>
+                <th>Custo Total Funções (BRL)</th>
+                <th>Total Estimado (BRL)</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        let grafico; // variável global do gráfico
+
+        async function carregarFiltros() {
+            const [contratosRes, redesRes] = await Promise.all([
+                fetch("/api/contracts-list"),
+                fetch("/api/networks-list")
+            ]);
+            const [contratos, redes] = await Promise.all([
+                contratosRes.json(),
+                redesRes.json()
+            ]);
+
+            const contratoSel = document.getElementById("filtroContrato");
+            contratos.forEach(c => {
+                const opt = document.createElement("option");
+                opt.value = c;
+                opt.textContent = c;
+                contratoSel.appendChild(opt);
+            });
+
+            const redeSel = document.getElementById("filtroRede");
+            redes.forEach(r => {
+                const opt = document.createElement("option");
+                opt.value = r;
+                opt.textContent = r;
+                redeSel.appendChild(opt);
+            });
+        }
+
+        // 🔹 Atualiza funções conforme o contrato selecionado
+        document.getElementById("filtroContrato").addEventListener("change", async (e) => {
+            const contrato = e.target.value;
+            const resp = await fetch(`/api/functions-list?contract=${encodeURIComponent(contrato)}`);
+            const funcoes = await resp.json();
+
+            const selectFunc = document.getElementById("filtroFuncao");
+            selectFunc.innerHTML = "<option value=''>Todas</option>";
+            funcoes.forEach(fn => {
+                const opt = document.createElement("option");
+                opt.value = fn;
+                opt.textContent = fn;
+                selectFunc.appendChild(opt);
+            });
+        });
+
+        async function carregarResultados() {
+            const regiao = document.getElementById("filtroRegiao").value;
+            const familiar = document.getElementById("filtroFamiliar").value;
+            const obrigatorio = document.getElementById("filtroObrigatorio").value;
+            const contrato = document.getElementById("filtroContrato").value;
+
+            // 🔒 Verificação obrigatória
+            if (!regiao || !familiar || !obrigatorio || !contrato) {
+                alert("Por favor, selecione todos os filtros obrigatórios antes de gerar os resultados.");
+                return;
+            }
+
+            const params = new URLSearchParams({
+                regiao,
+                classificacao: document.getElementById("filtroClassificacao").value,
+                familiar,
+                obrigatorio,
+                contract: contrato,
+                network: document.getElementById("filtroRede").value,
+                functionName: document.getElementById("filtroFuncao").value,
+                top: document.getElementById("filtroTop").value,
+                orderBy: document.getElementById("filtroOrderBy").value
+            });
+
+            const res = await fetch(`/api/results?${params.toString()}`);
+            const dados = await res.json();
+
+            const tbody = document.querySelector("#tabelaResultados tbody");
+            tbody.innerHTML = "";
+
+            if (dados.length === 0) {
+                tbody.innerHTML = "<tr><td colspan='7'>Nenhum resultado encontrado.</td></tr>";
+                if (grafico) grafico.destroy();
+                return;
+            }
+
+            dados.forEach(d => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td>${d.produto}</td>
+                    <td>${d.regiao}</td>
+                    <td>${d.classificacao}</td>
+                    <td>${d.familiar ? "Sim" : "Não"}</td>
+                    <td>${d.obrigatorio ? "Sim" : "Não"}</td>
+                    <td>${d.custo_total_funcoes_brl || d.custo_medio_contrato_brl}</td>
+                    <td>${d.total_estimado_brl}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // --- Gráfico ---
+            const ctx = document.getElementById("graficoResultados").getContext("2d");
+            const labels = dados.map(d => d.produto);
+            const valores = dados.map(d => d.total_estimado_brl);
+
+            if (grafico) grafico.destroy();
+            grafico = new Chart(ctx, {
+                type: "bar",
+                data: {
+                    labels,
+                    datasets: [{
+                        label: "Total Estimado (BRL)",
+                        data: valores,
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,  // importante!
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: "Valor em BRL",  // <-- legenda do eixo Y
+                                font: { size: 14 }
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: "Produtos",  // opcional para eixo X
+                                font: { size: 14 }
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: "Total Estimado por Produto",
+                            font: { size: 18 }
+                        },
+                        legend: {
+                            labels: { font: { size: 14 } }
+                        }
+                    }
+                }
+            });
+
+        }
+
+        carregarFiltros();
+    </script>
 </body>
 </html>
 
