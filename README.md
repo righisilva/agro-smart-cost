@@ -39,6 +39,7 @@ Para parar:
 crontab -r
 ```
 
+Rodar HardHat automaticamente
 Instale o pm2:
 
 ```python

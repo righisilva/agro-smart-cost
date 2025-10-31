@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const Database = require("better-sqlite3");
 const { analisarContrato } = require("./index.js");
-const { analisarContratoManual, listDeployedContracts, getDeployedContract, getGasPricesFromNetworks, getTokenPrices } = require("./contractService");
+const { analisarContratoManual, getDeployedContract, getGasPricesFromNetworks, getTokenPrices } = require("./contractService");
 const { ethers } = require("ethers");
 const solc = require("solc");
 
@@ -17,9 +17,6 @@ const networksJson = require("./networks.json");
 let gasPricesByNetwork = null;
 let tokenPrices = null;
 let currentDeployedContract = null;  // objeto { id, address, abi, name, ... }
-const deployedContracts = new Map();
-
-
 
 
 // --- Banco de dados SQLite ---
@@ -233,8 +230,6 @@ app.use(express.json());
 app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
     const solc = require("solc");
     const { analisarContratoManual } = require("./contractService");
-    const { registerDeployedContract } = require("./contractService");
-
 
     try {
         if (!req.file) return res.status(400).send("❌ Nenhum arquivo enviado.");
@@ -294,33 +289,17 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
         const contractsObj = output.contracts[path.basename(filePath)];
         if (!contractsObj) return res.status(500).send("❌ Contrato não encontrado no output da compilação.");
 
-
-//TODO
-        for (const contractName of Object.keys(contractsObj)) {
-        
-        // const contractName = Object.keys(contractsObj)[0];
+        const contractName = Object.keys(contractsObj)[0];
         const abi = contractsObj[contractName].abi;
         console.log(contractName);
-
-     
-
-
-        const contractId = salvarContractNoDB( deployedInfo.contractName , deployedInfo.address);
+        
+        
+        
+        const contractId = salvarContractNoDB( contractName , deployedInfo.address);
         // const contractId = salvarContractNoDB(path.basename(filePath), deployedInfo.address);
         deployedInfo.id = contractId;
         currentDeployedContract = deployedInfo;
-        // Salva instância no mapa global
-        registerDeployedContract(contractName, {
-            id: contractId,
-            address: deployedInfo.address,
-            abi,
-            name: contractName
-        });
-
-
-        // Também salva no dicionário local (se quiser manter compatibilidade)
-
-
+        
         // ------------------------------
         // 🔹 Calcular custo total do deploy por rede
         // ------------------------------
@@ -334,7 +313,7 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
                 const costInToken = ethers.utils.formatEther(deployedInfo.gasUsed.mul(data.gasPrice));
                 const costUSD = parseFloat(costInToken) * tokenPrice.usd;
                 const costBRL = parseFloat(costInToken) * tokenPrice.brl;
-
+                
                 const networkId = networks[token].id;
                 salvarDeployNoDB(contractId, networks[token].id, deployedInfo.gasUsed.toNumber(), costUSD, costBRL);
                 salvarNetworkCosts(networkId, parseFloat(ethers.utils.formatUnits(data.gasPrice, "gwei")), tokenPrice.usd, tokenPrice.brl);
@@ -363,8 +342,6 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
             funcao: "deploy",
             custosPorRede
         });
-        }
-//TODO
 
     } catch (err) {
         console.error("Erro ao compilar ou deployar contrato:", err);
@@ -376,20 +353,9 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
 // --- 2️⃣ Executar funções do contrato deployado ---
 
 app.post("/api/execute-function", async (req, res) => {
-    const {nomeContrato, nomeFuncao, args } = req.body;
-    const contratoSelecionado = getDeployedContract(nomeContrato);
-
-    if (!contratoSelecionado)
-        return res.status(400).send(`❌ Contrato "${nomeContrato}" não encontrado.`);
-
-    // Constrói o contrato real com ethers
-    const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
-    const signer = provider.getSigner(0);
-    const contract = new ethers.Contract(
-        contratoSelecionado.address,
-        contratoSelecionado.abi,
-        signer
-    );
+    const { nomeFuncao, args } = req.body;
+    const contract = getDeployedContract();
+    if (!contract) return res.status(400).send("❌ Nenhum contrato deployado ainda.");
 
     try {
         const processedArgs = args.map(parseArgument);
@@ -401,20 +367,20 @@ app.post("/api/execute-function", async (req, res) => {
         const tx = await contract[nomeFuncao](...processedArgs);
         const receipt = await tx.wait();
 
-
+       
 
         // ------------------------------
         // 🔹 Calcular custo total por rede
         // ------------------------------
         const custosPorRede = {};
-
+        
         const insertFunc = db.transaction(() => {
             const functionId = salvarFuncaoContratoNoDB(currentDeployedContract.id, nomeFuncao);
 
             for (const [token, data] of Object.entries(gasPricesByNetwork)) {
-                // console.log(data);
+                // console.log(data); 
                 const tokenPrice = tokenPrices[token]; if (!tokenPrice) continue;
-                 console.log(tokenPrice);
+                 console.log(tokenPrice); 
                 const costInToken = ethers.utils.formatEther(receipt.gasUsed.mul(data.gasPrice));
                 const costUSD = parseFloat(costInToken) * tokenPrice.usd;
                 const costBRL = parseFloat(costInToken) * tokenPrice.brl;
@@ -506,12 +472,12 @@ app.get("/api/results", (req, res) => {
 
     // --- 2️⃣ Query base dos contratos ---
     let queryContratos = `
-      SELECT
-        c.id AS contract_id,
+      SELECT 
+        c.id AS contract_id, 
         c.name AS contract_name,
         f.name AS function_name,
         n.name AS network,
-        d.cost_usd,
+        d.cost_usd, 
         d.cost_brl
       FROM contracts c
       JOIN contract_functions f ON f.contract_id = c.id
@@ -620,23 +586,7 @@ app.get("/api/functions-list", (req, res) => {
     }
 });
 
-app.get("/api/contract-abi", (req, res) => {
- const { contract } = req.query;
- const contrato = getDeployedContract(contract);
- if (!contrato) return res.status(404).send("Contrato não encontrado");
- res.json({ abi: contrato.abi, name: contrato.name, address: contrato.address });
-});
 
-
-app.get("/api/deployed-contracts", (req, res) => {
-    try {
-        const contratos = Array.from(listDeployedContracts().map(name => getDeployedContract(name)));
-        console.log("Contratos enviados ao frontend:", contratos);
-        res.json(contratos);
-    } catch (err) {
-        res.status(500).send("Erro ao listar contratos em memória: " + err.message);
-    }
-});
 
 
 app.get("/", (req, res) => {

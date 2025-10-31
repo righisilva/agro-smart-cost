@@ -21,24 +21,40 @@ const { ethers } = require("ethers");
 // JSON com informações de redes (ex: Hardhat, testnets, mainnet)
 const networks = require("./networks.json");
 
+
+const deployedContracts = new Map();
+
+// Obter um contrato específico
+function getDeployedContract(nameOrAddress) {
+    return deployedContracts.get(nameOrAddress) || null;
+}
+
+// Registrar contrato
+function registerDeployedContract(nameOrAddress, contractInstance) {
+    deployedContracts.set(nameOrAddress, contractInstance);
+    console.log("📦 Contratos deployados:", [...deployedContracts.entries()]);
+}
+
+// Retornar lista de todos
+function listDeployedContracts() {
+    return Array.from(deployedContracts.keys());
+}
+
+
 // Variável que armazenará o contrato deployado em memória
-let deployedContract = null;
-
-
-
-
+// let deployedContract = null;
 /**
  * Retorna o contrato que foi deployado (ou null se ainda não tiver deploy)
  */
-function getDeployedContract() {
-    return deployedContract;
-}
+// function getDeployedContract() {
+//     return deployedContract;
+// }
 
 /**
  * Busca preços dos tokens em USD e BRL via CoinGecko
  */
 async function getTokenPrices() {
-    const url = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,matic-network&vs_currencies=usd,brl";
+    const url = "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,polygon-ecosystem-token&vs_currencies=usd,brl";
     try {
         const res = await axios.get(url);
         return res.data; // Ex: { ethereum: { usd: 2400, brl: 12800 }, ... }
@@ -176,7 +192,12 @@ async function analisarContratoManual(filePath, log = console.log) {
         const txReceipt = await contractInstance.deployTransaction.wait(); // espera confirmação
         deployedContract = await contractInstance.deployed(); // guarda instância em memória
         log(`✅ Contrato deployado: ${deployedContract.address}`);
-        return { address: deployedContract.address, gasUsed: txReceipt.gasUsed };
+        return  {
+            address: deployedContract.address, 
+            gasUsed: txReceipt.gasUsed,
+            abi, // ← Retorna a ABI também
+            contractName: contractFileName // ← E o nome do contrato
+        };
     } catch (err) {
         log(`❌ Falha no deploy: ${err.message}`);
         return null;
@@ -191,5 +212,13 @@ function setDeployedContract(contract) {
 }
 
 // Exporta funções para uso externo
-module.exports = { analisarContratoManual, getDeployedContract, getGasPricesFromNetworks, getTokenPrices };
+module.exports = {
+  analisarContratoManual,
+  getDeployedContract,
+  setDeployedContract,
+  registerDeployedContract,
+  listDeployedContracts,
+  getGasPricesFromNetworks,
+  getTokenPrices
+};
 

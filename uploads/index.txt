@@ -116,10 +116,10 @@ async function analisarContrato(filePath, log = console.log) {
                 const networkInfo = await provider.getNetwork();
                 console.log(`✅ Conectado à ${net.name} (chainId: ${networkInfo.chainId})`);
 
-                gasPrices[net.token] = {
-                    name: net.name,
-                    gasPrice,
-                    tokenId: net.token
+                gasPrices[net.token] = { 
+                    name: net.name, 
+                    gasPrice, 
+                    tokenId: net.token 
                 };
 
             } catch (err) {
@@ -182,7 +182,7 @@ async function analisarContrato(filePath, log = console.log) {
     // Cálculo de custos deploy
     // ------------------------------
     for (const [token, data] of Object.entries(gasPricesByNetwork)) {
-        const tokenPrice = tokenPrices[token];
+        const tokenPrice = tokenPrices[token]; 
         log(tokenPrice);
         if (!tokenPrice) continue;
         const costInToken = ethers.utils.formatEther(deployTxReceipt.gasUsed.mul(data.gasPrice));

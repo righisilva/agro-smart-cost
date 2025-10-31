@@ -57,7 +57,7 @@ async function saveToGoogleSheets(data) {
 // === PREÇOS DE TOKENS ===
 async function getTokenPrices() {
   const url =
-    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,matic-network&vs_currencies=usd,brl";
+    "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,polygon-ecosystem-token&vs_currencies=usd,brl";
   const res = await axios.get(url);
   return res.data;
 }

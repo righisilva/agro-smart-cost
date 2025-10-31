@@ -54,12 +54,18 @@
     }
   </style>
 </head>
+</head>
 <body>
     <h1>Interface de Contratos</h1>
 
     <h2>1️⃣ Envie o contrato Solidity</h2>
     <input type="file" id="contrato" accept=".sol">
     <button onclick="carregarContrato()">Carregar ABI</button>
+
+    <h2>📜 Contratos disponíveis</h2>
+    <select id="contratoSelect" onchange="selecionarContrato()"></select>
+    <button onclick="atualizarContratos()">🔄 Atualizar lista</button>
+
 
     <h2>2️⃣ Funções disponíveis</h2>
     <button id="prefill-btn">Pré-preencher funções</button>
@@ -72,8 +78,90 @@
 <script>
 let contratoDeployado = false;
 
+async function selecionarContrato() {
+ const select = document.getElementById("contratoSelect");
+ const nomeContrato = select.value;
+ const funcoesDiv = document.getElementById("funcoes");
+ funcoesDiv.innerHTML = "<i>Carregando funções...</i>";
+
+ if (!nomeContrato) return;
+
+ try {
+     const res = await fetch(`/api/contract-abi?contract=${encodeURIComponent(nomeContrato)}`);
+     const data = await res.json();
+     const abi = data.abi;
+
+     funcoesDiv.innerHTML = ""; // limpa
+
+     const functions = abi.filter(f => f.type === "function" && !["view","pure"].includes(f.stateMutability));
+     if (!functions.length) funcoesDiv.innerHTML = "<i>Nenhuma função mutável disponível.</i>";
+
+     functions.forEach(f => {
+         const div = document.createElement("div");
+         div.className = "funcao";
+
+         const title = document.createElement("h3");
+         title.textContent = `${f.name}(${f.inputs.map(i => i.type).join(", ")})`;
+         div.appendChild(title);
+
+         f.inputs.forEach((input, idx) => {
+             const argDiv = document.createElement("div");
+             argDiv.className = "arg";
+             argDiv.innerHTML = `<label>${input.name || "arg" + idx} (${input.type}):</label>
+                                 <input id="${f.name}_arg${idx}" placeholder="valor..." />`;
+             div.appendChild(argDiv);
+         });
+
+         const btn = document.createElement("button");
+         btn.textContent = "Executar função";
+         btn.disabled = !data.address;
+         btn.onclick = () => executarFuncao(f.name, f.inputs.length);
+         div.appendChild(btn);
+
+         funcoesDiv.appendChild(div);
+     });
+
+ } catch (err) {
+     funcoesDiv.innerHTML = `<i>❌ Erro: ${err.message}</i>`;
+ }
+}
+
+
+
+async function atualizarContratos() {
+  const select = document.getElementById("contratoSelect");
+  select.innerHTML = "<option>Carregando...</option>";
+
+  try {
+    const res = await fetch("/api/deployed-contracts");
+    if (!res.ok) throw new Error("Erro ao buscar contratos.");
+
+    const contratos = await res.json();
+    select.innerHTML = "";
+
+    if (!contratos.length) {
+      select.innerHTML = "<option>Nenhum contrato encontrado</option>";
+      return;
+    }
+
+    contratos.forEach(c => {
+      const opt = document.createElement("option");
+      opt.value = c.name || c.address;
+      opt.textContent = `${c.name || "Sem nome"} (${c.address})`;
+      select.appendChild(opt);
+    });
+  } catch (err) {
+    select.innerHTML = `<option>❌ Erro: ${err.message}</option>`;
+  }
+}
+
+// Atualiza a lista automaticamente ao abrir a página
+window.addEventListener("DOMContentLoaded", atualizarContratos);
+
 // --- Carregar contrato e ABI ---
 async function carregarContrato() {
+  const funcoesDiv = document.getElementById("funcoes");
+  funcoesDiv.innerHTML = "";
   const fileInput = document.getElementById("contrato");
   if (!fileInput.files.length) return alert("Selecione um arquivo Solidity.");
 
@@ -95,7 +183,7 @@ async function carregarContrato() {
     `Funções detectadas: ${abi.length}\n` +
     `🚀 Contrato deployado: ${deployedAddress}\n` +
     `⛽ Gas usado no deploy: ${deployGas}`;
-    
+
     const { custosPorRede } = data; // pega do JSON retornado pelo backend
 
     // Mostrar custos por rede no log
@@ -111,8 +199,7 @@ async function carregarContrato() {
       }
     }
 
-  const funcoesDiv = document.getElementById("funcoes");
-  funcoesDiv.innerHTML = "";
+
 
   const functions = abi.filter(f => f.type === "function" && !["view","pure"].includes(f.stateMutability));
   if (!functions.length) funcoesDiv.innerHTML = "<i>Nenhuma função mutável disponível.</i>";
@@ -143,7 +230,12 @@ async function carregarContrato() {
 
     funcoesDiv.appendChild(div);
   });
+  
+atualizarContratos();
+
 }
+window.carregarContrato = carregarContrato;
+
 
 // --- Gerar valores fake para cada tipo ---
 function fakeValueForType(type, idx, accounts, paramName = "") {
@@ -259,7 +351,8 @@ document.getElementById("prefill-btn").addEventListener("click", async () => {
 // --- Executar função do contrato ---
 
 async function executarFuncao(nomeFuncao, numArgs) {
-    if (!contratoDeployado) return alert("Contrato ainda não deployado.");
+    const nomeContrato = document.getElementById("contratoSelect").value;
+    if (!nomeContrato) return alert("Selecione um contrato.");
 
     const args = [];
     for (let i = 0; i < numArgs; i++) {
@@ -267,13 +360,14 @@ async function executarFuncao(nomeFuncao, numArgs) {
     }
 
     const logArea = document.getElementById("log");
+    logArea.textContent += `\n📘 Contrato selecionado: ${nomeContrato}\n`;
     logArea.textContent += `\n⚙️ Executando ${nomeFuncao}(${args.join(", ")})...\n`;
 
     try {
         const res = await fetch("/api/execute-function", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nomeFuncao, args })
+            body: JSON.stringify({ nomeContrato, nomeFuncao, args })
         });
 
         if (!res.ok) {
@@ -288,17 +382,12 @@ async function executarFuncao(nomeFuncao, numArgs) {
         logArea.textContent += `\n⛽ Gas estimado: ${out.gasEstimado}`;
         logArea.textContent += `\n🔥 Gas real usado: ${out.gasReal}`;
 
-        // Mostrar custo por rede (com valores em USD e BRL)
         if (out.custosPorRede) {
             logArea.textContent += `\n\n🌍 Custos por rede:`;
             for (const [key, info] of Object.entries(out.custosPorRede)) {
-                if (info.error) {
-                    logArea.textContent += `\n  ⚠️ ${info.name}: erro ao consultar (${info.error})`;
-                } else {
-                    logArea.textContent +=
-                        `\n  ${info.name}: ${info.custoTotalToken}` +
-                        `  ≈ ${info.custoUSD} / ${info.custoBRL}`;
-                }
+                logArea.textContent +=
+                    `\n  ${info.name}: ${info.custoTotalToken}` +
+                    `  ≈ ${info.custoUSD} / ${info.custoBRL}`;
             }
         }
 
