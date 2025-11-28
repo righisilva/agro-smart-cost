@@ -77,6 +77,8 @@
 <script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
 <script>
 let contratoDeployado = false;
+let contratosCarregados = []; // guarda todos os contratos do último upload
+
 
 async function selecionarContrato() {
  const select = document.getElementById("contratoSelect");
@@ -86,45 +88,47 @@ async function selecionarContrato() {
 
  if (!nomeContrato) return;
 
- try {
-     const res = await fetch(`/api/contract-abi?contract=${encodeURIComponent(nomeContrato)}`);
-     const data = await res.json();
-     const abi = data.abi;
-
-     funcoesDiv.innerHTML = ""; // limpa
-
-     const functions = abi.filter(f => f.type === "function" && !["view","pure"].includes(f.stateMutability));
-     if (!functions.length) funcoesDiv.innerHTML = "<i>Nenhuma função mutável disponível.</i>";
-
-     functions.forEach(f => {
-         const div = document.createElement("div");
-         div.className = "funcao";
-
-         const title = document.createElement("h3");
-         title.textContent = `${f.name}(${f.inputs.map(i => i.type).join(", ")})`;
-         div.appendChild(title);
-
-         f.inputs.forEach((input, idx) => {
-             const argDiv = document.createElement("div");
-             argDiv.className = "arg";
-             argDiv.innerHTML = `<label>${input.name || "arg" + idx} (${input.type}):</label>
-                                 <input id="${f.name}_arg${idx}" placeholder="valor..." />`;
-             div.appendChild(argDiv);
-         });
-
-         const btn = document.createElement("button");
-         btn.textContent = "Executar função";
-         btn.disabled = !data.address;
-         btn.onclick = () => executarFuncao(f.name, f.inputs.length);
-         div.appendChild(btn);
-
-         funcoesDiv.appendChild(div);
-     });
-
- } catch (err) {
-     funcoesDiv.innerHTML = `<i>❌ Erro: ${err.message}</i>`;
+ // ✅ Busca contrato no array global
+ const contrato = contratosCarregados.find(c => c.nome === nomeContrato);
+ if (!contrato) {
+   funcoesDiv.innerHTML = "<i>Contrato não encontrado.</i>";
+   return;
  }
+
+ contratoDeployado = !!contrato.endereco;
+ const abi = contrato.abi;
+
+ funcoesDiv.innerHTML = ""; // limpa
+
+ const functions = abi.filter(f => f.type === "function" && !["view","pure"].includes(f.stateMutability));
+ if (!functions.length) funcoesDiv.innerHTML = "<i>Nenhuma função mutável disponível.</i>";
+
+ functions.forEach(f => {
+   const div = document.createElement("div");
+   div.className = "funcao";
+
+   const title = document.createElement("h3");
+   title.textContent = `${f.name}(${f.inputs.map(i => i.type).join(", ")})`;
+   div.appendChild(title);
+
+   f.inputs.forEach((input, idx) => {
+     const argDiv = document.createElement("div");
+     argDiv.className = "arg";
+     argDiv.innerHTML = `<label>${input.name || "arg" + idx} (${input.type}):</label>
+                         <input id="${nomeContrato}_${f.name}_arg${idx}" placeholder="valor..." />`;
+     div.appendChild(argDiv);
+   });
+
+   const btn = document.createElement("button");
+   btn.textContent = "Executar função";
+   btn.disabled = !contratoDeployado;
+   btn.onclick = () => executarFuncao(nomeContrato, f.name, f.inputs.length);
+   div.appendChild(btn);
+
+   funcoesDiv.appendChild(div);
+ });
 }
+
 
 
 
@@ -159,9 +163,14 @@ async function atualizarContratos() {
 window.addEventListener("DOMContentLoaded", atualizarContratos);
 
 // --- Carregar contrato e ABI ---
+// --- Carregar contrato e ABI ---
 async function carregarContrato() {
   const funcoesDiv = document.getElementById("funcoes");
+  const select = document.getElementById("contratoSelect");
   funcoesDiv.innerHTML = "";
+  
+  select.innerHTML = "<option>Selecione um contrato...</option>";
+  contratosCarregados = [];
   const fileInput = document.getElementById("contrato");
   if (!fileInput.files.length) return alert("Selecione um arquivo Solidity.");
 
@@ -175,66 +184,105 @@ async function carregarContrato() {
   }
 
   const data = await res.json();
-  const { abi, contractName, deployedAddress, deployGas } = data;
-  contratoDeployado = !!deployedAddress;
+  contratosCarregados = data.contratos; // ✅ salva globalmente
+ 
+  const logArea = document.getElementById("log");
 
-  document.getElementById("log").textContent =
-    `✅ ABI carregada: ${contractName}\n` +
-    `Funções detectadas: ${abi.length}\n` +
-    `🚀 Contrato deployado: ${deployedAddress}\n` +
-    `⛽ Gas usado no deploy: ${deployGas}`;
+  // Verifica se veio o array de contratos
+  if (data.contratos && Array.isArray(data.contratos)) {
+    logArea.textContent = `✅ ${data.contratos.length} contrato(s) carregado(s):\n`;
 
-    const { custosPorRede } = data; // pega do JSON retornado pelo backend
-
-    // Mostrar custos por rede no log
-    if (custosPorRede) {
-      const logArea = document.getElementById("log");
-      logArea.textContent += `\n\n🌍 Custos por rede:`;
+    // Itera sobre todos os contratos retornados
+    for (const contrato of data.contratos) {
+    const { nome, endereco, gas, custosPorRede } = contrato;
+    const abi = contrato.abi || data.abi; // ✅ pega o abi certo
+  
+    logArea.textContent +=
+      `\n\n📄 Contrato: ${nome}\n` +
+      `🏠 Endereço: ${endereco || "Não disponível"}\n` +
+      `⛽ Gas usado no deploy: ${gas || "N/A"}\n`;
+  
+    // Mostra custos por rede
+    if (custosPorRede && Object.keys(custosPorRede).length > 0) {
+      logArea.textContent += `🌍 Custos por rede:\n`;
       for (const [token, info] of Object.entries(custosPorRede)) {
         logArea.textContent +=
-          `\n  ${info.name}: ${info.custoTotalToken} ${info.token}` +
-          `  ≈ ${info.custoUSD} / ${info.custoBRL}` +
-          `  (gasPrice: ${info.gasPrice})` +
-          `  | Cotação: U$${info.cotacao?.usd ?? "N/A"} / R$${info.cotacao?.brl ?? "N/A"}`;
+          `  • ${info.name}: ${info.custoTotalToken} ${info.token}` +
+          ` ≈ ${info.custoUSD} / ${info.custoBRL}` +
+          ` (gasPrice: ${info.gasPrice})` +
+          ` | Cotação: U$${info.cotacao?.usd ?? "N/A"} / R$${info.cotacao?.brl ?? "N/A"}\n`;
       }
     }
-
-
-
-  const functions = abi.filter(f => f.type === "function" && !["view","pure"].includes(f.stateMutability));
-  if (!functions.length) funcoesDiv.innerHTML = "<i>Nenhuma função mutável disponível.</i>";
-
-  functions.forEach(f => {
-    const div = document.createElement("div");
-    div.className = "funcao";
-
-    const title = document.createElement("h3");
-    title.textContent = `${f.name}(${f.inputs.map(i => i.type).join(", ")})`;
-    div.appendChild(title);
-
-    f.inputs.forEach((input, idx) => {
-      const argDiv = document.createElement("div");
-      argDiv.className = "arg";
-      argDiv.innerHTML = `
-        <label>${input.name || "arg" + idx} (${input.type}):</label>
-        <input id="${f.name}_arg${idx}" placeholder="valor..." />
-      `;
-      div.appendChild(argDiv);
-    });
-
-    const btn = document.createElement("button");
-    btn.textContent = "Executar função";
-    btn.disabled = !contratoDeployado;
-    btn.onclick = () => executarFuncao(f.name, f.inputs.length);
-    div.appendChild(btn);
-
-    funcoesDiv.appendChild(div);
-  });
   
-atualizarContratos();
+    // --- 🔹 Criar seções de funções ---
+    const contractSection = document.createElement("div");
+    contractSection.className = "contrato-section";
+    contractSection.innerHTML = `<h2>Funções de ${nome}</h2>`;
+    funcoesDiv.appendChild(contractSection);
+  
+    // 🔸 Protege contra abi ausente
+    if (!abi || !Array.isArray(abi)) {
+      contractSection.innerHTML += "<i>❌ ABI não encontrada para este contrato.</i>";
+      continue;
+    }
+  
+    // 🔹 Filtra funções mutáveis
+    const functions = abi.filter(f => f.type === "function" && !["view", "pure"].includes(f.stateMutability));
+  
+    if (!functions.length) {
+      contractSection.innerHTML += "<i>Nenhuma função mutável disponível.</i>";
+      continue;
+    }
+  
+    // 🔹 Cria interface para cada função
+    functions.forEach(f => {
+      const div = document.createElement("div");
+      div.className = "funcao";
+  
+      const title = document.createElement("h3");
+      title.textContent = `${f.name}(${f.inputs.map(i => i.type).join(", ")})`;
+      div.appendChild(title);
+  
+      f.inputs.forEach((input, idx) => {
+        const argDiv = document.createElement("div");
+        argDiv.className = "arg";
+        argDiv.innerHTML = `
+          <label>${input.name || "arg" + idx} (${input.type}):</label>
+          <input id="${nome}_${f.name}_arg${idx}" placeholder="valor..." />
+        `;
+        div.appendChild(argDiv);
+      });
+  
+      const btn = document.createElement("button");
+      btn.textContent = "Executar função";
+      btn.disabled = !endereco; // ✅ só desativa se não houver endereço
+      btn.onclick = () => executarFuncao(nome, f.name, f.inputs.length);
+      div.appendChild(btn);
+  
+      contractSection.appendChild(div);
+    });
+  }
+  
+    
+        // 🔹 Atualiza flag global automaticamente
+        if (data.contratos.some(c => c.endereco)) {
+          contratoDeployado = true;
+          console.log("✅ Contrato(s) deployado(s) detectado(s).");
+        } else {
+          contratoDeployado = false;
+          console.warn("⚠️ Nenhum contrato com endereço detectado.");
+        }
 
+    atualizarContratos();
+
+  } else {
+    console.error("❌ Resposta inesperada:", data);
+    logArea.textContent = "❌ Erro: formato de resposta inesperado.";
+  }
 }
+
 window.carregarContrato = carregarContrato;
+
 
 
 // --- Gerar valores fake para cada tipo ---
@@ -350,18 +398,19 @@ document.getElementById("prefill-btn").addEventListener("click", async () => {
 
 // --- Executar função do contrato ---
 
-async function executarFuncao(nomeFuncao, numArgs) {
-    const nomeContrato = document.getElementById("contratoSelect").value;
-    if (!nomeContrato) return alert("Selecione um contrato.");
+// --- Executar função de um contrato específico ---
+async function executarFuncao(nomeContrato, nomeFuncao, numArgs) {
+    const logArea = document.getElementById("log");
 
+    // Lê os argumentos dos campos
     const args = [];
     for (let i = 0; i < numArgs; i++) {
-        args.push(document.getElementById(`${nomeFuncao}_arg${i}`).value);
+        const campo = document.getElementById(`${nomeContrato}_${nomeFuncao}_arg${i}`);
+        args.push(campo ? campo.value : "");
     }
 
-    const logArea = document.getElementById("log");
     logArea.textContent += `\n📘 Contrato selecionado: ${nomeContrato}\n`;
-    logArea.textContent += `\n⚙️ Executando ${nomeFuncao}(${args.join(", ")})...\n`;
+    logArea.textContent += `⚙️ Executando ${nomeFuncao}(${args.join(", ")})...\n`;
 
     try {
         const res = await fetch("/api/execute-function", {
@@ -376,26 +425,30 @@ async function executarFuncao(nomeFuncao, numArgs) {
             return;
         }
 
-        const out = await res.json(); // lê o JSON retornado pelo backend
+        const out = await res.json();
 
         logArea.textContent += `\n✅ Função executada: ${out.funcao}`;
         logArea.textContent += `\n⛽ Gas estimado: ${out.gasEstimado}`;
         logArea.textContent += `\n🔥 Gas real usado: ${out.gasReal}`;
 
+        // Mostrar custos por rede
         if (out.custosPorRede) {
             logArea.textContent += `\n\n🌍 Custos por rede:`;
             for (const [key, info] of Object.entries(out.custosPorRede)) {
                 logArea.textContent +=
-                    `\n  ${info.name}: ${info.custoTotalToken}` +
-                    `  ≈ ${info.custoUSD} / ${info.custoBRL}`;
+                    `\n  ${info.name}: ${info.custoTotalToken} ${info.token}` +
+                    `  ≈ ${info.custoUSD} / ${info.custoBRL}` +
+                    `  (gasPrice: ${info.gasPrice})`;
             }
         }
 
         logArea.textContent += `\n--------------------------------------------\n`;
+
     } catch (err) {
         logArea.textContent += `\n❌ Erro inesperado: ${err.message}\n`;
     }
 }
+
 </script>
 </body>
 </html>

@@ -88,123 +88,107 @@ async function getGasPricesFromNetworks() {
  * @param {function} log Função de log (padrão console.log)
  */
 async function analisarContratoManual(filePath, log = console.log) {
-    if (!filePath) throw new Error("❌ Por favor, informe o caminho do arquivo Solidity.");
+  if (!filePath) throw new Error("❌ Por favor, informe o caminho do arquivo Solidity.");
 
-    // Converte o caminho relativo para absoluto
-    const absolutePath = path.resolve(filePath);
+  const absolutePath = path.resolve(filePath);
+  const source = fs.readFileSync(absolutePath, "utf8");
 
-    // Lê o conteúdo do contrato Solidity
-    const source = fs.readFileSync(absolutePath, "utf8");
+  const input = {
+    language: "Solidity",
+    sources: { [path.basename(filePath)]: { content: source } },
+    settings: { outputSelection: { "*": { "*": ["abi", "evm.bytecode"] } } },
+  };
 
-    // Configuração para compilação com solc
-    const input = {
-        language: "Solidity",
-        sources: { [path.basename(filePath)]: { content: source } },
-        settings: { outputSelection: { "*": { "*": ["abi", "evm.bytecode"] } } },
-    };
-
-    /**
-     * Função para resolver imports do Solidity
-     * @param {string} importPath Caminho do import
-     */
-    function findImports(importPath) {
-      try {
-        // 1️⃣ Caminho relativo ao arquivo principal
-        const baseDir = path.dirname(filePath);
-        let resolvedPath = path.resolve(baseDir, importPath);
-        if (fs.existsSync(resolvedPath)) {
-          return { contents: fs.readFileSync(resolvedPath, "utf8") };
-        }
-
-        // 2️⃣ Caminho na pasta "contracts"
-        const contractsDir = path.resolve(__dirname, "contracts");
-        resolvedPath = path.resolve(contractsDir, importPath);
-        if (fs.existsSync(resolvedPath)) {
-          return { contents: fs.readFileSync(resolvedPath, "utf8") };
-        }
-
-        // 3️⃣ Pacote npm
-        const npmResolved = require.resolve(importPath);
-        return { contents: fs.readFileSync(npmResolved, "utf8") };
-
-      } catch (err) {
-        // Se não encontrar o import, retorna erro
-        return { error: `Import não encontrado: ${importPath}` };
+  function findImports(importPath) {
+    try {
+      const baseDir = path.dirname(filePath);
+      let resolvedPath = path.resolve(baseDir, importPath);
+      if (fs.existsSync(resolvedPath)) {
+        return { contents: fs.readFileSync(resolvedPath, "utf8") };
       }
+
+      const contractsDir = path.resolve(__dirname, "contracts");
+      resolvedPath = path.resolve(contractsDir, importPath);
+      if (fs.existsSync(resolvedPath)) {
+        return { contents: fs.readFileSync(resolvedPath, "utf8") };
+      }
+
+      const npmResolved = require.resolve(importPath);
+      return { contents: fs.readFileSync(npmResolved, "utf8") };
+    } catch (err) {
+      return { error: `Import não encontrado: ${importPath}` };
     }
+  }
 
-    // Compila o contrato usando solc
-    const compiled = solc.compile(JSON.stringify(input), { import: findImports });
-    const output = JSON.parse(compiled);
+  const compiled = solc.compile(JSON.stringify(input), { import: findImports });
+  const output = JSON.parse(compiled);
 
-    // Verifica se compilou corretamente
-    if (!output.contracts || !output.contracts[path.basename(filePath)]) {
-        log("❌ Erro ao compilar o contrato. Verifique os imports.");
-        if (output.errors) output.errors.forEach(e => log(e.formattedMessage));
-        return;
-    }
+  if (!output.contracts || !output.contracts[path.basename(filePath)]) {
+    log("❌ Erro ao compilar o contrato. Verifique os imports.");
+    if (output.errors) output.errors.forEach(e => log(e.formattedMessage));
+    return [];
+  }
 
-    // Pega o primeiro contrato definido no arquivo
-    const contractFileName = Object.keys(output.contracts[path.basename(filePath)])[0];
-    const contractData = output.contracts[path.basename(filePath)][contractFileName];
+  // Conecta ao nó Hardhat local
+  log("🔌 Conectando ao Hardhat local...");
+  const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
+  const accounts = await provider.listAccounts();
+  const wallet = provider.getSigner(accounts[0]);
 
-    // ABI do contrato (interface)
+  const results = [];
+
+  // Percorre todos os contratos compilados no arquivo
+  for (const [contractName, contractData] of Object.entries(output.contracts[path.basename(filePath)])) {
+    log(`🚀 Fazendo deploy do contrato: ${contractName}`);
+
     const abi = contractData.abi;
-
-    // Bytecode do contrato (código binário para deploy)
     const bytecode = contractData.evm.bytecode.object;
+    if (!bytecode || bytecode === "0x") {
+      log(`⚠️ Contrato ${contractName} não possui bytecode (provavelmente é uma interface ou biblioteca).`);
+      continue;
+    }
 
-    // Conecta ao nó Hardhat local
-    log("🔌 Conectando ao Hardhat local...");
-    const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
-
-    // Lista contas disponíveis no Hardhat node
-    const accounts = await provider.listAccounts();
-    if (!accounts.length) { log("❌ Nenhuma conta encontrada no Hardhat node."); return; }
-
-    // Usa a primeira conta como signer
-    const wallet = provider.getSigner(accounts[0]);
-
-    // Cria a fábrica de contratos (para deploy)
     const factory = new ethers.ContractFactory(abi, bytecode, wallet);
 
-    // Analisa o constructor e cria "fake args" para deploy
     const constructor = abi.find(item => item.type === "constructor");
     const fakeArgs = constructor?.inputs?.map((input, i) => {
-        switch (input.type) {
-            case "string": return `fake_string_${i}`;
-            case "uint256": case "uint": case "int": case "int256": return 1000 + i;
-            case "address": return accounts[0];
-            case "bool": return i % 2 === 0;
-            case "bytes32": return ethers.utils.formatBytes32String(`val${i}`);
-            case "bytes": return ethers.utils.toUtf8Bytes(`data${i}`);
-            case "string[]": return [`str1_${i}`, `str2_${i}`];
-            case "uint256[]": return [1 + i, 2 + i];
-            case "address[]": return [accounts[0]];
-            default: return null;
-        }
+      switch (input.type) {
+        case "string": return `fake_string_${i}`;
+        case "uint256": case "uint": case "int": return 1000 + i;
+        case "address": return accounts[0];
+        case "bool": return i % 2 === 0;
+        case "bytes32": return ethers.utils.formatBytes32String(`val${i}`);
+        case "bytes": return ethers.utils.toUtf8Bytes(`data${i}`);
+        case "string[]": return [`str1_${i}`, `str2_${i}`];
+        case "uint256[]": return [1 + i, 2 + i];
+        case "address[]": return [accounts[0]];
+        default: return null;
+      }
     }) || [];
 
-    // Faz o deploy do contrato
-    log("🚀 Fazendo deploy do contrato...");
     try {
-        const contractInstance = await factory.deploy(...fakeArgs); // deploy
-        const txReceipt = await contractInstance.deployTransaction.wait(); // espera confirmação
-        deployedContract = await contractInstance.deployed(); // guarda instância em memória
-        log(`✅ Contrato deployado: ${deployedContract.address}`);
-        return  {
-            address: deployedContract.address, 
-            gasUsed: txReceipt.gasUsed,
-            abi, // ← Retorna a ABI também
-            contractName: contractFileName // ← E o nome do contrato
-        };
-    } catch (err) {
-        log(`❌ Falha no deploy: ${err.message}`);
-        return null;
-    }
+      const contractInstance = await factory.deploy(...fakeArgs);
+      const txReceipt = await contractInstance.deployTransaction.wait();
 
-    log("🔍 Contrato pronto para execução de funções.");
+      log(`✅ ${contractName} deployado em: ${contractInstance.address}`);
+      results.push({
+        contractName,
+        address: contractInstance.address,
+        gasUsed: txReceipt.gasUsed,
+        abi,
+      });
+    } catch (err) {
+      log(`❌ Falha no deploy de ${contractName}: ${err.message}`);
+    }
+  }
+
+  if (!results.length) {
+    log("⚠️ Nenhum contrato foi deployado com sucesso.");
+  }
+
+  return results;
 }
+
 
 // Permite alterar o contrato deployado em memória
 function setDeployedContract(contract) {

@@ -239,86 +239,48 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
     try {
         if (!req.file) return res.status(400).send("❌ Nenhum arquivo enviado.");
 
+        // ------------------------------
+        // 🔹 Buscar gasPrices e preços dos tokens (uma vez só)
+        // ------------------------------
+        gasPricesByNetwork = await getGasPricesFromNetworks();
+        tokenPrices = await getTokenPrices();
+        console.log("🔹 Gas e preços carregados.");
+
+
         const filePath = req.file.path;
         const source = fs.readFileSync(filePath, "utf8");
 
         // ------------------------------
         // 🔹 Faz deploy do contrato e mede gas
         // ------------------------------
-        const deployedInfo = await analisarContratoManual(filePath, console.log);
-        if (!deployedInfo || !deployedInfo.address) {
-            return res.status(500).send("❌ Erro ao fazer deploy do contrato.");
-        }
-
-        // ------------------------------
-        // 🔹 Buscar gasPrices e preços dos tokens (uma vez só)
-        // ------------------------------
-        gasPricesByNetwork = await getGasPricesFromNetworks();
-        tokenPrices = await getTokenPrices();
-
-        // ------------------------------
-        // 🔹 Configuração para recompilar o contrato e extrair ABI
-        // ------------------------------
-        const input = {
-            language: "Solidity",
-            sources: { [path.basename(filePath)]: { content: source } },
-            settings: { outputSelection: { "*": { "*": ["abi"] } } }
-        };
-
-        function findImports(importPath) {
-            try {
-                const baseDir = path.dirname(filePath);
-                let resolvedPath = path.resolve(baseDir, importPath);
-                if (fs.existsSync(resolvedPath)) return { contents: fs.readFileSync(resolvedPath, "utf8") };
-
-                const contractsDir = path.resolve(__dirname, "contracts");
-                resolvedPath = path.resolve(contractsDir, importPath);
-                if (fs.existsSync(resolvedPath)) return { contents: fs.readFileSync(resolvedPath, "utf8") };
-
-                const npmResolved = require.resolve(importPath);
-                return { contents: fs.readFileSync(npmResolved, "utf8") };
-            } catch (err) {
-                return { error: `Import não encontrado: ${importPath}` };
-            }
-        }
-
-        const compiled = solc.compile(JSON.stringify(input), { import: findImports });
-        const output = JSON.parse(compiled);
-
-        if (output.errors) {
-            const hasError = output.errors.some(e => e.severity === "error");
-            output.errors.forEach(e => console.log(e.formattedMessage));
-            if (hasError) return res.status(500).send("❌ Erro ao compilar contrato. Veja o console.");
-        }
-
-        const contractsObj = output.contracts[path.basename(filePath)];
-        if (!contractsObj) return res.status(500).send("❌ Contrato não encontrado no output da compilação.");
+        const deployedContracts = await analisarContratoManual(filePath, console.log);
+        if (!deployedContracts.length)
+          return res.status(500).send("❌ Nenhum contrato foi deployado.");
 
 
 //TODO
-        for (const contractName of Object.keys(contractsObj)) {
+
         
-        // const contractName = Object.keys(contractsObj)[0];
-        const abi = contractsObj[contractName].abi;
-        console.log(contractName);
-
      
+     
+        const contratosResponse = []; // ← array para acumular tudo
 
 
-        const contractId = salvarContractNoDB( deployedInfo.contractName , deployedInfo.address);
-        // const contractId = salvarContractNoDB(path.basename(filePath), deployedInfo.address);
-        deployedInfo.id = contractId;
-        currentDeployedContract = deployedInfo;
-        // Salva instância no mapa global
-        registerDeployedContract(contractName, {
+        // salva cada contrato no banco
+        for (const c of deployedContracts) {
+          const contractId = salvarContractNoDB(c.contractName, c.address);
+          c.id = contractId;
+          currentDeployedContract = c;
+        
+          registerDeployedContract(c.contractName, {
             id: contractId,
-            address: deployedInfo.address,
-            abi,
-            name: contractName
-        });
+            address: c.address,
+            abi: c.abi,
+            name: c.contractName
+          });
+        
 
 
-        // Também salva no dicionário local (se quiser manter compatibilidade)
 
 
         // ------------------------------
@@ -331,12 +293,12 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
                 const tokenPrice = tokenPrices[token];
                 if (!tokenPrice) continue;
 
-                const costInToken = ethers.utils.formatEther(deployedInfo.gasUsed.mul(data.gasPrice));
+                const costInToken = ethers.utils.formatEther(c.gasUsed.mul(data.gasPrice));
                 const costUSD = parseFloat(costInToken) * tokenPrice.usd;
                 const costBRL = parseFloat(costInToken) * tokenPrice.brl;
 
                 const networkId = networks[token].id;
-                salvarDeployNoDB(contractId, networks[token].id, deployedInfo.gasUsed.toNumber(), costUSD, costBRL);
+                salvarDeployNoDB(contractId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
                 salvarNetworkCosts(networkId, parseFloat(ethers.utils.formatUnits(data.gasPrice, "gwei")), tokenPrice.usd, tokenPrice.brl);
 
                 custosPorRede[token] = {
@@ -351,19 +313,31 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
             }
         });
         insertDeploy();
+        
+          // Adiciona contrato atual ao array final
+          contratosResponse.push({
+            nome: c.contractName,
+            endereco: c.address,
+            gas: c.gasUsed.toString(),
+            custosPorRede,
+            abi: c.abi
+          });
+        }
+        
+        res.json({ contratos: contratosResponse });
 
         // ------------------------------
         // 🔹 Retorna ABI e custos do deploy
         // ------------------------------
-        res.json({
-            abi,
-            contractName,
-            deployedAddress: deployedInfo.address,
-            deployGas: deployedInfo.gasUsed.toString(),
-            funcao: "deploy",
-            custosPorRede
-        });
-        }
+        // res.json({
+        //     abi: c.abi,
+        //     contractName: c.contractName,
+        //     deployedAddress: c.address,
+        //     deployGas: c.gasUsed.toString(),
+        //     funcao: "deploy",
+        //     custosPorRede
+        // });
+        
 //TODO
 
     } catch (err) {
