@@ -2,292 +2,1078 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Resultados Combinados - SmartAgro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAgro - Simulação de Adoção Blockchain</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 20px;
+        :root {
+            --primary: #2E7D32;
+            --primary-dark: #1B5E20;
+            --primary-light: #4CAF50;
+            --secondary: #FF9800;
+            --accent: #2196F3;
+            --text: #333333;
+            --text-light: #666666;
+            --background: #F5F5F5;
+            --card-bg: #FFFFFF;
+            --border: #E0E0E0;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
         }
-        h1 {
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px 0;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .header-title h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .header-title p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        /* Filters Section */
+        .filters-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .filters-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            color: var(--text);
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .filter-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .required::after {
+            content: "*";
+            color: var(--error);
+            margin-left: 4px;
+        }
+        
+        .filter-select, .filter-input {
+            padding: 12px 15px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: white;
+            transition: var(--transition);
+            width: 100%;
+        }
+        
+        .filter-select:focus, .filter-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        .filter-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 25px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .filter-info {
+            font-size: 14px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0D8BF2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(33, 150, 243, 0.2);
+        }
+        
+        /* Stats Cards */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: var(--shadow);
             text-align: center;
         }
-        label, select, input, button {
-            margin: 5px;
-        }
-        canvas {
-            width: 90vw;            /* 90% da largura da tela */
-            max-width: 1200px;      /* limita largura máxima */
-            height: 500px;          /* altura fixa para evitar crescimento infinito */
-            display: block;
-            margin: 40px auto;
-            background: white;
+        
+        .stat-icon {
+            width: 50px;
+            height: 50px;
             border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+            color: white;
         }
-        table {
-            border-collapse: collapse;
-            width: 90%;
-            margin: 20px auto;
-            background: white;
-            border-radius: 10px;
+        
+        .stat-icon-1 { background-color: var(--accent); }
+        .stat-icon-2 { background-color: var(--success); }
+        .stat-icon-3 { background-color: var(--secondary); }
+        .stat-icon-4 { background-color: #9C27B0; }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 5px;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+        
+        /* Chart Section */
+        .chart-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 500px;
+            width: 100%;
+        }
+        
+        /* Table Section */
+        .table-section {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--shadow);
             overflow: hidden;
         }
-        th, td {
-            border: 1px solid #ccc;
-            padding: 8px;
-            text-align: center;
+        
+        .table-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text);
         }
-        th {
-            background-color: #eee;
+        
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
         }
-        .container {
+        
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        
+        .results-table th {
+            background-color: #F8FAFC;
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text);
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+        }
+        
+        .results-table td {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+        }
+        
+        .results-table tr:hover {
+            background-color: #F8FAFC;
+        }
+        
+        .results-table .total-cell {
+            font-weight: 700;
+            color: var(--primary);
+            background-color: rgba(46, 125, 50, 0.05);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        
+        .badge-yes {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .badge-no {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: var(--error);
+        }
+        
+        /* Footer */
+        .dashboard-footer {
             text-align: center;
+            padding: 25px 0;
+            color: var(--text-light);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+        }
+        
+        .data-source {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            border-radius: 12px;
+            z-index: 10;
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .filters-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-title h1 {
+                font-size: 24px;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .filter-actions {
+                flex-direction: column;
+                gap: 15px;
+                align-items: stretch;
+            }
+            
+            .btn {
+                justify-content: center;
+            }
+            
+            .chart-container {
+                height: 400px;
+            }
+            
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 350px;
+            }
         }
     </style>
 </head>
 <body>
-    <h1>Resultados Combinados: IBGE × Custos Blockchain</h1>
-
+    <header class="dashboard-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1><i class="fas fa-chart-line"></i> Simulação de Adoção Blockchain</h1>
+                    <p>Cruzamento de dados do Censo Agropecuário com custos de contratos inteligentes</p>
+                </div>
+            </div>
+        </div>
+    </header>
+    
     <div class="container">
-        <label>Região:
-            <select id="filtroRegiao" required>
-                <option value="" disabled selected hidden>Selecione...</option>
-                <option>Brasil</option>
-                <option>Sul</option>
-                <option>RS</option>
-                <option>Alegrete</option>
-            </select>
-        </label>
-
-        <label>Classificação:
-            <select id="filtroClassificacao">
-                <option value="">Todas</option>
-                <option>Agricultura</option>
-                <option>Pecuária</option>
-                <option>Silvicultura</option>
-                <option>Extração Vegetal</option>
-                <option>Aquicultura</option>
-                <option>Agroindústria</option>
-            </select>
-        </label>
-
-        <label>Familiar:
-            <select id="filtroFamiliar" required>
-                <option value="" disabled selected hidden>Selecione...</option>
-                <option value="1">Sim</option>
-                <option value="0">Não</option>
-            </select>
-        </label>
-
-        <label>Obrigatório:
-            <select id="filtroObrigatorio" required>
-                <option value="" disabled selected hidden>Selecione...</option>
-                <option value="1">Sim</option>
-                <option value="0">Não</option>
-            </select>
-        </label>
-
-        <label>Contrato:
-            <select id="filtroContrato" required>
-                <option value="" disabled selected hidden>Selecione...</option>
-            </select>
-        </label>
-
-        <label>Rede:
-            <select id="filtroRede">
-                <option value="">Todas</option>
-            </select>
-        </label>
-
-        <label>Função:
-            <select id="filtroFuncao">
-                <option value="">Todas</option>
-            </select>
-        </label>
-
-        <label>Top N:
-            <input type="number" id="filtroTop" min="1" placeholder="10">
-        </label>
-
-        <label>Ordenar por:
-            <select id="filtroOrderBy">
-                <option value="valor_vendas">Valor Vendido</option>
-                <option value="estabelecimentos">Estabelecimentos</option>
-            </select>
-        </label>
-
-        <button onclick="carregarResultados()">Gerar Resultados</button>
+        <div class="main-content">
+            <!-- Filters Section -->
+            <section class="filters-section">
+                <div class="filters-title">
+                    <i class="fas fa-filter"></i>
+                    <span>Filtros de Simulação</span>
+                </div>
+                
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label class="filter-label required"><i class="fas fa-map-marker-alt"></i> Região</label>
+                        <select class="filter-select" id="filtroRegiao" required>
+                            <option value="" disabled selected>Selecione uma região</option>
+                            <option value="Brasil">Brasil</option>
+                            <option value="Sul">Sul</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="Alegrete">Alegrete</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label"><i class="fas fa-tags"></i> Classificação</label>
+                        <select class="filter-select" id="filtroClassificacao">
+                            <option value="">Todas as classificações</option>
+                            <option value="Agricultura">Agricultura</option>
+                            <option value="Pecuária">Pecuária</option>
+                            <option value="Silvicultura">Silvicultura</option>
+                            <option value="Extração Vegetal">Extração Vegetal</option>
+                            <option value="Aquicultura">Aquicultura</option>
+                            <option value="Agroindústria">Agroindústria</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label required"><i class="fas fa-home"></i> Familiar</label>
+                        <select class="filter-select" id="filtroFamiliar" required>
+                            <option value="" disabled selected>Selecione uma opção</option>
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        </select>
+                    </div>
+                    
+                    <!-- CORREÇÃO: Obrigatório agora tem opção "Todos" -->
+                    <div class="filter-group">
+                        <label class="filter-label"><i class="fas fa-file-signature"></i> Obrigatório</label>
+                        <select class="filter-select" id="filtroObrigatorio">
+                            <option value="">Todos</option>
+                            <option value="1">Sim</option>
+                            <option value="0">Não</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label required"><i class="fas fa-file-contract"></i> Contrato</label>
+                        <select class="filter-select" id="filtroContrato" required>
+                            <option value="" disabled selected>Carregando contratos...</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label"><i class="fas fa-network-wired"></i> Rede Blockchain</label>
+                        <select class="filter-select" id="filtroRede">
+                            <option value="">Todas as redes</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label"><i class="fas fa-cogs"></i> Função</label>
+                        <select class="filter-select" id="filtroFuncao">
+                            <option value="">Todas as funções</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label"><i class="fas fa-sort-amount-down"></i> Top N Produtos</label>
+                        <input type="number" class="filter-input" id="filtroTop" min="1" max="50" placeholder="Ex: 10 (opcional)">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label required"><i class="fas fa-sort"></i> Ordenar por</label>
+                        <select class="filter-select" id="filtroOrderBy" required>
+                            <option value="" disabled selected>Selecione uma opção</option>
+                            <option value="valor_vendas">Valor Vendido</option>
+                            <option value="estabelecimentos">Estabelecimentos</option>
+                            <option value="total_estimado_brl">Total Estimado (BRL)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filter-actions">
+                    <div class="filter-info">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Campos com * são obrigatórios</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="carregarResultados()">
+                        <i class="fas fa-chart-bar"></i> Gerar Simulação
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Stats Section -->
+            <section class="stats-section" id="statsContainer">
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-1">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Total Estimado</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-2">
+                        <i class="fas fa-tractor"></i>
+                    </div>
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Produtos Analisados</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-3">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Custo Médio por Contrato</div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-4">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Cenário Simulado</div>
+                </div>
+            </section>
+            
+            <!-- Chart Section -->
+            <section class="chart-section">
+                <div class="chart-header">
+                    <div class="chart-title">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Total Estimado por Produto</span>
+                    </div>
+                    <div class="chart-actions">
+                        <button class="btn btn-secondary" onclick="alternarTipoGrafico()">
+                            <i class="fas fa-exchange-alt"></i> Alternar Tipo
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="graficoResultados"></canvas>
+                    <div id="chartLoading" class="loading-overlay" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <div>Gerando gráfico...</div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Table Section -->
+            <section class="table-section">
+                <div class="table-title">
+                    <i class="fas fa-table"></i>
+                    <span>Resultados Detalhados</span>
+                </div>
+                <div class="table-wrapper">
+                    <table class="results-table">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Região</th>
+                                <th>Classificação</th>
+                                <th>Familiar</th>
+                                <th>Obrigatório</th>
+                                <th>Custo Médio Contrato (BRL)</th>
+                                <th>Estabelecimentos</th>
+                                <th>Total Estimado (BRL)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaResultados">
+                            <tr>
+                                <td colspan="8" style="text-align: center; padding: 40px;">
+                                    <i class="fas fa-chart-line" style="font-size: 48px; color: var(--border); margin-bottom: 15px;"></i>
+                                    <p style="color: var(--text-light);">Aplique os filtros e clique em "Gerar Simulação" para visualizar os resultados</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+        
+        <footer class="dashboard-footer">
+            <div class="data-source">
+                <i class="fas fa-database"></i>
+                <span>Fonte: Censo Agropecuário IBGE × Análise de Custos Blockchain SmartAgro</span>
+            </div>
+            <div class="copyright">
+                &copy; 2025 SmartAgro - Simulação de Adoção Blockchain. Todos os direitos reservados.
+            </div>
+        </footer>
     </div>
-
-    <canvas id="graficoResultados"></canvas>
-
-    <table id="tabelaResultados">
-        <thead>
-            <tr>
-                <th>Produto</th>
-                <th>Região</th>
-                <th>Classificação</th>
-                <th>Familiar</th>
-                <th>Obrigatório</th>
-                <th>Custo Total Funções (BRL)</th>
-                <th>Total Estimado (BRL)</th>
-            </tr>
-        </thead>
-        <tbody></tbody>
-    </table>
-
+    
     <script>
-        let grafico; // variável global do gráfico
-
+        let grafico = null;
+        let currentChartType = 'bar';
+        let currentData = [];
+        
+        // Carregar filtros dinâmicos
         async function carregarFiltros() {
-            const [contratosRes, redesRes] = await Promise.all([
-                fetch("/api/contracts-list"),
-                fetch("/api/networks-list")
-            ]);
-            const [contratos, redes] = await Promise.all([
-                contratosRes.json(),
-                redesRes.json()
-            ]);
-
-            const contratoSel = document.getElementById("filtroContrato");
-            contratos.forEach(c => {
-                const opt = document.createElement("option");
-                opt.value = c;
-                opt.textContent = c;
-                contratoSel.appendChild(opt);
-            });
-
-            const redeSel = document.getElementById("filtroRede");
-            redes.forEach(r => {
-                const opt = document.createElement("option");
-                opt.value = r;
-                opt.textContent = r;
-                redeSel.appendChild(opt);
-            });
+            try {
+                // Carregar contratos e redes em paralelo
+                const [contratosRes, redesRes] = await Promise.all([
+                    fetch("/api/contracts-list"),
+                    fetch("/api/networks-list")
+                ]);
+                
+                const [contratos, redes] = await Promise.all([
+                    contratosRes.json(),
+                    redesRes.json()
+                ]);
+                
+                // Preencher contratos
+                const contratoSel = document.getElementById("filtroContrato");
+                contratoSel.innerHTML = '<option value="" disabled selected>Selecione um contrato</option>';
+                contratos.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c;
+                    opt.textContent = c;
+                    contratoSel.appendChild(opt);
+                });
+                
+                // Preencher redes
+                const redeSel = document.getElementById("filtroRede");
+                redeSel.innerHTML = '<option value="">Todas as redes</option>';
+                redes.forEach(r => {
+                    const opt = document.createElement("option");
+                    opt.value = r;
+                    opt.textContent = r;
+                    redeSel.appendChild(opt);
+                });
+                
+                console.log('✅ Filtros carregados com sucesso');
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar filtros:', error);
+                alert('Erro ao carregar os filtros. Verifique sua conexão.');
+            }
         }
-
-        // 🔹 Atualiza funções conforme o contrato selecionado
-        document.getElementById("filtroContrato").addEventListener("change", async (e) => {
+        
+        // Atualizar funções baseado no contrato selecionado
+        document.getElementById("filtroContrato").addEventListener("change", async function(e) {
             const contrato = e.target.value;
-            const resp = await fetch(`/api/functions-list?contract=${encodeURIComponent(contrato)}`);
-            const funcoes = await resp.json();
-
+            if (!contrato) return;
+            
             const selectFunc = document.getElementById("filtroFuncao");
-            selectFunc.innerHTML = "<option value=''>Todas</option>";
-            funcoes.forEach(fn => {
-                const opt = document.createElement("option");
-                opt.value = fn;
-                opt.textContent = fn;
-                selectFunc.appendChild(opt);
-            });
+            selectFunc.innerHTML = '<option value="">Carregando funções...</option>';
+            
+            try {
+                const resp = await fetch(`/api/functions-list?contract=${encodeURIComponent(contrato)}`);
+                const funcoes = await resp.json();
+                
+                selectFunc.innerHTML = '<option value="">Todas as funções</option>';
+                funcoes.forEach(fn => {
+                    const opt = document.createElement("option");
+                    opt.value = fn;
+                    opt.textContent = fn;
+                    selectFunc.appendChild(opt);
+                });
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar funções:', error);
+                selectFunc.innerHTML = '<option value="">Erro ao carregar</option>';
+            }
         });
-
-        async function carregarResultados() {
-            const regiao = document.getElementById("filtroRegiao").value;
-            const familiar = document.getElementById("filtroFamiliar").value;
-            const obrigatorio = document.getElementById("filtroObrigatorio").value;
-            const contrato = document.getElementById("filtroContrato").value;
-
-            // 🔒 Verificação obrigatória
-            if (!regiao || !familiar || !obrigatorio || !contrato) {
-                alert("Por favor, selecione todos os filtros obrigatórios antes de gerar os resultados.");
-                return;
-            }
-
-            const params = new URLSearchParams({
-                regiao,
-                classificacao: document.getElementById("filtroClassificacao").value,
-                familiar,
-                obrigatorio,
-                contract: contrato,
-                network: document.getElementById("filtroRede").value,
-                functionName: document.getElementById("filtroFuncao").value,
-                top: document.getElementById("filtroTop").value,
-                orderBy: document.getElementById("filtroOrderBy").value
+        
+        // Validar filtros obrigatórios - CORREÇÃO: obrigatorio não é mais obrigatório
+        function validarFiltros() {
+            const obrigatorios = [
+                { id: 'filtroRegiao', nome: 'Região' },
+                { id: 'filtroFamiliar', nome: 'Familiar' },
+                { id: 'filtroContrato', nome: 'Contrato' },
+                { id: 'filtroOrderBy', nome: 'Ordenar por' }
+            ];
+            
+            const faltantes = [];
+            obrigatorios.forEach(filtro => {
+                const element = document.getElementById(filtro.id);
+                if (!element.value) {
+                    faltantes.push(filtro.nome);
+                }
             });
-
-            const res = await fetch(`/api/results?${params.toString()}`);
-            const dados = await res.json();
-
-            const tbody = document.querySelector("#tabelaResultados tbody");
-            tbody.innerHTML = "";
-
-            if (dados.length === 0) {
-                tbody.innerHTML = "<tr><td colspan='7'>Nenhum resultado encontrado.</td></tr>";
-                if (grafico) grafico.destroy();
-                return;
+            
+            if (faltantes.length > 0) {
+                alert(`Por favor, preencha os seguintes campos obrigatórios:\n\n• ${faltantes.join('\n• ')}`);
+                return false;
             }
-
+            
+            return true;
+        }
+        
+        // Carregar resultados
+        async function carregarResultados() {
+            if (!validarFiltros()) return;
+            
+            // Mostrar loading
+            document.getElementById('chartLoading').style.display = 'flex';
+            document.getElementById('tabelaResultados').innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px;">
+                        <div class="loading-spinner" style="margin: 0 auto 15px;"></div>
+                        <p>Processando simulação...</p>
+                    </td>
+                </tr>
+            `;
+            
+            // Construir parâmetros CORRETAMENTE
+            const params = new URLSearchParams();
+            params.append("regiao", document.getElementById("filtroRegiao").value);
+            params.append("familiar", document.getElementById("filtroFamiliar").value);
+            params.append("contract", document.getElementById("filtroContrato").value);
+            params.append("orderBy", document.getElementById("filtroOrderBy").value);
+            
+            // Adicionar filtros opcionais apenas se preenchidos
+            const classificacao = document.getElementById("filtroClassificacao").value;
+            const obrigatorio = document.getElementById("filtroObrigatorio").value;
+            const network = document.getElementById("filtroRede").value;
+            const functionName = document.getElementById("filtroFuncao").value;
+            const top = document.getElementById("filtroTop").value;
+            
+            if (classificacao) params.append("classificacao", classificacao);
+            if (obrigatorio !== "") params.append("obrigatorio", obrigatorio);
+            if (network) params.append("network", network);
+            if (functionName) params.append("functionName", functionName);
+            if (top) params.append("top", top);
+            
+            try {
+                const res = await fetch(`/api/results?${params.toString()}`);
+                if (!res.ok) throw new Error(`Erro ${res.status}: ${res.statusText}`);
+                
+                const dados = await res.json();
+                currentData = dados;
+                
+                if (dados.length === 0) {
+                    mostrarResultadosVazios();
+                } else {
+                    atualizarEstatisticas(dados);
+                    preencherTabela(dados);
+                    desenharGrafico(dados);
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar resultados:', error);
+                mostrarErro(error.message);
+            } finally {
+                document.getElementById('chartLoading').style.display = 'none';
+            }
+        }
+        
+        // Atualizar cards de estatísticas - CORREÇÃO para evitar NaN
+        function atualizarEstatisticas(dados) {
+            const totalEstimado = dados.reduce((sum, d) => {
+                const valor = parseFloat(d.total_estimado_brl) || 0;
+                return sum + valor;
+            }, 0);
+            
+            const custoMedio = dados.reduce((sum, d) => {
+                const valor = parseFloat(d.custo_total_funcoes_brl || d.custo_medio_contrato_brl) || 0;
+                return sum + valor;
+            }, 0) / (dados.length || 1); // Evitar divisão por zero
+            
+            const totalEstabelecimentos = dados.reduce((sum, d) => {
+                const valor = parseFloat(d.estabelecimentos) || 0;
+                return sum + valor;
+            }, 0);
+            
+            const statsCards = document.querySelectorAll('.stat-card');
+            
+            // Card 1: Total Estimado
+            statsCards[0].querySelector('.stat-value').textContent = 
+                isNaN(totalEstimado) ? '-' : formatarMoeda(totalEstimado);
+            statsCards[0].querySelector('.stat-label').textContent = 
+                `Total Estimado (${document.getElementById("filtroRegiao").value})`;
+            
+            // Card 2: Produtos Analisados
+            statsCards[1].querySelector('.stat-value').textContent = 
+                dados.length;
+            
+            // Card 3: Custo Médio por Contrato
+            statsCards[2].querySelector('.stat-value').textContent = 
+                isNaN(custoMedio) ? '-' : formatarMoeda(custoMedio);
+            
+            // Card 4: Cenário Simulado
+            statsCards[3].querySelector('.stat-value').textContent = 
+                document.getElementById("filtroContrato").value || '-';
+            statsCards[3].querySelector('.stat-label').textContent = 
+                `Contrato Selecionado`;
+        }
+        
+        // Formatar moeda - CORREÇÃO para tratar NaN
+        function formatarMoeda(valor) {
+            if (isNaN(valor) || !isFinite(valor)) return 'R$ 0';
+            
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(valor);
+        }
+        
+        // Formatar número
+        function formatarNumero(valor) {
+            if (isNaN(valor) || !isFinite(valor)) return '0';
+            return valor.toLocaleString('pt-BR');
+        }
+        
+        // Preencher tabela - CORREÇÃO para tratar valores nulos
+        function preencherTabela(dados) {
+            const tbody = document.getElementById("tabelaResultados");
+            tbody.innerHTML = '';
+            
             dados.forEach(d => {
                 const tr = document.createElement("tr");
+                
+                // Parsear valores numéricos para evitar NaN
+                const custoMedio = parseFloat(d.custo_total_funcoes_brl || d.custo_medio_contrato_brl) || 0;
+                const estabelecimentos = parseInt(d.estabelecimentos) || 0;
+                const totalEstimado = parseFloat(d.total_estimado_brl) || 0;
+                
                 tr.innerHTML = `
-                    <td>${d.produto}</td>
-                    <td>${d.regiao}</td>
-                    <td>${d.classificacao}</td>
-                    <td>${d.familiar ? "Sim" : "Não"}</td>
-                    <td>${d.obrigatorio ? "Sim" : "Não"}</td>
-                    <td>${d.custo_total_funcoes_brl || d.custo_medio_contrato_brl}</td>
-                    <td>${d.total_estimado_brl}</td>
+                    <td><strong>${d.produto || 'N/A'}</strong></td>
+                    <td>${d.regiao || 'N/A'}</td>
+                    <td>${d.classificacao || 'N/A'}</td>
+                    <td><span class="badge ${d.familiar ? 'badge-yes' : 'badge-no'}">${d.familiar ? 'Sim' : 'Não'}</span></td>
+                    <td><span class="badge ${d.obrigatorio ? 'badge-yes' : 'badge-no'}">${d.obrigatorio ? 'Sim' : 'Não'}</span></td>
+                    <td>${formatarMoeda(custoMedio)}</td>
+                    <td>${formatarNumero(estabelecimentos)}</td>
+                    <td class="total-cell">${formatarMoeda(totalEstimado)}</td>
                 `;
                 tbody.appendChild(tr);
             });
-
-            // --- Gráfico ---
+        }
+        
+        // Desenhar gráfico - CORREÇÃO para tratar valores nulos
+        function desenharGrafico(dados) {
             const ctx = document.getElementById("graficoResultados").getContext("2d");
-            const labels = dados.map(d => d.produto);
-            const valores = dados.map(d => d.total_estimado_brl);
-
-            if (grafico) grafico.destroy();
-            grafico = new Chart(ctx, {
-                type: "bar",
+            
+            // Destruir gráfico anterior
+            if (grafico) {
+                grafico.destroy();
+            }
+            
+            // Preparar dados, garantindo que sejam números válidos
+            const labels = dados.map(d => d.produto || 'N/A').slice(0, 20);
+            const valores = dados.map(d => {
+                const valor = parseFloat(d.total_estimado_brl);
+                return isNaN(valor) ? 0 : valor;
+            }).slice(0, 20);
+            
+            const estabelecimentos = dados.map(d => {
+                const valor = parseInt(d.estabelecimentos);
+                return isNaN(valor) ? 0 : valor;
+            }).slice(0, 20);
+            
+            const config = {
+                type: currentChartType,
                 data: {
-                    labels,
+                    labels: labels,
                     datasets: [{
                         label: "Total Estimado (BRL)",
                         data: valores,
-                        borderWidth: 1
+                        backgroundColor: currentChartType === 'bar' ? 'rgba(33, 150, 243, 0.7)' : 'rgba(33, 150, 243, 0.2)',
+                        borderColor: 'rgba(33, 150, 243, 1)',
+                        borderWidth: 2,
+                        yAxisID: 'y'
+                    }, {
+                        label: "Estabelecimentos",
+                        data: estabelecimentos,
+                        type: currentChartType === 'pie' ? null : 'line',
+                        backgroundColor: 'rgba(245, 158, 11, 0.2)',
+                        borderColor: 'rgba(245, 158, 11, 1)',
+                        borderWidth: 2,
+                        yAxisID: currentChartType === 'pie' ? null : 'y1'
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: true,  // importante!
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: "Valor em BRL",  // <-- legenda do eixo Y
-                                font: { size: 14 }
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: "Produtos",  // opcional para eixo X
-                                font: { size: 14 }
-                            }
-                        }
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
                     },
+                    stacked: false,
                     plugins: {
                         title: {
                             display: true,
-                            text: "Total Estimado por Produto",
-                            font: { size: 18 }
+                            text: `Simulação de Adoção - ${document.getElementById("filtroRegiao").value}`,
+                            font: { size: 16, weight: 'bold' }
                         },
-                        legend: {
-                            labels: { font: { size: 14 } }
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.datasetIndex === 0) {
+                                        label += formatarMoeda(context.parsed.y);
+                                    } else {
+                                        label += formatarNumero(context.parsed.y) + ' estabelecimentos';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: currentChartType === 'pie' ? undefined : {
+                        x: {
+                            ticks: {
+                                maxRotation: 45,
+                                minRotation: 0
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Total Estimado (BRL)',
+                                font: { weight: 'bold' }
+                            },
+                            ticks: {
+                                callback: function(value) {
+                                    if (isNaN(value)) return 'R$ 0';
+                                    if (value >= 1000000000) {
+                                        return 'R$ ' + (value / 1000000000).toFixed(1) + 'B';
+                                    } else if (value >= 1000000) {
+                                        return 'R$ ' + (value / 1000000).toFixed(1) + 'M';
+                                    } else if (value >= 1000) {
+                                        return 'R$ ' + (value / 1000).toFixed(0) + 'k';
+                                    }
+                                    return 'R$ ' + value;
+                                }
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Estabelecimentos',
+                                font: { weight: 'bold' }
+                            },
+                            grid: {
+                                drawOnChartArea: false,
+                            },
                         }
                     }
                 }
-            });
-
+            };
+            
+            grafico = new Chart(ctx, config);
         }
-
-        carregarFiltros();
+        
+        // Alternar tipo de gráfico
+        function alternarTipoGrafico() {
+            const tipos = ['bar', 'line', 'pie'];
+            const indexAtual = tipos.indexOf(currentChartType);
+            currentChartType = tipos[(indexAtual + 1) % tipos.length];
+            
+            if (currentData && currentData.length > 0) {
+                desenharGrafico(currentData);
+            }
+        }
+        
+        // Mostrar estado vazio
+        function mostrarResultadosVazios() {
+            document.getElementById('tabelaResultados').innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px;">
+                        <i class="fas fa-search" style="font-size: 48px; color: var(--border); margin-bottom: 15px;"></i>
+                        <p style="color: var(--text-light); font-size: 16px; font-weight: 500;">Nenhum resultado encontrado</p>
+                        <p style="color: var(--text-light); font-size: 14px;">Tente ajustar os filtros de pesquisa</p>
+                    </td>
+                </tr>
+            `;
+            
+            // Resetar estatísticas
+            document.querySelectorAll('.stat-value').forEach(el => el.textContent = '-');
+            document.querySelectorAll('.stat-card')[0].querySelector('.stat-label').textContent = 'Total Estimado';
+            document.querySelectorAll('.stat-card')[3].querySelector('.stat-label').textContent = 'Cenário Simulado';
+            
+            // Limpar gráfico
+            if (grafico) {
+                grafico.destroy();
+                grafico = null;
+            }
+        }
+        
+        // Mostrar erro
+        function mostrarErro(mensagem) {
+            document.getElementById('tabelaResultados').innerHTML = `
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px; color: var(--error);">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 15px;"></i>
+                        <p style="font-size: 16px; font-weight: 500;">Erro ao carregar resultados</p>
+                        <p style="font-size: 14px; color: var(--text-light);">${mensagem}</p>
+                    </td>
+                </tr>
+            `;
+            
+            if (grafico) {
+                grafico.destroy();
+                grafico = null;
+            }
+        }
+        
+        // Inicialização
+        window.addEventListener('DOMContentLoaded', function() {
+            carregarFiltros();
+            
+            // Configurar valores padrão
+            document.getElementById('filtroOrderBy').value = 'total_estimado_brl';
+            // Obrigatório agora tem valor padrão vazio (opcional)
+            
+            // Adicionar evento de Enter para filtro Top N
+            document.getElementById('filtroTop').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    carregarResultados();
+                }
+            });
+        });
     </script>
 </body>
 </html>
-

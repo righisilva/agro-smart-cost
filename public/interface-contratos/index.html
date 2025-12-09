@@ -1,455 +1,1109 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Interface de Contratos - SmartAgro</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #1e1e1e;
-      color: #f1f1f1;
-      padding: 20px;
-    }
-    h1, h2 {
-      color: #4CAF50;
-    }
-    input, button, select, textarea {
-      padding: 6px;
-      border-radius: 6px;
-      border: none;
-      margin: 5px 0;
-    }
-    input[type="file"] {
-      background-color: #333;
-      color: #ddd;
-    }
-    button {
-      background-color: #4CAF50;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .funcao {
-      background: #2c2c2c;
-      padding: 12px;
-      border-radius: 8px;
-      margin-bottom: 15px;
-    }
-    .arg {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .arg label {
-      min-width: 120px;
-    }
-    pre {
-      background: #111;
-      padding: 10px;
-      border-radius: 8px;
-      overflow-x: auto;
-      height: 300px;
-    }
-  </style>
-</head>
-</head>
-<body>
-    <h1>Interface de Contratos</h1>
-
-    <h2>1️⃣ Envie o contrato Solidity</h2>
-    <input type="file" id="contrato" accept=".sol">
-    <button onclick="carregarContrato()">Carregar ABI</button>
-
-    <h2>📜 Contratos disponíveis</h2>
-    <select id="contratoSelect" onchange="selecionarContrato()"></select>
-    <button onclick="atualizarContratos()">🔄 Atualizar lista</button>
-
-
-    <h2>2️⃣ Funções disponíveis</h2>
-    <button id="prefill-btn">Pré-preencher funções</button>
-    <div id="funcoes"></div>
-
-    <h2>🧾 Saída / Logs</h2>
-    <pre id="log"></pre>
-
-<script src="https://cdn.jsdelivr.net/npm/ethers/dist/ethers.min.js"></script>
-<script>
-let contratoDeployado = false;
-let contratosCarregados = []; // guarda todos os contratos do último upload
-
-
-async function selecionarContrato() {
- const select = document.getElementById("contratoSelect");
- const nomeContrato = select.value;
- const funcoesDiv = document.getElementById("funcoes");
- funcoesDiv.innerHTML = "<i>Carregando funções...</i>";
-
- if (!nomeContrato) return;
-
- // ✅ Busca contrato no array global
- const contrato = contratosCarregados.find(c => c.nome === nomeContrato);
- if (!contrato) {
-   funcoesDiv.innerHTML = "<i>Contrato não encontrado.</i>";
-   return;
- }
-
- contratoDeployado = !!contrato.endereco;
- const abi = contrato.abi;
-
- funcoesDiv.innerHTML = ""; // limpa
-
- const functions = abi.filter(f => f.type === "function" && !["view","pure"].includes(f.stateMutability));
- if (!functions.length) funcoesDiv.innerHTML = "<i>Nenhuma função mutável disponível.</i>";
-
- functions.forEach(f => {
-   const div = document.createElement("div");
-   div.className = "funcao";
-
-   const title = document.createElement("h3");
-   title.textContent = `${f.name}(${f.inputs.map(i => i.type).join(", ")})`;
-   div.appendChild(title);
-
-   f.inputs.forEach((input, idx) => {
-     const argDiv = document.createElement("div");
-     argDiv.className = "arg";
-     argDiv.innerHTML = `<label>${input.name || "arg" + idx} (${input.type}):</label>
-                         <input id="${nomeContrato}_${f.name}_arg${idx}" placeholder="valor..." />`;
-     div.appendChild(argDiv);
-   });
-
-   const btn = document.createElement("button");
-   btn.textContent = "Executar função";
-   btn.disabled = !contratoDeployado;
-   btn.onclick = () => executarFuncao(nomeContrato, f.name, f.inputs.length);
-   div.appendChild(btn);
-
-   funcoesDiv.appendChild(div);
- });
-}
-
-
-
-
-async function atualizarContratos() {
-  const select = document.getElementById("contratoSelect");
-  select.innerHTML = "<option>Carregando...</option>";
-
-  try {
-    const res = await fetch("/api/deployed-contracts");
-    if (!res.ok) throw new Error("Erro ao buscar contratos.");
-
-    const contratos = await res.json();
-    select.innerHTML = "";
-
-    if (!contratos.length) {
-      select.innerHTML = "<option>Nenhum contrato encontrado</option>";
-      return;
-    }
-
-    contratos.forEach(c => {
-      const opt = document.createElement("option");
-      opt.value = c.name || c.address;
-      opt.textContent = `${c.name || "Sem nome"} (${c.address})`;
-      select.appendChild(opt);
-    });
-  } catch (err) {
-    select.innerHTML = `<option>❌ Erro: ${err.message}</option>`;
-  }
-}
-
-// Atualiza a lista automaticamente ao abrir a página
-window.addEventListener("DOMContentLoaded", atualizarContratos);
-
-// --- Carregar contrato e ABI ---
-// --- Carregar contrato e ABI ---
-async function carregarContrato() {
-  const funcoesDiv = document.getElementById("funcoes");
-  const select = document.getElementById("contratoSelect");
-  funcoesDiv.innerHTML = "";
-  
-  select.innerHTML = "<option>Selecione um contrato...</option>";
-  contratosCarregados = [];
-  const fileInput = document.getElementById("contrato");
-  if (!fileInput.files.length) return alert("Selecione um arquivo Solidity.");
-
-  const formData = new FormData();
-  formData.append("contrato", fileInput.files[0]);
-  const res = await fetch("/api/load-abi", { method: "POST", body: formData });
-
-  if (!res.ok) {
-    document.getElementById("log").textContent = "Erro ao carregar ABI.";
-    return;
-  }
-
-  const data = await res.json();
-  contratosCarregados = data.contratos; // ✅ salva globalmente
- 
-  const logArea = document.getElementById("log");
-
-  // Verifica se veio o array de contratos
-  if (data.contratos && Array.isArray(data.contratos)) {
-    logArea.textContent = `✅ ${data.contratos.length} contrato(s) carregado(s):\n`;
-
-    // Itera sobre todos os contratos retornados
-    for (const contrato of data.contratos) {
-    const { nome, endereco, gas, custosPorRede } = contrato;
-    const abi = contrato.abi || data.abi; // ✅ pega o abi certo
-  
-    logArea.textContent +=
-      `\n\n📄 Contrato: ${nome}\n` +
-      `🏠 Endereço: ${endereco || "Não disponível"}\n` +
-      `⛽ Gas usado no deploy: ${gas || "N/A"}\n`;
-  
-    // Mostra custos por rede
-    if (custosPorRede && Object.keys(custosPorRede).length > 0) {
-      logArea.textContent += `🌍 Custos por rede:\n`;
-      for (const [token, info] of Object.entries(custosPorRede)) {
-        logArea.textContent +=
-          `  • ${info.name}: ${info.custoTotalToken} ${info.token}` +
-          ` ≈ ${info.custoUSD} / ${info.custoBRL}` +
-          ` (gasPrice: ${info.gasPrice})` +
-          ` | Cotação: U$${info.cotacao?.usd ?? "N/A"} / R$${info.cotacao?.brl ?? "N/A"}\n`;
-      }
-    }
-  
-    // --- 🔹 Criar seções de funções ---
-    const contractSection = document.createElement("div");
-    contractSection.className = "contrato-section";
-    contractSection.innerHTML = `<h2>Funções de ${nome}</h2>`;
-    funcoesDiv.appendChild(contractSection);
-  
-    // 🔸 Protege contra abi ausente
-    if (!abi || !Array.isArray(abi)) {
-      contractSection.innerHTML += "<i>❌ ABI não encontrada para este contrato.</i>";
-      continue;
-    }
-  
-    // 🔹 Filtra funções mutáveis
-    const functions = abi.filter(f => f.type === "function" && !["view", "pure"].includes(f.stateMutability));
-  
-    if (!functions.length) {
-      contractSection.innerHTML += "<i>Nenhuma função mutável disponível.</i>";
-      continue;
-    }
-  
-    // 🔹 Cria interface para cada função
-    functions.forEach(f => {
-      const div = document.createElement("div");
-      div.className = "funcao";
-  
-      const title = document.createElement("h3");
-      title.textContent = `${f.name}(${f.inputs.map(i => i.type).join(", ")})`;
-      div.appendChild(title);
-  
-      f.inputs.forEach((input, idx) => {
-        const argDiv = document.createElement("div");
-        argDiv.className = "arg";
-        argDiv.innerHTML = `
-          <label>${input.name || "arg" + idx} (${input.type}):</label>
-          <input id="${nome}_${f.name}_arg${idx}" placeholder="valor..." />
-        `;
-        div.appendChild(argDiv);
-      });
-  
-      const btn = document.createElement("button");
-      btn.textContent = "Executar função";
-      btn.disabled = !endereco; // ✅ só desativa se não houver endereço
-      btn.onclick = () => executarFuncao(nome, f.name, f.inputs.length);
-      div.appendChild(btn);
-  
-      contractSection.appendChild(div);
-    });
-  }
-  
-    
-        // 🔹 Atualiza flag global automaticamente
-        if (data.contratos.some(c => c.endereco)) {
-          contratoDeployado = true;
-          console.log("✅ Contrato(s) deployado(s) detectado(s).");
-        } else {
-          contratoDeployado = false;
-          console.warn("⚠️ Nenhum contrato com endereço detectado.");
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAgro - Interface de Contratos Inteligentes</title>
+    <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-dark: #1B5E20;
+            --primary-light: #4CAF50;
+            --secondary: #FF9800;
+            --accent: #2196F3;
+            --text: #333333;
+            --text-light: #666666;
+            --background: #0F172A;
+            --card-bg: #1E293B;
+            --card-bg-light: #334155;
+            --border: #475569;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
         }
-
-    atualizarContratos();
-
-  } else {
-    console.error("❌ Resposta inesperada:", data);
-    logArea.textContent = "❌ Erro: formato de resposta inesperado.";
-  }
-}
-
-window.carregarContrato = carregarContrato;
-
-
-
-// --- Gerar valores fake para cada tipo ---
-function fakeValueForType(type, idx, accounts, paramName = "") {
-  // 🧠 Normaliza nome do parâmetro para checagens
-  const name = paramName.toLowerCase();
-
-
-  if (type === "address" && (name.includes("owner") || name.includes("manager") || name.includes("admin"))) {
-    return accounts[0];
-  }
-  // 🔍 Detecta padrões de enum pelo nome (ex: updateType, statusType, roleType)
-  const isEnum =
-    name.includes("type") ||
-    name.includes("status") ||
-    name.includes("role") ||
-    name.includes("state") ||
-    (type === "uint8" && name !== "id" && name !== "index");
-
-  // --- Gerar valores conforme o tipo ---
-  switch (type) {
-    case "string":
-      return `fake_string_${idx}`;
-
-    // --- Enums e uint8 ---
-    case "uint8":
-      return isEnum ? idx % 3 : idx % 255;
-
-    // --- Demais inteiros ---
-    case "uint16":
-      return (1000 + idx) % 65535;
-    case "uint32":
-    case "uint64":
-    case "uint128":
-    case "uint256":
-    case "uint":
-      return 1000 + idx;
-
-    case "int8":
-      return idx % 127;
-    case "int16":
-      return (1000 + idx) % 32767;
-    case "int32":
-    case "int64":
-    case "int128":
-    case "int256":
-    case "int":
-      return 1000 + idx;
-
-    // --- Endereço ---
-    case "address":
-      return accounts[idx % accounts.length];
-
-    // --- Booleano ---
-    case "bool":
-      return idx % 2 === 0;
-
-    // --- Bytes ---
-    case "bytes32":
-      return ethers.utils.formatBytes32String(`val${idx}`);
-    case "bytes":
-      return ethers.utils.toUtf8Bytes(`data${idx}`);
-
-    // --- Arrays ---
-    case "string[]":
-      return [`str1_${idx}`, `str2_${idx}`];
-    case "uint256[]":
-      return [1 + idx, 2 + idx];
-    case "address[]":
-      return accounts.slice(0, 2);
-
-    default:
-      return "";
-  }
-}
-
-
-
-// --- Botão de pré-preencher funções ---
-// --- Botão de pré-preencher funções ---
-document.getElementById("prefill-btn").addEventListener("click", async () => {
-  if (!contratoDeployado) return alert("Contrato ainda não deployado.");
-
-  // 🔹 Buscar accounts do Hardhat
-  let accounts = [];
-  try {
-    const res = await fetch("/api/accounts");
-    accounts = await res.json();
-  } catch (err) {
-    alert("Não foi possível obter contas do Hardhat. Usando endereço zero.");
-  }
-  if (!accounts.length) accounts = ["0x0000000000000000000000000000000000000000"];
-
-  const funcoesDiv = document.getElementById("funcoes");
-
-  Array.from(funcoesDiv.children).forEach(funcDiv => {
-    const inputs = funcDiv.querySelectorAll("input");
-
-    inputs.forEach((input, idx) => {
-      const labelText = input.previousElementSibling.textContent.trim();
-      const typeMatch = labelText.match(/\((.+)\)/);
-      const nameMatch = labelText.match(/^([\w\d_]+)/);
-      const type = typeMatch ? typeMatch[1] : "";
-      const paramName = nameMatch ? nameMatch[1] : `param_${idx}`;
-
-      input.value = fakeValueForType(type, idx, accounts, paramName);
-    });
-  });
-
-  <!--alert("✅ Funções pré-preenchidas com valores de exemplo!");-->
-});
-
-
-// --- Executar função do contrato ---
-
-// --- Executar função de um contrato específico ---
-async function executarFuncao(nomeContrato, nomeFuncao, numArgs) {
-    const logArea = document.getElementById("log");
-
-    // Lê os argumentos dos campos
-    const args = [];
-    for (let i = 0; i < numArgs; i++) {
-        const campo = document.getElementById(`${nomeContrato}_${nomeFuncao}_arg${i}`);
-        args.push(campo ? campo.value : "");
-    }
-
-    logArea.textContent += `\n📘 Contrato selecionado: ${nomeContrato}\n`;
-    logArea.textContent += `⚙️ Executando ${nomeFuncao}(${args.join(", ")})...\n`;
-
-    try {
-        const res = await fetch("/api/execute-function", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ nomeContrato, nomeFuncao, args })
-        });
-
-        if (!res.ok) {
-            const msg = await res.text();
-            logArea.textContent += `\n❌ Erro: ${msg}\n`;
-            return;
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-
-        const out = await res.json();
-
-        logArea.textContent += `\n✅ Função executada: ${out.funcao}`;
-        logArea.textContent += `\n⛽ Gas estimado: ${out.gasEstimado}`;
-        logArea.textContent += `\n🔥 Gas real usado: ${out.gasReal}`;
-
-        // Mostrar custos por rede
-        if (out.custosPorRede) {
-            logArea.textContent += `\n\n🌍 Custos por rede:`;
-            for (const [key, info] of Object.entries(out.custosPorRede)) {
-                logArea.textContent +=
-                    `\n  ${info.name}: ${info.custoTotalToken} ${info.token}` +
-                    `  ≈ ${info.custoUSD} / ${info.custoBRL}` +
-                    `  (gasPrice: ${info.gasPrice})`;
+        
+        body {
+            font-family: 'Segoe UI', 'Inter', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: #E2E8F0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+            color: white;
+        }
+        
+        .header-title p {
+            opacity: 0.9;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0D8BF2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(33, 150, 243, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #0DA675;
+            transform: translateY(-2px);
+        }
+        
+        /* Main Layout - 2 Colunas */
+        .main-content {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 25px;
+            height: calc(100vh - 180px);
+        }
+        
+        /* Left Panel */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        /* Cards */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .scrollable-card {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            color: #E2E8F0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+        
+        .card-title i {
+            color: var(--accent);
+            font-size: 18px;
+        }
+        
+        /* Upload Section */
+        .upload-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+        
+        .file-input-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px;
+            background-color: var(--card-bg-light);
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 13px;
+        }
+        
+        .file-input-label:hover {
+            border-color: var(--accent);
+            background-color: rgba(33, 150, 243, 0.1);
+        }
+        
+        .file-name {
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-light);
+            text-align: center;
+        }
+        
+        /* Contracts Section */
+        .contracts-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .contract-select-wrapper {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .contract-select {
+            flex-grow: 1;
+            padding: 10px 12px;
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #E2E8F0;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+        
+        .contract-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        .contract-info {
+            background-color: var(--card-bg-light);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+        
+        .info-label {
+            color: var(--text-light);
+        }
+        
+        .info-value {
+            color: #E2E8F0;
+            font-weight: 500;
+        }
+        
+        .address-value {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: var(--accent);
+        }
+        
+        /* Functions Section */
+        .functions-container {
+            flex: 1;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+        
+        .functions-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .function-card {
+            background-color: var(--card-bg-light);
+            border-radius: 8px;
+            padding: 15px;
+            border-left: 4px solid var(--accent);
+            margin-bottom: 12px;
+        }
+        
+        .function-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: #E2E8F0;
+        }
+        
+        .function-name {
+            font-family: 'Courier New', monospace;
+            font-weight: 600;
+            color: var(--accent);
+            font-size: 14px;
+        }
+        
+        .function-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        
+        .input-label {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .input-type {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: var(--warning);
+            background: rgba(245, 158, 11, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        
+        .input-field {
+            padding: 8px 10px;
+            background-color: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: #E2E8F0;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            transition: var(--transition);
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        .function-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+        }
+        
+        .btn-execute {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .btn-execute:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-execute:disabled {
+            background-color: #4B5563;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        /* Right Panel - Single Log Area */
+        .log-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .log-content {
+            flex: 1;
+            background-color: #0D1117;
+            border-radius: 8px;
+            padding: 20px;
+            overflow-y: auto;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+            border: 1px solid var(--border);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        
+        /* Status Indicators */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .status-deployed {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+        
+        .status-undeployed {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+        
+        /* Footer */
+        .dashboard-footer {
+            text-align: center;
+            padding: 15px 0;
+            color: var(--text-light);
+            font-size: 13px;
+            border-top: 1px solid var(--border);
+            margin-top: 25px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .log-section {
+                height: 500px;
             }
         }
-
-        logArea.textContent += `\n--------------------------------------------\n`;
-
-    } catch (err) {
-        logArea.textContent += `\n❌ Erro inesperado: ${err.message}\n`;
-    }
-}
-
-</script>
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .header-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                flex-grow: 1;
+                justify-content: center;
+            }
+            
+            .function-actions {
+                flex-direction: column;
+                gap: 8px;
+                align-items: stretch;
+            }
+            
+            .contract-select-wrapper {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1><i class="fas fa-file-contract"></i> Interface de Contratos Inteligentes</h1>
+                    <p>Modo Iterativo - Controle manual das execuções</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="location.href='/'">
+                        <i class="fas fa-home"></i> Voltar ao Início
+                    </button>
+                    <button class="btn btn-secondary" onclick="limparLogs()">
+                        <i class="fas fa-trash"></i> Limpar Logs
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel -->
+            <div class="left-panel">
+                <!-- Upload Section -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-upload"></i>
+                        <span>1. Carregar Contrato</span>
+                    </div>
+                    <div class="upload-section">
+                        <div class="file-input-wrapper">
+                            <input type="file" id="contrato" accept=".sol" onchange="atualizarNomeArquivo()">
+                            <div class="file-input-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span id="fileLabel">Selecione arquivo .sol</span>
+                            </div>
+                        </div>
+                        <div id="fileName" class="file-name"></div>
+                        <button class="btn btn-primary" onclick="carregarContrato()">
+                            <i class="fas fa-code"></i> Carregar ABI do Contrato
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Contracts Section -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-list"></i>
+                        <span>2. Contratos Disponíveis</span>
+                    </div>
+                    <div class="contracts-list">
+                        <div class="contract-select-wrapper">
+                            <select class="contract-select" id="contratoSelect" onchange="selecionarContrato()">
+                                <option value="">Selecione um contrato...</option>
+                            </select>
+                            <button class="btn btn-secondary btn-sm" onclick="atualizarContratos()">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        
+                        <div id="contractInfo" class="contract-info" style="display: none;">
+                            <div class="info-row">
+                                <span class="info-label">Status:</span>
+                                <span id="contractStatus" class="info-value"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Endereço:</span>
+                                <span id="contractAddress" class="info-value address-value"></span>
+                            </div>
+                            <div class="info-row">
+                                <span class="info-label">Gas Deploy:</span>
+                                <span id="contractGas" class="info-value"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Functions Section -->
+                <div class="card scrollable-card">
+                    <div class="card-title">
+                        <i class="fas fa-cogs"></i>
+                        <span>3. Funções do Contrato</span>
+                        <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
+                            <span id="functionsCount" style="font-size: 12px; color: var(--text-light);">0 funções</span>
+                            <button class="btn btn-success btn-sm" onclick="preencherTodasFuncoes()" title="Pré-preencher todas as funções">
+                                <i class="fas fa-magic"></i> Pré-preencher
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="functions-container" id="funcoesContainer">
+                        <div id="funcoes">
+                            <div style="text-align: center; padding: 40px 20px; color: var(--text-light);">
+                                <i class="fas fa-code-branch" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
+                                <p style="font-size: 14px;">Carregue um contrato para ver as funções disponíveis</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Panel - Single Log Area -->
+            <div class="log-section">
+                <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+                    <div class="log-header">
+                        <div class="card-title">
+                            <i class="fas fa-terminal"></i>
+                            <span>4. Logs de Execução</span>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="limparLogs()">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="copiarLogs()">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="log-content" id="log">
+// Aguardando carregamento do contrato...
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--<footer class="dashboard-footer">-->
+        <!--    <div>-->
+        <!--        <i class="fas fa-network-wired"></i>-->
+        <!--        <span>SmartAgro - Interface de Contratos Inteligentes | Modo Iterativo</span>-->
+        <!--    </div>-->
+        <!--    <div class="copyright">-->
+        <!--        &copy; 2025 SmartAgro. Todos os direitos reservados.-->
+        <!--    </div>-->
+        <!--</footer>-->
+    </div>
+    
+    <script>
+        let contratoDeployado = false;
+        let contratosCarregados = [];
+        let contratoSelecionado = null;
+        
+        // Atualizar nome do arquivo selecionado
+        function atualizarNomeArquivo() {
+            const fileInput = document.getElementById('contrato');
+            const fileName = document.getElementById('fileName');
+            const fileLabel = document.getElementById('fileLabel');
+            
+            if (fileInput.files.length > 0) {
+                const nome = fileInput.files[0].name;
+                fileName.textContent = `Arquivo selecionado: ${nome}`;
+                fileLabel.textContent = nome.length > 30 ? nome.substring(0, 30) + '...' : nome;
+            } else {
+                fileName.textContent = '';
+                fileLabel.textContent = 'Selecione arquivo .sol';
+            }
+        }
+        
+        // Limpar logs
+        function limparLogs() {
+            document.getElementById('log').innerHTML = '// Logs limpos em ' + new Date().toLocaleTimeString('pt-BR');
+        }
+        
+        // Copiar logs
+        async function copiarLogs() {
+            try {
+                const logContent = document.getElementById('log').innerText;
+                await navigator.clipboard.writeText(logContent);
+                alert('Logs copiados para a área de transferência!');
+            } catch (err) {
+                alert('Erro ao copiar logs: ' + err.message);
+            }
+        }
+        
+        // Atualizar lista de contratos do servidor
+        async function atualizarContratos() {
+            const select = document.getElementById("contratoSelect");
+            select.innerHTML = "<option>Carregando...</option>";
+            
+            try {
+                const res = await fetch("/api/deployed-contracts");
+                if (!res.ok) throw new Error("Erro ao buscar contratos.");
+                
+                const contratos = await res.json();
+                select.innerHTML = '<option value="">Selecione um contrato...</option>';
+                
+                if (!contratos.length) {
+                    select.innerHTML += '<option>Nenhum contrato encontrado</option>';
+                    return;
+                }
+                
+                contratos.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.name || c.address;
+                    opt.textContent = `${c.name || "Sem nome"} ${c.address ? `(Deployado)` : ''}`;
+                    select.appendChild(opt);
+                });
+                
+                log(`✅ Lista de contratos atualizada (${contratos.length} encontrados)`);
+                
+            } catch (err) {
+                log(`❌ Erro ao atualizar contratos: ${err.message}`);
+                select.innerHTML = '<option value="">Erro ao carregar</option>';
+            }
+        }
+        
+        // Função de log única
+        function log(mensagem) {
+            const logArea = document.getElementById('log');
+            logArea.innerHTML += `\n${mensagem}`;
+            logArea.scrollTop = logArea.scrollHeight;
+        }
+        
+        // Carregar contrato e ABI
+        async function carregarContrato() {
+            const fileInput = document.getElementById("contrato");
+            if (!fileInput.files.length) {
+                alert("Selecione um arquivo Solidity.");
+                return;
+            }
+            
+            log('\n📦 Iniciando carregamento do contrato...');
+            
+            const formData = new FormData();
+            formData.append("contrato", fileInput.files[0]);
+            
+            try {
+                const res = await fetch("/api/load-abi", { method: "POST", body: formData });
+                
+                if (!res.ok) {
+                    throw new Error("Erro ao carregar ABI.");
+                }
+                
+                const data = await res.json();
+                contratosCarregados = data.contratos || [];
+                
+                if (contratosCarregados.length === 0) {
+                    throw new Error("Nenhum contrato encontrado no arquivo.");
+                }
+                
+                // Atualizar select com contratos carregados
+                const select = document.getElementById("contratoSelect");
+                select.innerHTML = '<option value="">Selecione um contrato...</option>';
+                
+                contratosCarregados.forEach(c => {
+                    const opt = document.createElement("option");
+                    opt.value = c.nome;
+                    opt.textContent = `${c.nome} ${c.endereco ? '(Deployado)' : '(Não deployado)'}`;
+                    select.appendChild(opt);
+                });
+                
+                // LOG DOS CUSTOS DE DEPLOY
+                log(`\n✅ ${data.contratos.length} contrato(s) carregado(s):`);
+                
+                // Itera sobre todos os contratos retornados
+                for (const contrato of data.contratos) {
+                    const { nome, endereco, gas, custosPorRede } = contrato;
+                    const abi = contrato.abi || data.abi;
+                
+                    log(
+                      `\n📄 Contrato: ${nome}\n` +
+                      `🏠 Endereço: ${endereco || "Não disponível"}\n` +
+                      `⛽ Gas usado no deploy: ${gas || "N/A"}\n`
+                    );
+                
+                    // Mostra custos por rede
+                    if (custosPorRede && Object.keys(custosPorRede).length > 0) {
+                        log(`🌍 Custos por rede:\n`);
+                        for (const [token, info] of Object.entries(custosPorRede)) {
+                            log(
+                              `  • ${info.name}: ${info.custoTotalToken} ${info.token}` +
+                              ` ≈ ${info.custoUSD} / ${info.custoBRL}` +
+                              ` (gasPrice: ${info.gasPrice})` +
+                              ` | Cotação: U$${info.cotacao?.usd ?? "N/A"} / R$${info.cotacao?.brl ?? "N/A"}`
+                            );
+                        }
+                    }
+                }
+                
+                // Atualizar flag global automaticamente
+                if (data.contratos.some(c => c.endereco)) {
+                    contratoDeployado = true;
+                    log(`\n✅ Contrato(s) deployado(s) detectado(s).`);
+                } else {
+                    contratoDeployado = false;
+                    log(`\n⚠️ Nenhum contrato com endereço detectado.`);
+                }
+                
+                // Mostrar informações do primeiro contrato
+                if (contratosCarregados.length > 0) {
+                    selecionarContrato();
+                }
+                
+            } catch (err) {
+                log(`\n❌ Erro ao carregar contrato: ${err.message}`);
+            }
+        }
+        
+        // Selecionar contrato
+        async function selecionarContrato() {
+            const select = document.getElementById("contratoSelect");
+            const nomeContrato = select.value;
+            const funcoesDiv = document.getElementById("funcoes");
+            const contractInfo = document.getElementById("contractInfo");
+            
+            if (!nomeContrato) {
+                contractInfo.style.display = 'none';
+                funcoesDiv.innerHTML = `
+                    <div style="text-align: center; padding: 40px 20px; color: var(--text-light);">
+                        <i class="fas fa-code-branch" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p style="font-size: 14px;">Selecione um contrato para ver as funções</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Busca contrato no array global
+            const contrato = contratosCarregados.find(c => c.nome === nomeContrato);
+            if (!contrato) {
+                log(`❌ Contrato não encontrado na lista carregada.`);
+                return;
+            }
+            
+            contratoSelecionado = contrato;
+            contratoDeployado = !!contrato.endereco;
+            
+            // Atualizar informações do contrato
+            document.getElementById("contractStatus").innerHTML = contratoDeployado 
+                ? '<span class="status-badge status-deployed"><i class="fas fa-check-circle"></i> Deployado</span>'
+                : '<span class="status-badge status-undeployed"><i class="fas fa-clock"></i> Não Deployado</span>';
+            
+            document.getElementById("contractAddress").textContent = contrato.endereco ? 
+                `${contrato.endereco.substring(0, 10)}...${contrato.endereco.substring(38)}` : "N/A";
+            document.getElementById("contractGas").textContent = contrato.gas ? contrato.gas.toLocaleString() : "N/A";
+            contractInfo.style.display = 'block';
+            
+            // Carregar funções
+            await carregarFuncoesContrato(contrato);
+        }
+        
+        // Carregar funções do contrato
+        async function carregarFuncoesContrato(contrato) {
+            const funcoesDiv = document.getElementById("funcoes");
+            const functionsCount = document.getElementById("functionsCount");
+            
+            funcoesDiv.innerHTML = "<div style='text-align: center; padding: 30px;'><i class='fas fa-spinner fa-spin'></i> Carregando funções...</div>";
+            
+            const abi = contrato.abi;
+            if (!abi || !Array.isArray(abi)) {
+                funcoesDiv.innerHTML = "<div style='color: var(--error); text-align: center; padding: 30px;'>ABI não disponível para este contrato.</div>";
+                functionsCount.textContent = "ABI não disponível";
+                return;
+            }
+            
+            // Filtrar funções mutáveis
+            const functions = abi.filter(f => f.type === "function" && !["view","pure"].includes(f.stateMutability));
+            
+            functionsCount.textContent = `${functions.length} função(s) disponível(is)`;
+            
+            if (!functions.length) {
+                funcoesDiv.innerHTML = "<div style='color: var(--warning); text-align: center; padding: 30px;'>Nenhuma função mutável disponível.</div>";
+                return;
+            }
+            
+            // Criar interface para cada função
+            funcoesDiv.innerHTML = '';
+            
+            functions.forEach((f, index) => {
+                const functionCard = document.createElement('div');
+                functionCard.className = 'function-card';
+                functionCard.id = `func-${contrato.nome}-${f.name}`;
+                
+                // Título da função
+                const titleDiv = document.createElement('div');
+                titleDiv.className = 'function-title';
+                titleDiv.innerHTML = `
+                    <i class="fas fa-cube"></i>
+                    <span class="function-name">${f.name}</span>
+                    <span style="font-size: 12px; color: var(--text-light);">(${f.inputs.map(i => i.type).join(', ')})</span>
+                `;
+                
+                // Inputs da função
+                const inputsDiv = document.createElement('div');
+                inputsDiv.className = 'function-inputs';
+                
+                f.inputs.forEach((input, idx) => {
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'input-group';
+                    
+                    inputGroup.innerHTML = `
+                        <div class="input-label">
+                            ${input.name || `arg${idx}`}
+                            <span class="input-type">${input.type}</span>
+                        </div>
+                        <input type="text" 
+                               class="input-field" 
+                               id="${contrato.nome}_${f.name}_arg${idx}"
+                               placeholder="Digite o valor para ${input.type}..."
+                               data-type="${input.type}"
+                               data-name="${input.name || `arg${idx}`}">
+                    `;
+                    
+                    inputsDiv.appendChild(inputGroup);
+                });
+                
+                // Ações da função
+                const actionsDiv = document.createElement('div');
+                actionsDiv.className = 'function-actions';
+                
+                const autoFillBtn = document.createElement('button');
+                autoFillBtn.className = 'btn btn-secondary btn-sm';
+                autoFillBtn.innerHTML = '<i class="fas fa-bolt"></i> Auto-preenchimento';
+                autoFillBtn.title = "Preencher automaticamente";
+                autoFillBtn.onclick = () => autoPreencherInputs(contrato.nome, f.name, f.inputs);
+                
+                const executeBtn = document.createElement('button');
+                executeBtn.className = 'btn btn-execute btn-sm';
+                executeBtn.innerHTML = '<i class="fas fa-play"></i> Executar Função';
+                executeBtn.disabled = !contratoDeployado;
+                executeBtn.title = contratoDeployado ? "Executar função" : "Contrato não deployado";
+                executeBtn.onclick = () => executarFuncao(contrato.nome, f.name, f.inputs.length);
+                
+                actionsDiv.appendChild(autoFillBtn);
+                actionsDiv.appendChild(executeBtn);
+                
+                // Montar card
+                functionCard.appendChild(titleDiv);
+                functionCard.appendChild(inputsDiv);
+                functionCard.appendChild(actionsDiv);
+                
+                funcoesDiv.appendChild(functionCard);
+            });
+            
+            log(`✅ Funções do contrato "${contrato.nome}" carregadas com sucesso.`);
+        }
+        
+        // Auto-preenchimento de inputs
+        async function autoPreencherInputs(contratoNome, funcaoNome, inputs) {
+            let accounts = [];
+            try {
+                const res = await fetch("/api/accounts");
+                accounts = await res.json();
+            } catch (err) {
+                accounts = ["0x0000000000000000000000000000000000000000"];
+            }
+            
+            inputs.forEach((input, idx) => {
+                const campo = document.getElementById(`${contratoNome}_${funcaoNome}_arg${idx}`);
+                if (campo) {
+                    const tipo = campo.getAttribute('data-type');
+                    const nome = campo.getAttribute('data-name');
+                    campo.value = fakeValueForType(tipo, idx, accounts, nome);
+                }
+            });
+            
+            log(`⚡ Inputs da função ${funcaoNome} auto-preenchidos.`);
+        }
+        
+        // Pré-preencher todas as funções
+        async function preencherTodasFuncoes() {
+            if (!contratoDeployado) {
+                alert("Contrato ainda não deployado.");
+                return;
+            }
+            
+            let accounts = [];
+            try {
+                const res = await fetch("/api/accounts");
+                accounts = await res.json();
+            } catch (err) {
+                accounts = ["0x0000000000000000000000000000000000000000"];
+            }
+            
+            const funcoesDiv = document.getElementById("funcoes");
+            const inputs = funcoesDiv.querySelectorAll('.input-field');
+            
+            inputs.forEach((input, idx) => {
+                const tipo = input.getAttribute('data-type');
+                const nome = input.getAttribute('data-name');
+                input.value = fakeValueForType(tipo, idx, accounts, nome);
+            });
+            
+            log(`✨ Todas as funções foram pré-preenchidas com valores de exemplo!`);
+        }
+        
+        // Executar função
+        async function executarFuncao(nomeContrato, nomeFuncao, numArgs) {
+            if (!contratoDeployado) {
+                alert('O contrato precisa ser deployado antes de executar funções.');
+                return;
+            }
+            
+            // Ler argumentos
+            const args = [];
+            for (let i = 0; i < numArgs; i++) {
+                const campo = document.getElementById(`${nomeContrato}_${nomeFuncao}_arg${i}`);
+                args.push(campo ? campo.value : "");
+            }
+            
+            log(`\n📘 Contrato selecionado: ${nomeContrato}`);
+            log(`⚙️ Executando ${nomeFuncao}(${args.join(", ")})...\n`);
+            
+            try {
+                const res = await fetch("/api/execute-function", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ nomeContrato, nomeFuncao, args })
+                });
+                
+                if (!res.ok) {
+                    const msg = await res.text();
+                    log(`❌ Erro: ${msg}\n`);
+                    return;
+                }
+                
+                const out = await res.json();
+                
+                log(`✅ Função executada: ${out.funcao}`);
+                log(`⛽ Gas estimado: ${out.gasEstimado}`);
+                log(`🔥 Gas real usado: ${out.gasReal}`);
+                
+                // Mostrar custos por rede
+                if (out.custosPorRede) {
+                    log(`\n🌍 Custos por rede:`);
+                    for (const [key, info] of Object.entries(out.custosPorRede)) {
+                        log(
+                            `  ${info.name}: ${info.custoTotalToken} ${info.token}` +
+                            `  ≈ ${info.custoUSD} / ${info.custoBRL}` +
+                            `  (gasPrice: ${info.gasPrice})`
+                        );
+                    }
+                }
+                
+                log(`\n--------------------------------------------\n`);
+                
+            } catch (err) {
+                log(`\n❌ Erro inesperado: ${err.message}\n`);
+            }
+        }
+        
+        // Função para gerar valores fake
+        function fakeValueForType(type, idx, accounts, paramName = "") {
+            const name = paramName.toLowerCase();
+            
+            if (type === "address" && (name.includes("owner") || name.includes("manager") || name.includes("admin"))) {
+                return accounts[0];
+            }
+            
+            const isEnum = name.includes("type") || name.includes("status") || name.includes("role") || 
+                          name.includes("state") || (type === "uint8" && name !== "id" && name !== "index");
+            
+            switch (type) {
+                case "string":
+                    return `exemplo_${idx}`;
+                case "uint8":
+                    return isEnum ? idx % 3 : idx % 255;
+                case "uint16":
+                    return (1000 + idx) % 65535;
+                case "uint32":
+                case "uint64":
+                case "uint128":
+                case "uint256":
+                case "uint":
+                    return 1000 + idx;
+                case "int8":
+                    return idx % 127;
+                case "int16":
+                    return (1000 + idx) % 32767;
+                case "int32":
+                case "int64":
+                case "int128":
+                case "int256":
+                case "int":
+                    return 1000 + idx;
+                case "address":
+                    return accounts[idx % accounts.length];
+                case "bool":
+                    return idx % 2 === 0;
+                case "bytes32":
+                    return ethers.utils.formatBytes32String(`valor${idx}`);
+                case "bytes":
+                    return ethers.utils.toUtf8Bytes(`dados${idx}`);
+                case "string[]":
+                    return [`item1_${idx}`, `item2_${idx}`];
+                case "uint256[]":
+                    return [1 + idx, 2 + idx];
+                case "address[]":
+                    return accounts.slice(0, 2);
+                default:
+                    return "";
+            }
+        }
+        
+        // Inicialização
+        window.addEventListener('DOMContentLoaded', function() {
+            log(`✅ Interface de Contratos Inteligentes inicializada.`);
+            log(`⚙️ Modo: Iterativo (controle manual das execuções)`);
+            log(`🕒 ${new Date().toLocaleString('pt-BR')}`);
+            log(`────────────────────────────────────────────`);
+            atualizarContratos();
+        });
+        
+        // Expor funções para uso global
+        window.carregarContrato = carregarContrato;
+        window.atualizarContratos = atualizarContratos;
+        window.selecionarContrato = selecionarContrato;
+        window.preencherTodasFuncoes = preencherTodasFuncoes;
+        window.executarFuncao = executarFuncao;
+        window.limparLogs = limparLogs;
+        window.copiarLogs = copiarLogs;
+    </script>
 </body>
 </html>
-
