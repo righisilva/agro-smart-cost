@@ -39,7 +39,7 @@ for (const [key, n] of Object.entries(networksJson)) {
 
 // --- Funções auxiliares para DB ---
 function salvarContractNoDB(name, address) {
-    const existing = db.prepare("SELECT id FROM contracts WHERE address = ?").get(address);
+    const existing = db.prepare("SELECT id FROM contracts WHERE name = ?").get(name);
     if (existing) return existing.id;
     const result = db.prepare("INSERT INTO contracts (name, address) VALUES (?, ?)").run(name, address);
     return result.lastInsertRowid;
@@ -65,6 +65,18 @@ function salvarFuncaoNoDB(functionId, networkId, gasUsed, costUSD, costBRL) {
         VALUES (?, ?, ?, ?, ?)
     `).run(functionId, networkId, gasUsed, costUSD, costBRL);
 }
+
+// function salvarFuncaoNoDB(functionId, networkId, gasUsed, costUSD, costBRL) {
+//     db.prepare(`
+//         INSERT INTO contract_function_costs (function_id, network_id, gas_used, cost_usd, cost_brl)
+//         VALUES (?, ?, ?, ?, ?)
+//         ON CONFLICT(function_id, network_id) 
+//         DO UPDATE SET 
+//             gas_used = excluded.gas_used,
+//             cost_usd = excluded.cost_usd,
+//             cost_brl = excluded.cost_brl
+//     `).run(functionId, networkId, gasUsed, costUSD, costBRL);
+// }
 
 function salvarNetworkCosts(networkId, gasPrice, costUSD, costBRL) {
     db.prepare(`
@@ -298,7 +310,11 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
                 const costBRL = parseFloat(costInToken) * tokenPrice.brl;
 
                 const networkId = networks[token].id;
-                salvarDeployNoDB(contractId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
+                // salvarDeployNoDB(contractId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
+                //TODO
+                const functionId = salvarFuncaoContratoNoDB(contractId, "deploy");
+                salvarFuncaoNoDB(functionId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
+
                 salvarNetworkCosts(networkId, parseFloat(ethers.utils.formatUnits(data.gasPrice, "gwei")), tokenPrice.usd, tokenPrice.brl);
 
                 custosPorRede[token] = {
