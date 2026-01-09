@@ -66,18 +66,45 @@ async function getTokenPrices() {
 
 async function getGasPricesFromNetworks() {
     const gasPrices = {};
+
     for (const [key, net] of Object.entries(networks)) {
         if (key === "localhost") continue;
+
         try {
-            const provider = new ethers.providers.JsonRpcProvider(net.rpc);
+            // Permite um ou mais RPCs (fallback automático)
+            const rpcList = Array.isArray(net.rpc) ? net.rpc : [net.rpc];
+            let provider, gasPrice;
+
+            // Tenta RPCs alternativos até conseguir um resultado válido
+            for (const rpc of rpcList) {
+                try {
+                    provider = new ethers.providers.JsonRpcProvider(rpc);
+                    gasPrice = await provider.getGasPrice();
+                    if (gasPrice) break;
+                } catch (e) {
+                    console.warn(`⚠️  RPC ${rpc} falhou para ${net.name}`);
+                }
+            }
+
+            if (!gasPrice) {
+                console.warn(`⚠️  Nenhum RPC válido para ${net.name}`);
+                continue;
+            }
+
             const networkInfo = await provider.getNetwork();
             console.log(`✅ Conectado à ${net.name} (chainId: ${networkInfo.chainId})`);
-            const gasPrice = await provider.getGasPrice();
-            gasPrices[net.token] = { name: net.name, gasPrice, tokenId: net.token };
+
+            gasPrices[net.token] = {
+                name: net.name,
+                gasPrice,
+                tokenId: net.token
+            };
+
         } catch (err) {
-            console.log(`⚠️ Falha ao buscar gasPrice da rede ${net.name}: ${err.message}`);
+            console.log(`⚠️  Falha ao buscar gasPrice da rede ${net.name}: ${err.message}`);
         }
     }
+
     return gasPrices;
 }
 

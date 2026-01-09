@@ -1,7 +1,11 @@
 {
   "ethereum": {
     "name": "Ethereum",
-    "rpc": "https://eth.llamarpc.com",
+    "rpcs": [
+      "https://eth.llamarpc.com",
+      "https://rpc.ankr.com/eth",
+      "https://cloudflare-eth.com"
+    ],
     "token": "ethereum"
   },
   "bsc": {
