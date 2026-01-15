@@ -176,7 +176,7 @@ contract Token1155 is ERC1155, Ownable, ERC1155Supply {
         string memory buyerIdentification,
         string memory currentLocation,
         UpdateType updateType
-    ) external onlyManager(updater) checkIsActive(tokenId) {
+    ) external onlyManager(msg.sender) checkIsActive(tokenId) {
         statusHistory[tokenId].push(
             StatusUpdate({
                 who: updater,

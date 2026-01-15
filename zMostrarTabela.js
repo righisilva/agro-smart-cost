@@ -13,7 +13,8 @@ mostrarTabela("contract_deploy_costs");
 mostrarTabela("contract_functions");
 mostrarTabela("contract_function_costs");
 mostrarTabela("network_costs");
-mostrarTabela("gas_price_history");
+mostrarTabela("gas_price_history"); 
+// mostrarTabela("ibge_dados");
 
 db.close();
 

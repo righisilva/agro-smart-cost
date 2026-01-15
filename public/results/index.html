@@ -179,6 +179,28 @@
             box-shadow: 0 6px 12px rgba(33, 150, 243, 0.2);
         }
         
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #0EA271;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(16, 185, 129, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: #6B7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #4B5563;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(107, 114, 128, 0.2);
+        }
+        
         /* Stats Cards */
         .stats-section {
             display: grid;
@@ -266,14 +288,25 @@
             overflow: hidden;
         }
         
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
         .table-title {
             display: flex;
             align-items: center;
             gap: 10px;
-            margin-bottom: 25px;
             font-size: 20px;
             font-weight: 600;
             color: var(--text);
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 10px;
         }
         
         .table-wrapper {
@@ -297,7 +330,6 @@
             border-bottom: 2px solid var(--border);
             position: sticky;
             top: 0;
-            white-space: nowrap;
         }
         
         .results-table td {
@@ -382,6 +414,30 @@
             to { transform: rotate(360deg); }
         }
         
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
         /* Responsive */
         @media (max-width: 1024px) {
             .filters-grid {
@@ -415,6 +471,17 @@
             .stats-section {
                 grid-template-columns: repeat(2, 1fr);
             }
+            
+            .table-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .table-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
         }
         
         @media (max-width: 480px) {
@@ -425,7 +492,87 @@
             .chart-container {
                 height: 350px;
             }
+            
+            .table-actions {
+                flex-direction: column;
+            }
         }
+
+
+        /* Porcetagem */
+
+        .percent-low {
+            color: var(--success);
+            font-weight: 600;
+            background-color: rgba(16, 185, 129, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 80px;
+        }
+
+        .percent-medium {
+            color: var(--warning);
+            font-weight: 600;
+            background-color: rgba(245, 158, 11, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 80px;
+        }
+
+        .percent-high {
+            color: var(--error);
+            font-weight: 700;
+            background-color: rgba(239, 68, 68, 0.1);
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 80px;
+        }
+
+        /* Ajuste a largura mínima da tabela para acomodar as novas colunas */
+        .results-table {
+            min-width: 1200px; /* Aumentei de 1000px para 1200px */
+        }
+
+        /* Estilos específicos para alinhamento das colunas */
+        .results-table th:nth-child(8), /* Valor Vendido */
+        .results-table td:nth-child(8) {
+            text-align: right;
+            min-width: 150px;
+        }
+
+        .results-table th:nth-child(9), /* Total Estimado */
+        .results-table td:nth-child(9) {
+            text-align: right;
+            min-width: 150px;
+        }
+
+        .results-table th:nth-child(10), /* % Custo/Valor */
+        .results-table td:nth-child(10) {
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .results-table td:nth-child(8), /* Valor Vendido */
+        .results-table td:nth-child(9) { /* Total Estimado */
+            font-weight: 600;
+        }
+
+        /* Ajuste para responsividade */
+        @media (max-width: 768px) {
+            .results-table {
+                min-width: 1400px; /* Mais espaço para mobile */
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -475,21 +622,20 @@
                     </div>
                     
                     <div class="filter-group">
-                        <label class="filter-label required"><i class="fas fa-home"></i> Familiar</label>
+                        <label class="filter-label required"><i class="fas fa-home"></i> Somente Familiar</label>
                         <select class="filter-select" id="filtroFamiliar" required>
-                            <option value="" disabled selected>Selecione uma opção</option>
+                            <!-- <option value="" disabled selected>Selecione uma opção</option> -->
                             <option value="1">Sim</option>
-                            <option value="0">Não</option>
+                            <option value="0" selected>Não</option>
                         </select>
                     </div>
                     
-                    <!-- CORREÇÃO: Obrigatório agora tem opção "Todos" -->
                     <div class="filter-group">
-                        <label class="filter-label"><i class="fas fa-file-signature"></i> Obrigatório</label>
+                        <label class="filter-label"><i class="fas fa-file-signature"></i> Somente Obrigatório INC 02/2018</label>
                         <select class="filter-select" id="filtroObrigatorio">
-                            <option value="">Todos</option>
+                            <!-- <option value="">Todos</option> -->
                             <option value="1">Sim</option>
-                            <option value="0">Não</option>
+                            <option value="0" selected>Não</option>
                         </select>
                     </div>
                     
@@ -501,9 +647,9 @@
                     </div>
                     
                     <div class="filter-group">
-                        <label class="filter-label"><i class="fas fa-network-wired"></i> Rede Blockchain</label>
-                        <select class="filter-select" id="filtroRede">
-                            <option value="">Todas as redes</option>
+                        <label class="filter-label required"><i class="fas fa-network-wired"></i> Rede Blockchain</label>
+                        <select class="filter-select" id="filtroRede" required>
+                            <option value="" disabled selected>Selecione uma rede</option>
                         </select>
                     </div>
                     
@@ -600,9 +746,19 @@
             
             <!-- Table Section -->
             <section class="table-section">
-                <div class="table-title">
-                    <i class="fas fa-table"></i>
-                    <span>Resultados Detalhados</span>
+                <div class="table-header">
+                    <div class="table-title">
+                        <i class="fas fa-table"></i>
+                        <span>Resultados Detalhados</span>
+                    </div>
+                    <div class="table-actions">
+                        <button class="btn btn-success" onclick="exportarParaCSV()" id="btnExportarCSV" disabled>
+                            <i class="fas fa-file-csv"></i> Exportar CSV
+                        </button>
+                        <button class="btn btn-secondary" onclick="imprimirTabela()" id="btnImprimir" disabled>
+                            <i class="fas fa-print"></i> Imprimir
+                        </button>
+                    </div>
                 </div>
                 <div class="table-wrapper">
                     <table class="results-table">
@@ -613,14 +769,16 @@
                                 <th>Classificação</th>
                                 <th>Familiar</th>
                                 <th>Obrigatório</th>
-                                <th>Custo Médio Contrato (BRL)</th>
+                                <th>Custo Unitário de Rastreabilidade (BRL)</th>
                                 <th>Estabelecimentos</th>
+                                <th>Valor Vendido (BRL)</th> <!-- NOVA COLUNA -->
                                 <th>Total Estimado (BRL)</th>
+                                <th>% Custo/Valor</th> <!-- NOVA COLUNA -->
                             </tr>
                         </thead>
                         <tbody id="tabelaResultados">
                             <tr>
-                                <td colspan="8" style="text-align: center; padding: 40px;">
+                                <td colspan="10" style="text-align: center; padding: 40px;">
                                     <i class="fas fa-chart-line" style="font-size: 48px; color: var(--border); margin-bottom: 15px;"></i>
                                     <p style="color: var(--text-light);">Aplique os filtros e clique em "Gerar Simulação" para visualizar os resultados</p>
                                 </td>
@@ -642,15 +800,21 @@
         </footer>
     </div>
     
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage"></span>
+    </div>
+    
     <script>
         let grafico = null;
         let currentChartType = 'bar';
         let currentData = [];
         
         // Carregar filtros dinâmicos
+        // Carregar filtros dinâmicos
         async function carregarFiltros() {
             try {
-                // Carregar contratos e redes em paralelo
                 const [contratosRes, redesRes] = await Promise.all([
                     fetch("/api/contracts-list"),
                     fetch("/api/networks-list")
@@ -673,7 +837,7 @@
                 
                 // Preencher redes
                 const redeSel = document.getElementById("filtroRede");
-                redeSel.innerHTML = '<option value="">Todas as redes</option>';
+                redeSel.innerHTML = '<option value="" disabled selected>Selecione uma rede</option>';
                 redes.forEach(r => {
                     const opt = document.createElement("option");
                     opt.value = r;
@@ -685,9 +849,12 @@
                 
             } catch (error) {
                 console.error('❌ Erro ao carregar filtros:', error);
-                alert('Erro ao carregar os filtros. Verifique sua conexão.');
+                mostrarToast('Erro ao carregar os filtros. Verifique sua conexão.', 'error');
             }
         }
+
+ 
+
         
         // Atualizar funções baseado no contrato selecionado
         document.getElementById("filtroContrato").addEventListener("change", async function(e) {
@@ -715,12 +882,13 @@
             }
         });
         
-        // Validar filtros obrigatórios - CORREÇÃO: obrigatorio não é mais obrigatório
+        // Validar filtros obrigatórios
         function validarFiltros() {
             const obrigatorios = [
                 { id: 'filtroRegiao', nome: 'Região' },
                 { id: 'filtroFamiliar', nome: 'Familiar' },
                 { id: 'filtroContrato', nome: 'Contrato' },
+                { id: 'filtroRede', nome: 'Rede Blockchain' },
                 { id: 'filtroOrderBy', nome: 'Ordenar por' }
             ];
             
@@ -733,7 +901,7 @@
             });
             
             if (faltantes.length > 0) {
-                alert(`Por favor, preencha os seguintes campos obrigatórios:\n\n• ${faltantes.join('\n• ')}`);
+                mostrarToast(`Por favor, preencha os seguintes campos:\n${faltantes.join(', ')}`, 'warning');
                 return false;
             }
             
@@ -744,25 +912,24 @@
         async function carregarResultados() {
             if (!validarFiltros()) return;
             
-            // Mostrar loading
             document.getElementById('chartLoading').style.display = 'flex';
             document.getElementById('tabelaResultados').innerHTML = `
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 40px;">
+                    <td colspan="10" style="text-align: center; padding: 40px;">
                         <div class="loading-spinner" style="margin: 0 auto 15px;"></div>
                         <p>Processando simulação...</p>
                     </td>
                 </tr>
             `;
             
-            // Construir parâmetros CORRETAMENTE
             const params = new URLSearchParams();
             params.append("regiao", document.getElementById("filtroRegiao").value);
             params.append("familiar", document.getElementById("filtroFamiliar").value);
             params.append("contract", document.getElementById("filtroContrato").value);
+            params.append("network", document.getElementById("filtroRede").value);
             params.append("orderBy", document.getElementById("filtroOrderBy").value);
             
-            // Adicionar filtros opcionais apenas se preenchidos
+            
             const classificacao = document.getElementById("filtroClassificacao").value;
             const obrigatorio = document.getElementById("filtroObrigatorio").value;
             const network = document.getElementById("filtroRede").value;
@@ -770,8 +937,8 @@
             const top = document.getElementById("filtroTop").value;
             
             if (classificacao) params.append("classificacao", classificacao);
-            if (obrigatorio !== "") params.append("obrigatorio", obrigatorio);
-            if (network) params.append("network", network);
+            if (obrigatorio === "1") params.append("obrigatorio", obrigatorio);
+            // if (network) params.append("network", network);
             if (functionName) params.append("functionName", functionName);
             if (top) params.append("top", top);
             
@@ -784,21 +951,29 @@
                 
                 if (dados.length === 0) {
                     mostrarResultadosVazios();
+                    document.getElementById('btnExportarCSV').disabled = true;
+                    document.getElementById('btnImprimir').disabled = true;
                 } else {
                     atualizarEstatisticas(dados);
                     preencherTabela(dados);
                     desenharGrafico(dados);
+                    document.getElementById('btnExportarCSV').disabled = false;
+                    document.getElementById('btnImprimir').disabled = false;
+                    
+                    mostrarToast(`Simulação gerada com sucesso! ${dados.length} resultados encontrados.`, 'success');
                 }
                 
             } catch (error) {
                 console.error('❌ Erro ao carregar resultados:', error);
                 mostrarErro(error.message);
+                document.getElementById('btnExportarCSV').disabled = true;
+                document.getElementById('btnImprimir').disabled = true;
             } finally {
                 document.getElementById('chartLoading').style.display = 'none';
             }
         }
         
-        // Atualizar cards de estatísticas - CORREÇÃO para evitar NaN
+        // Atualizar estatísticas
         function atualizarEstatisticas(dados) {
             const totalEstimado = dados.reduce((sum, d) => {
                 const valor = parseFloat(d.total_estimado_brl) || 0;
@@ -808,45 +983,34 @@
             const custoMedio = dados.reduce((sum, d) => {
                 const valor = parseFloat(d.custo_total_funcoes_brl || d.custo_medio_contrato_brl) || 0;
                 return sum + valor;
-            }, 0) / (dados.length || 1); // Evitar divisão por zero
-            
-            const totalEstabelecimentos = dados.reduce((sum, d) => {
-                const valor = parseFloat(d.estabelecimentos) || 0;
-                return sum + valor;
-            }, 0);
+            }, 0) / (dados.length || 1);
             
             const statsCards = document.querySelectorAll('.stat-card');
             
-            // Card 1: Total Estimado
             statsCards[0].querySelector('.stat-value').textContent = 
                 isNaN(totalEstimado) ? '-' : formatarMoeda(totalEstimado);
             statsCards[0].querySelector('.stat-label').textContent = 
                 `Total Estimado (${document.getElementById("filtroRegiao").value})`;
             
-            // Card 2: Produtos Analisados
-            statsCards[1].querySelector('.stat-value').textContent = 
-                dados.length;
+            statsCards[1].querySelector('.stat-value').textContent = dados.length;
             
-            // Card 3: Custo Médio por Contrato
             statsCards[2].querySelector('.stat-value').textContent = 
                 isNaN(custoMedio) ? '-' : formatarMoeda(custoMedio);
             
-            // Card 4: Cenário Simulado
             statsCards[3].querySelector('.stat-value').textContent = 
                 document.getElementById("filtroContrato").value || '-';
-            statsCards[3].querySelector('.stat-label').textContent = 
-                `Contrato Selecionado`;
+            statsCards[3].querySelector('.stat-label').textContent = `Contrato Selecionado`;
         }
         
-        // Formatar moeda - CORREÇÃO para tratar NaN
+        // Formatar moeda
         function formatarMoeda(valor) {
             if (isNaN(valor) || !isFinite(valor)) return 'R$ 0';
             
             return new Intl.NumberFormat('pt-BR', {
                 style: 'currency',
                 currency: 'BRL',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 0
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
             }).format(valor);
         }
         
@@ -856,7 +1020,8 @@
             return valor.toLocaleString('pt-BR');
         }
         
-        // Preencher tabela - CORREÇÃO para tratar valores nulos
+        // Preencher tabela
+        // Substitua a função preencherTabela (linhas ~363-418)
         function preencherTabela(dados) {
             const tbody = document.getElementById("tabelaResultados");
             tbody.innerHTML = '';
@@ -864,10 +1029,27 @@
             dados.forEach(d => {
                 const tr = document.createElement("tr");
                 
-                // Parsear valores numéricos para evitar NaN
                 const custoMedio = parseFloat(d.custo_total_funcoes_brl || d.custo_medio_contrato_brl) || 0;
                 const estabelecimentos = parseInt(d.estabelecimentos) || 0;
                 const totalEstimado = parseFloat(d.total_estimado_brl) || 0;
+                const valorVendas = parseFloat(d.valor_vendas) || 0;
+                
+                // ⭐⭐ USAR percentual_custo que JÁ VEIO do backend ⭐⭐
+                const percentual = parseFloat(d.percentual_custo) || 0;
+                
+                // Determinar classe do percentual baseado no valor
+                let percentualClass = '';
+                let percentualIcon = '';
+                if (percentual > 10) {
+                    percentualClass = 'percent-high';
+                    percentualIcon = '<i class="fas fa-exclamation-triangle" style="margin-right: 5px; font-size: 12px;"></i>';
+                } else if (percentual > 5) {
+                    percentualClass = 'percent-medium';
+                    percentualIcon = '<i class="fas fa-exclamation-circle" style="margin-right: 5px; font-size: 12px;"></i>';
+                } else {
+                    percentualClass = 'percent-low';
+                    percentualIcon = '<i class="fas fa-check-circle" style="margin-right: 5px; font-size: 12px;"></i>';
+                }
                 
                 tr.innerHTML = `
                     <td><strong>${d.produto || 'N/A'}</strong></td>
@@ -877,22 +1059,22 @@
                     <td><span class="badge ${d.obrigatorio ? 'badge-yes' : 'badge-no'}">${d.obrigatorio ? 'Sim' : 'Não'}</span></td>
                     <td>${formatarMoeda(custoMedio)}</td>
                     <td>${formatarNumero(estabelecimentos)}</td>
+                    <td>${formatarMoeda(valorVendas)}</td>
                     <td class="total-cell">${formatarMoeda(totalEstimado)}</td>
+                    <td><span class="${percentualClass}">${percentualIcon}${percentual.toFixed(2)}%</span></td>
                 `;
                 tbody.appendChild(tr);
             });
         }
         
-        // Desenhar gráfico - CORREÇÃO para tratar valores nulos
+        // Desenhar gráfico
         function desenharGrafico(dados) {
             const ctx = document.getElementById("graficoResultados").getContext("2d");
             
-            // Destruir gráfico anterior
             if (grafico) {
                 grafico.destroy();
             }
             
-            // Preparar dados, garantindo que sejam números válidos
             const labels = dados.map(d => d.produto || 'N/A').slice(0, 20);
             const valores = dados.map(d => {
                 const valor = parseFloat(d.total_estimado_brl);
@@ -928,10 +1110,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    interaction: {
-                        mode: 'index',
-                        intersect: false,
-                    },
+                    interaction: { mode: 'index', intersect: false },
                     stacked: false,
                     plugins: {
                         title: {
@@ -943,9 +1122,7 @@
                             callbacks: {
                                 label: function(context) {
                                     let label = context.dataset.label || '';
-                                    if (label) {
-                                        label += ': ';
-                                    }
+                                    if (label) label += ': ';
                                     if (context.datasetIndex === 0) {
                                         label += formatarMoeda(context.parsed.y);
                                     } else {
@@ -957,31 +1134,18 @@
                         }
                     },
                     scales: currentChartType === 'pie' ? undefined : {
-                        x: {
-                            ticks: {
-                                maxRotation: 45,
-                                minRotation: 0
-                            }
-                        },
+                        x: { ticks: { maxRotation: 45, minRotation: 0 } },
                         y: {
                             type: 'linear',
                             display: true,
                             position: 'left',
-                            title: {
-                                display: true,
-                                text: 'Total Estimado (BRL)',
-                                font: { weight: 'bold' }
-                            },
+                            title: { display: true, text: 'Total Estimado (BRL)', font: { weight: 'bold' } },
                             ticks: {
                                 callback: function(value) {
                                     if (isNaN(value)) return 'R$ 0';
-                                    if (value >= 1000000000) {
-                                        return 'R$ ' + (value / 1000000000).toFixed(1) + 'B';
-                                    } else if (value >= 1000000) {
-                                        return 'R$ ' + (value / 1000000).toFixed(1) + 'M';
-                                    } else if (value >= 1000) {
-                                        return 'R$ ' + (value / 1000).toFixed(0) + 'k';
-                                    }
+                                    if (value >= 1000000000) return 'R$ ' + (value / 1000000000).toFixed(1) + 'B';
+                                    else if (value >= 1000000) return 'R$ ' + (value / 1000000).toFixed(1) + 'M';
+                                    else if (value >= 1000) return 'R$ ' + (value / 1000).toFixed(0) + 'k';
                                     return 'R$ ' + value;
                                 }
                             }
@@ -990,20 +1154,389 @@
                             type: 'linear',
                             display: true,
                             position: 'right',
-                            title: {
-                                display: true,
-                                text: 'Estabelecimentos',
-                                font: { weight: 'bold' }
-                            },
-                            grid: {
-                                drawOnChartArea: false,
-                            },
+                            title: { display: true, text: 'Estabelecimentos', font: { weight: 'bold' } },
+                            grid: { drawOnChartArea: false },
                         }
                     }
                 }
             };
             
             grafico = new Chart(ctx, config);
+        }
+        
+        // Função para exportar tabela para CSV
+        // Substitua a função exportarParaCSV (linhas ~473-550)
+        function exportarParaCSV() {
+            if (!currentData || currentData.length === 0) {
+                mostrarToast('Nenhum dado disponível para exportação', 'warning');
+                return;
+            }
+            
+            try {
+                // Criar cabeçalhos do CSV (com novas colunas)
+                const headers = [
+                    'Produto',
+                    'Região', 
+                    'Classificação',
+                    'Familiar',
+                    'Obrigatório',
+                    'Custo Unitário Rastreabilidade (BRL)',
+                    'Estabelecimentos',
+                    'Valor Vendido (BRL)',
+                    'Total Estimado (BRL)',
+                    '% Custo/Valor'
+                ];
+                
+                // Criar linhas de dados
+                const rows = currentData.map(item => {
+                    const custoMedio = parseFloat(item.custo_total_funcoes_brl || item.custo_medio_contrato_brl) || 0;
+                    const estabelecimentos = parseInt(item.estabelecimentos) || 0;
+                    const totalEstimado = parseFloat(item.total_estimado_brl) || 0;
+                    const valorVendas = parseFloat(item.valor_vendas) || 0;
+                    
+                    // ⭐⭐ USAR percentual_custo que JÁ VEIO do backend ⭐⭐
+                    const percentual = parseFloat(item.percentual_custo) || 0;
+                    
+                    // Formatando valores para CSV
+                    const custoFormatado = custoMedio.toFixed(2).replace('.', ',');
+                    const totalFormatado = totalEstimado.toFixed(2).replace('.', ',');
+                    const valorVendasFormatado = valorVendas.toFixed(2).replace('.', ',');
+                    const percentualFormatado = percentual.toFixed(2).replace('.', ',');
+                    
+                    return [
+                        `"${item.produto || ''}"`,
+                        `"${item.regiao || ''}"`,
+                        `"${item.classificacao || ''}"`,
+                        item.familiar ? 'Sim' : 'Não',
+                        item.obrigatorio ? 'Sim' : 'Não',
+                        custoFormatado,
+                        estabelecimentos.toString(),
+                        valorVendasFormatado,
+                        totalFormatado,
+                        percentualFormatado
+                    ].join(';');
+                });
+                
+                // Combinar cabeçalhos e dados
+                const csvContent = [
+                    headers.join(';'),
+                    ...rows
+                ].join('\n');
+                
+                // Adicionar metadados no início do arquivo
+                const metadata = [
+                    `Simulação de Adoção Blockchain - SmartAgro`,
+                    `Data da exportação: ${new Date().toLocaleString('pt-BR')}`,
+                    `Região: ${document.getElementById("filtroRegiao").value}`,
+                    `Contrato: ${document.getElementById("filtroContrato").value}`,
+                    `Total de registros: ${currentData.length}`,
+                    ''
+                ].join('\n');
+                
+                const finalCSV = metadata + csvContent;
+                
+                // Criar blob e link para download
+                const blob = new Blob(['\uFEFF' + finalCSV], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                
+                // Gerar nome do arquivo com timestamp
+                const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+                const fileName = `smartagro-simulacao-${timestamp}.csv`;
+                
+                link.setAttribute('href', url);
+                link.setAttribute('download', fileName);
+                link.style.visibility = 'hidden';
+                
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                mostrarToast(`Arquivo CSV exportado com sucesso: ${fileName}`, 'success');
+                
+            } catch (error) {
+                console.error('❌ Erro ao exportar CSV:', error);
+                mostrarToast('Erro ao exportar arquivo CSV', 'error');
+            }
+        }
+        
+        // Função para imprimir a tabela
+        function imprimirTabela() {
+            if (!currentData || currentData.length === 0) {
+                mostrarToast('Nenhum dado disponível para impressão', 'warning');
+                return;
+            }
+            
+            // Criar uma nova janela para impressão
+            const printWindow = window.open('', '_blank');
+            
+            // Calcular totais GERAIS (apenas para resumo)
+            const totalGeral = currentData.reduce((sum, d) => sum + (parseFloat(d.total_estimado_brl) || 0), 0);
+            const totalEstabelecimentos = currentData.reduce((sum, d) => sum + (parseInt(d.estabelecimentos) || 0), 0);
+            const totalValorVendas = currentData.reduce((sum, d) => sum + (parseFloat(d.valor_vendas) || 0), 0);
+            const percentualMedio = totalValorVendas > 0 ? (totalGeral / totalValorVendas * 100).toFixed(2) : 0;
+            
+            printWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>SmartAgro - Relatório de Simulação</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { color: #2E7D32; border-bottom: 2px solid #4CAF50; padding-bottom: 10px; }
+                        .print-header { margin-bottom: 30px; }
+                        .print-info { 
+                            background: #f5f5f5; 
+                            padding: 15px; 
+                            border-radius: 5px; 
+                            margin-bottom: 20px;
+                            display: grid;
+                            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                            gap: 10px;
+                        }
+                        .print-info p { margin: 5px 0; }
+                        .info-card {
+                            background: white;
+                            padding: 10px;
+                            border-radius: 4px;
+                            border-left: 4px solid #4CAF50;
+                        }
+                        table { 
+                            width: 100%; 
+                            border-collapse: collapse; 
+                            margin-top: 20px; 
+                            font-size: 12px;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                        }
+                        th { 
+                            background-color: #2E7D32; 
+                            color: white; 
+                            padding: 12px 10px; 
+                            text-align: left;
+                            font-weight: 600;
+                            border-right: 1px solid #1B5E20;
+                        }
+                        th:last-child { border-right: none; }
+                        td { 
+                            padding: 10px; 
+                            border-bottom: 1px solid #E0E0E0; 
+                            vertical-align: middle;
+                        }
+                        tr:nth-child(even) { background-color: #f9f9f9; }
+                        tr:hover { background-color: #f5f5f5; }
+                        .total-row { 
+                            font-weight: bold; 
+                            background-color: #E8F5E9 !important; 
+                            border-top: 2px solid #4CAF50;
+                        }
+                        .total-row td { padding: 12px 10px; }
+                        .percent-cell { 
+                            text-align: center; 
+                            font-weight: 600;
+                            border-radius: 4px;
+                            padding: 4px 8px !important;
+                        }
+                        .percent-low { 
+                            color: #10B981; 
+                            background-color: rgba(16, 185, 129, 0.1);
+                        }
+                        .percent-medium { 
+                            color: #F59E0B; 
+                            background-color: rgba(245, 158, 11, 0.1);
+                        }
+                        .percent-high { 
+                            color: #EF4444; 
+                            background-color: rgba(239, 68, 68, 0.1);
+                            font-weight: 700;
+                        }
+                        .footer { 
+                            margin-top: 30px; 
+                            text-align: center; 
+                            color: #666; 
+                            font-size: 11px;
+                            padding-top: 20px;
+                            border-top: 1px solid #E0E0E0;
+                        }
+                        @media print {
+                            .no-print { display: none; }
+                            body { margin: 10mm; }
+                            table { font-size: 10px; }
+                            .print-info { break-inside: avoid; }
+                        }
+                        .actions {
+                            text-align: center;
+                            margin-top: 30px;
+                            padding: 20px;
+                            background: #f9f9f9;
+                            border-radius: 8px;
+                        }
+                        .btn {
+                            padding: 10px 20px;
+                            border: none;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            font-weight: 600;
+                            margin: 0 10px;
+                            display: inline-flex;
+                            align-items: center;
+                            gap: 8px;
+                        }
+                        .btn-print {
+                            background: #4CAF50;
+                            color: white;
+                        }
+                        .btn-close {
+                            background: #666;
+                            color: white;
+                        }
+                    </style>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+                </head>
+                <body>
+                    <div class="print-header">
+                        <h1><i class="fas fa-chart-line"></i> SmartAgro - Relatório de Simulação Blockchain</h1>
+                        <div class="print-info">
+                            <div class="info-card">
+                                <p><strong><i class="fas fa-calendar-alt"></i> Data do relatório:</strong><br>${new Date().toLocaleString('pt-BR')}</p>
+                            </div>
+                            <div class="info-card">
+                                <p><strong><i class="fas fa-map-marker-alt"></i> Região:</strong><br>${document.getElementById("filtroRegiao").value}</p>
+                            </div>
+                            <div class="info-card">
+                                <p><strong><i class="fas fa-file-contract"></i> Contrato:</strong><br>${document.getElementById("filtroContrato").value}</p>
+                            </div>
+                            <div class="info-card">
+                                <p><strong><i class="fas fa-box"></i> Produtos analisados:</strong><br>${currentData.length}</p>
+                            </div>
+                            <div class="info-card">
+                                <p><strong><i class="fas fa-store"></i> Estabelecimentos:</strong><br>${formatarNumero(totalEstabelecimentos)}</p>
+                            </div>
+                            <div class="info-card">
+                                <p><strong><i class="fas fa-money-bill-wave"></i> Valor total vendido:</strong><br>${formatarMoeda(totalValorVendas)}</p>
+                            </div>
+                            <div class="info-card">
+                                <p><strong><i class="fas fa-calculator"></i> Custo total blockchain:</strong><br>${formatarMoeda(totalGeral)}</p>
+                            </div>
+                            <div class="info-card">
+                                <p><strong><i class="fas fa-percentage"></i> Custo/valor médio:</strong><br>${percentualMedio}%</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Produto</th>
+                                <th>Classificação</th>
+                                <th>Estabelecimentos</th>
+                                <th>Valor Vendido (BRL)</th>
+                                <th>Custo Blockchain (BRL)</th>
+                                <th>% Custo/Valor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `);
+            
+            // Adicionar linhas da tabela - USANDO DADOS EXISTENTES DO BACKEND
+            currentData.forEach((item, index) => {
+                const estabelecimentos = parseInt(item.estabelecimentos) || 0;
+                const totalEstimado = parseFloat(item.total_estimado_brl) || 0;
+                const valorVendas = parseFloat(item.valor_vendas) || 0;
+                
+                // ⭐⭐ IMPORTANTE: Usar percentual_custo que JÁ VEIO do backend ⭐⭐
+                const percentual = parseFloat(item.percentual_custo) || 0;
+                
+                // Determinar classe baseada no valor JÁ CALCULADO
+                let percentualClass = 'percent-low';
+                if (percentual > 10) {
+                    percentualClass = 'percent-high';
+                } else if (percentual > 5) {
+                    percentualClass = 'percent-medium';
+                }
+                
+                printWindow.document.write(`
+                    <tr>
+                        <td style="text-align: center; font-weight: 600;">${index + 1}</td>
+                        <td><strong>${item.produto || 'N/A'}</strong></td>
+                        <td>${item.classificacao || 'N/A'}</td>
+                        <td style="text-align: right;">${formatarNumero(estabelecimentos)}</td>
+                        <td style="text-align: right; font-weight: 600;">${formatarMoeda(valorVendas)}</td>
+                        <td style="text-align: right; font-weight: 700; color: #2E7D32;">${formatarMoeda(totalEstimado)}</td>
+                        <td class="percent-cell ${percentualClass}">${percentual.toFixed(2)}%</td>
+                    </tr>
+                `);
+            });
+            
+            printWindow.document.write(`
+                        </tbody>
+                        <tfoot>
+                            <tr class="total-row">
+                                <td colspan="3" style="text-align: right;"><strong>TOTAIS:</strong></td>
+                                <td style="text-align: right;"><strong>${formatarNumero(totalEstabelecimentos)}</strong></td>
+                                <td style="text-align: right;"><strong>${formatarMoeda(totalValorVendas)}</strong></td>
+                                <td style="text-align: right;"><strong>${formatarMoeda(totalGeral)}</strong></td>
+                                <td class="percent-cell ${percentualMedio > 10 ? 'percent-high' : percentualMedio > 5 ? 'percent-medium' : 'percent-low'}">
+                                    <strong>${percentualMedio}%</strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
+                    <div class="footer">
+                        <p><i class="fas fa-database"></i> <strong>Fonte dos dados:</strong> Censo Agropecuário IBGE × Análise de Custos Blockchain SmartAgro</p>
+                        <p><i class="fas fa-info-circle"></i> <strong>Nota metodológica:</strong> O "Custo Blockchain" representa o custo hipotético de implementar 
+                        rastreabilidade via smart contracts para todos os estabelecimentos do produto.</p>
+                        <p><i class="fas fa-chart-pie"></i> <strong>Interpretação do % Custo/Valor:</strong> 
+                        <span style="color: #10B981;">●</span> Baixo (&lt;5%) | 
+                        <span style="color: #F59E0B;">●</span> Médio (5-10%) | 
+                        <span style="color: #EF4444;">●</span> Alto (&gt;10%)</p>
+                        <p>&copy; ${new Date().getFullYear()} SmartAgro - Simulação de Adoção Blockchain</p>
+                    </div>
+                    
+                    <div class="actions no-print">
+                        <button class="btn btn-print" onclick="window.print()">
+                            <i class="fas fa-print"></i> Imprimir Relatório
+                        </button>
+                        <button class="btn btn-close" onclick="window.close()">
+                            <i class="fas fa-times"></i> Fechar Janela
+                        </button>
+                    </div>
+                    
+                    <script>
+                        // Adicionar interatividade básica
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Destacar linhas com percentual muito alto (>15%)
+                            const rows = document.querySelectorAll('tbody tr');
+                            rows.forEach(row => {
+                                const percentCell = row.querySelector('.percent-high');
+                                if (percentCell) {
+                                    const percentValue = parseFloat(percentCell.textContent);
+                                    if (percentValue > 15) {
+                                        row.style.backgroundColor = '#FFEBEE';
+                                        row.style.borderLeft = '3px solid #EF4444';
+                                    }
+                                }
+                            });
+                            
+                            // Adicionar tooltip para percentuais altos
+                            const highPercentCells = document.querySelectorAll('.percent-high');
+                            highPercentCells.forEach(cell => {
+                                const percentValue = parseFloat(cell.textContent);
+                                if (percentValue > 20) {
+                                    cell.title = 'Custo muito elevado em relação ao valor vendido';
+                                } else if (percentValue > 10) {
+                                    cell.title = 'Custo elevado em relação ao valor vendido';
+                                }
+                            });
+                        });
+                    <\/script>
+                </body>
+                </html>
+            `);
+            
+            printWindow.document.close();
+            mostrarToast('Relatório gerado para impressão', 'success');
         }
         
         // Alternar tipo de gráfico
@@ -1014,14 +1547,43 @@
             
             if (currentData && currentData.length > 0) {
                 desenharGrafico(currentData);
+                mostrarToast(`Gráfico alterado para: ${currentChartType}`, 'info');
             }
+        }
+        
+        // Mostrar toast notification
+        function mostrarToast(mensagem, tipo = 'info') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            // Definir cores baseadas no tipo
+            switch(tipo) {
+                case 'success':
+                    toast.style.background = 'var(--success)';
+                    break;
+                case 'error':
+                    toast.style.background = 'var(--error)';
+                    break;
+                case 'warning':
+                    toast.style.background = 'var(--warning)';
+                    break;
+                default:
+                    toast.style.background = 'var(--accent)';
+            }
+            
+            toastMessage.textContent = mensagem;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
         }
         
         // Mostrar estado vazio
         function mostrarResultadosVazios() {
             document.getElementById('tabelaResultados').innerHTML = `
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 40px;">
+                    <td colspan="10" style="text-align: center; padding: 40px;">
                         <i class="fas fa-search" style="font-size: 48px; color: var(--border); margin-bottom: 15px;"></i>
                         <p style="color: var(--text-light); font-size: 16px; font-weight: 500;">Nenhum resultado encontrado</p>
                         <p style="color: var(--text-light); font-size: 14px;">Tente ajustar os filtros de pesquisa</p>
@@ -1029,12 +1591,10 @@
                 </tr>
             `;
             
-            // Resetar estatísticas
             document.querySelectorAll('.stat-value').forEach(el => el.textContent = '-');
             document.querySelectorAll('.stat-card')[0].querySelector('.stat-label').textContent = 'Total Estimado';
             document.querySelectorAll('.stat-card')[3].querySelector('.stat-label').textContent = 'Cenário Simulado';
             
-            // Limpar gráfico
             if (grafico) {
                 grafico.destroy();
                 grafico = null;
@@ -1045,7 +1605,7 @@
         function mostrarErro(mensagem) {
             document.getElementById('tabelaResultados').innerHTML = `
                 <tr>
-                    <td colspan="8" style="text-align: center; padding: 40px; color: var(--error);">
+                    <td colspan="10" style="text-align: center; padding: 40px; color: var(--error);">
                         <i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 15px;"></i>
                         <p style="font-size: 16px; font-weight: 500;">Erro ao carregar resultados</p>
                         <p style="font-size: 14px; color: var(--text-light);">${mensagem}</p>
@@ -1063,15 +1623,22 @@
         window.addEventListener('DOMContentLoaded', function() {
             carregarFiltros();
             
-            // Configurar valores padrão
             document.getElementById('filtroOrderBy').value = 'total_estimado_brl';
-            // Obrigatório agora tem valor padrão vazio (opcional)
             
-            // Adicionar evento de Enter para filtro Top N
             document.getElementById('filtroTop').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     carregarResultados();
                 }
+            });
+            
+            // Adicionar evento de Enter para outros campos
+            const inputs = document.querySelectorAll('.filter-select, .filter-input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        carregarResultados();
+                    }
+                });
             });
         });
     </script>

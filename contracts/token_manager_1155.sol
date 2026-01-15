@@ -179,7 +179,7 @@ contract TokenManager1155 is Ownable {
         string memory buyerIdentification,
         string memory currentLocation,
         Token1155.UpdateType updateType
-    ) external onlyTokenOwnerOrAdmin(updater, tokenId) checkIsActive(tokenId) {
+    ) external onlyTokenOwnerOrAdmin(msg.sender, tokenId) checkIsActive(tokenId) {
         token1155.addStatus(
             updater,
             tokenId,
@@ -189,7 +189,7 @@ contract TokenManager1155 is Ownable {
             currentLocation,
             updateType
         );
-        statusUpdatedTokens[updater].push(tokenId);
+        statusUpdatedTokens[msg.sender].push(tokenId);
     }
 
     /**

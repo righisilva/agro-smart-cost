@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract Produto {
+contract Produto2 {
     string public nome;
     uint256 public preco;
 

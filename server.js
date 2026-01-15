@@ -59,24 +59,26 @@ function salvarDeployNoDB(contractId, networkId, gasUsed, costUSD, costBRL) {
     `).run(contractId, networkId, gasUsed, costUSD, costBRL);
 }
 
-function salvarFuncaoNoDB(functionId, networkId, gasUsed, costUSD, costBRL) {
-    db.prepare(`
-        INSERT INTO contract_function_costs (function_id, network_id, gas_used, cost_usd, cost_brl)
-        VALUES (?, ?, ?, ?, ?)
-    `).run(functionId, networkId, gasUsed, costUSD, costBRL);
-}
-
 // function salvarFuncaoNoDB(functionId, networkId, gasUsed, costUSD, costBRL) {
 //     db.prepare(`
 //         INSERT INTO contract_function_costs (function_id, network_id, gas_used, cost_usd, cost_brl)
 //         VALUES (?, ?, ?, ?, ?)
-//         ON CONFLICT(function_id, network_id) 
-//         DO UPDATE SET 
-//             gas_used = excluded.gas_used,
-//             cost_usd = excluded.cost_usd,
-//             cost_brl = excluded.cost_brl
 //     `).run(functionId, networkId, gasUsed, costUSD, costBRL);
 // }
+
+function salvarFuncaoNoDB(functionId, networkId, gasUsed, costUSD, costBRL) {
+  db.prepare(`
+    INSERT INTO contract_function_costs
+      (function_id, network_id, gas_used, cost_usd, cost_brl)
+    VALUES (?, ?, ?, ?, ?)
+    ON CONFLICT(function_id, network_id)
+    DO UPDATE SET
+      gas_used = excluded.gas_used,
+      cost_usd = excluded.cost_usd,
+      cost_brl = excluded.cost_brl
+  `).run(functionId, networkId, gasUsed, costUSD, costBRL);
+}
+
 
 function salvarNetworkCosts(networkId, gasPrice, costUSD, costBRL) {
     db.prepare(`
@@ -246,7 +248,7 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
     const solc = require("solc");
     const { analisarContratoManual } = require("./contractService");
     const { registerDeployedContract } = require("./contractService");
-
+    let filePath;
 
     try {
         if (!req.file) return res.status(400).send("❌ Nenhum arquivo enviado.");
@@ -359,6 +361,17 @@ app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
     } catch (err) {
         console.error("Erro ao compilar ou deployar contrato:", err);
         res.status(500).send("❌ Erro inesperado ao compilar ou deployar contrato.");
+    } finally {
+        // 🧹 Limpeza do arquivo temporário
+        if (filePath) {
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error("Erro ao remover arquivo temporário:", err);
+                } else {
+                    console.log("🧹 Arquivo temporário removido:", filePath);
+                }
+            });
+        }
     }
 });
 
@@ -399,7 +412,7 @@ app.post("/api/execute-function", async (req, res) => {
         const custosPorRede = {};
 
         const insertFunc = db.transaction(() => {
-            const functionId = salvarFuncaoContratoNoDB(currentDeployedContract.id, nomeFuncao);
+            const functionId = salvarFuncaoContratoNoDB(contratoSelecionado.id, nomeFuncao);
 
             for (const [token, data] of Object.entries(gasPricesByNetwork)) {
                 // console.log(data);
@@ -473,6 +486,8 @@ app.get("/api/results", (req, res) => {
       functionName,
     } = req.query;
 
+    console.log("📥 Query recebida:", req.query);
+
     // --- 1️⃣ Query base do IBGE ---
     let queryIBGE = `
       SELECT i.id, r.nome AS regiao, p.nome AS produto, c.nome AS classificacao,
@@ -491,8 +506,17 @@ app.get("/api/results", (req, res) => {
     if (familiar !== undefined) { queryIBGE += " AND i.familiar = @familiar"; paramsIBGE.familiar = Number(familiar); }
     if (obrigatorio !== undefined) { queryIBGE += " AND i.obrigatorio = @obrigatorio"; paramsIBGE.obrigatorio = Number(obrigatorio); }
 
+    console.log("🧾 Query IBGE:", queryIBGE);
+    console.log("📌 Params IBGE:", paramsIBGE);
+
+
     const dadosIBGE = db.prepare(queryIBGE).all(paramsIBGE);
+    console.log("📊 Dados IBGE:", dadosIBGE);
+
     if (!dadosIBGE.length) return res.json([]);
+    //Até aqui filtrou os dados do IBGE
+    //Abaixo filtra os dados do contrato
+
 
     // --- 2️⃣ Query base dos contratos ---
     let queryContratos = `
@@ -516,44 +540,126 @@ app.get("/api/results", (req, res) => {
     if (network) { queryContratos += " AND n.name LIKE @network"; paramsContratos.network = `%${network}%`; }
     if (functionName) { queryContratos += " AND f.name LIKE @functionName"; paramsContratos.functionName = `%${functionName}%`; }
 
+    console.log("📜 Query Contratos:", queryContratos);
+    console.log("📌 Params Contratos:", paramsContratos);
+
+
     const dadosContratos = db.prepare(queryContratos).all(paramsContratos);
+    console.log("💰 Dados Contratos:", dadosContratos);
+
     if (!dadosContratos.length) return res.json([]);
 
     // --- 3️⃣ Cálculo do custo médio dos contratos selecionados ---
     // const custoMedioBRL =
       // dadosContratos.reduce((acc, d) => acc + (d.cost_brl || 0), 0) / dadosContratos.length;
     const custoTotalBRL = dadosContratos.reduce((acc, d) => acc + (d.cost_brl || 0), 0);
+    console.log("💵 Custo total BRL:", custoTotalBRL);
 
-    const chaveOrdenacao =
-      orderBy === "estabelecimentos" ? "estabelecimentos" : "valor_vendas";
+
+    // const chaveOrdenacao =
+    //   orderBy === "estabelecimentos" ? "estabelecimentos" : "valor_vendas";
 
     // --- 4️⃣ Agregação de produtos (quantidade × custo) ---
+    // const agregados = {};
+    // dadosIBGE.forEach(d => {
+    //     const baseCalculo = Number(d.estabelecimentos) || 0;
+    //     agregados[d.produto] = (agregados[d.produto] || 0) + baseCalculo * custoTotalBRL;
+    // });
+    // console.log("📦 Agregados:", agregados)
+    // ;
+
+    // --- 4️⃣ Agregação de produtos (produto + classificação) ---
     const agregados = {};
+
     dadosIBGE.forEach(d => {
-      const baseValor = d[chaveOrdenacao] || 0;
-      agregados[d.produto] = (agregados[d.produto] || 0) + baseValor * custoTotalBRL;
+        const estabelecimentos = Number(d.estabelecimentos) || 0;
+        const chave = `${d.produto} | ${d.classificacao}`;
+
+        if (!agregados[chave]) {
+            agregados[chave] = {
+                produto: d.produto,
+                classificacao: d.classificacao,
+                regiao: d.regiao,
+                familiar: d.familiar,
+                obrigatorio: d.obrigatorio,
+                estabelecimentos: 0,
+                total_estimado_brl: 0,
+                valor_vendas: d.valor_vendas
+            };
+        }
+
+        agregados[chave].estabelecimentos += estabelecimentos;
+        agregados[chave].total_estimado_brl += estabelecimentos * custoTotalBRL;
     });
+
+
+
+
 
     // --- 5️⃣ Ordenação e Top N ---
-    let produtosOrdenados = Object.entries(agregados).sort((a, b) => b[1] - a[1]);
-    const topN = top ? Number(top) : produtosOrdenados.length;
-    produtosOrdenados = produtosOrdenados.slice(0, topN);
+    let produtosOrdenados = Object.entries(agregados);
 
     // --- 6️⃣ Montagem do resultado final ---
-    const resultado = produtosOrdenados.map(([produto, totalEstimado]) => {
-      const ref = dadosIBGE.find(d => d.produto === produto);
-      return {
-        produto,
-        regiao: ref.regiao,
-        classificacao: ref.classificacao,
-        familiar: ref.familiar,
-        obrigatorio: ref.obrigatorio,
-        total_estimado_brl: totalEstimado.toFixed(2),
-        custo_medio_contrato_brl: custoTotalBRL.toFixed(2),
-      };
+    const resultado = Object.values(agregados).map(d => {
+        const totalEstimado = d.total_estimado_brl;
+        const MIL = 1000;
+        const valorVendas = (Number(d.valor_vendas) || 0) * MIL;
+
+        const percentual = valorVendas > 0
+            ? Number(((totalEstimado / valorVendas) * 100).toFixed(2))
+            : 0;
+
+        return {
+            produto: d.produto,
+            regiao: d.regiao,
+            classificacao: d.classificacao,
+            familiar: d.familiar,
+            obrigatorio: d.obrigatorio,
+            estabelecimentos: d.estabelecimentos,
+            valor_vendas: valorVendas,
+            total_estimado_brl: Number(totalEstimado.toFixed(2)),
+            custo_medio_contrato_brl: Number(custoTotalBRL.toFixed(2)),
+
+            // 👇 NOVO CAMPO
+            percentual_custo: percentual
+        };
     });
 
-    res.json(resultado);
+
+        console.log(
+    resultado.slice(0, 5).map(r => ({
+        produto: r.produto,
+        valor_vendas: r.valor_vendas,
+        tipo: typeof r.valor_vendas
+    }))
+    );
+
+    switch (orderBy) {
+  case "estabelecimentos":
+    resultado.sort((a, b) => b.estabelecimentos - a.estabelecimentos);
+    break;
+
+  case "valor_vendas":
+    resultado.sort((a, b) => b.valor_vendas - a.valor_vendas);
+    break;
+
+  case "total":
+  default:
+    resultado.sort((a, b) => b.total_estimado_brl - a.total_estimado_brl);
+    break;
+}
+
+
+    const topN = top ? Number(top) : resultado.length;
+    const resultadoFinal = resultado.slice(0, topN);
+
+
+
+
+    // console.log("✅ Resultado final:", resultadoFinal);
+
+
+    res.json(resultadoFinal);
 
   } catch (err) {
     console.error("Erro em /api/results:", err);
@@ -573,15 +679,27 @@ app.get("/api/contracts-list", (req, res) => {
 });
 
 // 🔹 Listar redes
+// 🔹 Listar redes
 app.get("/api/networks-list", (req, res) => {
     try {
-        const rows = db.prepare("SELECT DISTINCT name FROM networks ORDER BY name").all();
-        res.json(rows.map(r => r.name));
+        const rows = db
+            .prepare("SELECT DISTINCT name FROM networks ORDER BY name")
+            .all();
+
+        const redes = rows
+            .map(r => r.name)
+            .filter(name => {
+                const n = name.toLowerCase();
+                return !n.includes('local') && !n.includes('hardhat');
+            });
+
+        res.json(redes);
     } catch (err) {
         console.error("Erro ao listar redes:", err);
         res.status(500).send("Erro ao listar redes");
     }
 });
+
 
 // 🔹 Listar funções de um contrato específico (ou todas se não for passado)
 app.get("/api/functions-list", (req, res) => {
