@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartAgro - Histórico de Custos Blockchain</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.3.0/build/global/luxon.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E7D32;
+            --primary-dark: #1B5E20;
+            --primary-light: #4CAF50;
+            --secondary: #FF9800;
+            --accent: #2196F3;
+            --text: #333333;
+            --text-light: #666666;
+            --background: #0F172A;
+            --card-bg: #1E293B;
+            --card-bg-light: #334155;
+            --border: #475569;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            --transition: all 0.3s ease;
+            --success: #10B981;
+            --warning: #F59E0B;
+            --error: #EF4444;
+            --ethereum: #627EEA;
+            --bnb: #F0B90B;
+            --polygon: #00C9A7;
+            --hardhat: #FF6B8B; 
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Inter', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: #E2E8F0;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .dashboard-header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 25px;
+            margin-bottom: 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header-title h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: white;
+        }
+        
+        .header-title p {
+            opacity: 0.9;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #0D8BF2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(33, 150, 243, 0.2);
+        }
+        
+        .btn-secondary {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 13px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        /* Left Panel - Filters */
+        .filters-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+        
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            color: #E2E8F0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .card-title i {
+            color: var(--accent);
+            font-size: 20px;
+        }
+        
+        /* Filter Groups */
+        .filter-group {
+            margin-bottom: 25px;
+        }
+        
+        .filter-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .filter-select {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #E2E8F0;
+            font-size: 14px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        .filter-input {
+            width: 100%;
+            padding: 12px 15px;
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #E2E8F0;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+        
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+        
+        /* Network Selection */
+        .network-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .network-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background-color: var(--card-bg-light);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        
+        .network-checkbox:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-color: var(--accent);
+        }
+        
+        .network-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+        
+        .network-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        
+        .network-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .network-ethereum { background-color: var(--ethereum); }
+        .network-bnb { background-color: var(--bnb); }
+        .network-polygon { background-color: var(--polygon); }
+        .network-hardhat { background-color: var(--hardhat); }
+        
+        /* Gas Units Input */
+        .gas-units-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .gas-units-input input {
+            flex: 1;
+        }
+        
+        .gas-unit-label {
+            font-size: 12px;
+            color: var(--text-light);
+            white-space: nowrap;
+        }
+        
+        /* Period Selection */
+        .period-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        
+        .period-btn {
+            padding: 10px;
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: #E2E8F0;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+        
+        .period-btn:hover {
+            background-color: rgba(33, 150, 243, 0.1);
+        }
+        
+        .period-btn.active {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+        
+        /* Right Panel - Charts */
+        .charts-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .chart-container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+        
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #E2E8F0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .chart-wrapper {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+        
+        /* Statistics Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background-color: var(--card-bg-light);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #E2E8F0;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+        
+        .stat-network {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        /* Data Table */
+        .data-table-container {
+            margin-top: 30px;
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+        
+        .data-table th {
+            background-color: rgba(0, 0, 0, 0.2);
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #E2E8F0;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .data-table tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        /* Network Badge */
+        .network-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .badge-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        /* Loading State */
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(15, 23, 42, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            z-index: 10;
+            backdrop-filter: blur(5px);
+        }
+        
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Footer */
+        .dashboard-footer {
+            text-align: center;
+            padding: 25px 0;
+            color: var(--text-light);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .header-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                flex-grow: 1;
+                justify-content: center;
+            }
+            
+            .chart-wrapper {
+                height: 350px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .period-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .period-buttons {
+                grid-template-columns: 1fr;
+            }
+            
+            .chart-wrapper {
+                height: 300px;
+            }
+        }
+        
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--card-bg-light);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+        
+        /* Info Tooltip */
+        .info-tooltip {
+            position: relative;
+            cursor: help;
+        }
+        
+        .info-tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--card-bg);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 100;
+            border: 1px solid var(--border);
+            margin-bottom: 5px;
+        }
+
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="dashboard-header">
+            <div class="header-content">
+                <div class="header-title">
+                    <h1><i class="fas fa-gas-pump"></i> Histórico de Custos Blockchain</h1>
+                    <p>Análise comparativa de custos de transação entre diferentes redes</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary" onclick="location.href='/'">
+                        <i class="fas fa-home"></i> Voltar ao Início
+                    </button>
+                    <button class="btn btn-primary" onclick="exportarDados()">
+                        <i class="fas fa-download"></i> Exportar Dados
+                    </button>
+                </div>
+            </div>
+        </header>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel - Filters -->
+            <div class="filters-panel">
+                <!-- Networks Selection -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-network-wired"></i>
+                        <span>Redes Blockchain</span>
+                    </div>
+                    <div class="network-selection">
+                        <label class="network-checkbox">
+                            <input type="checkbox" id="network-ethereum" checked>
+                            <div class="network-label">
+                                <div class="network-color network-ethereum"></div>
+                                <span>Ethereum</span>
+                            </div>
+                        </label>
+                        
+                        <label class="network-checkbox">
+                            <input type="checkbox" id="network-bnb" checked>
+                            <div class="network-label">
+                                <div class="network-color network-bnb"></div>
+                                <span>BNB Chain</span>
+                            </div>
+                        </label>
+                        
+                        <label class="network-checkbox">
+                            <input type="checkbox" id="network-polygon" checked>
+                            <div class="network-label">
+                                <div class="network-color network-polygon"></div>
+                                <span>Polygon</span>
+                            </div>
+                        </label>
+                        
+                        <label class="network-checkbox">
+                            <input type="checkbox" id="network-hardhat">
+                            <div class="network-label">
+                                <div class="network-color network-hardhat"></div>
+                                <span>Hardhat (Local)</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Gas Units -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-calculator"></i>
+                        <span>Configuração de Gas</span>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-fire"></i>
+                            <span>Unidades de Gas por Transação</span>
+                        </label>
+                        <div class="gas-units-input">
+                            <input type="number" class="filter-input" id="gasUnits" min="21000" max="10000000" value="21000">
+                            <span class="gas-unit-label">unidades</span>
+                        </div>
+                        <div style="margin-top: 10px; font-size: 12px; color: var(--text-light);">
+                            <i class="fas fa-info-circle"></i>
+                            <span>Padrão: 21,000 (transação simples ETH)</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Period Selection -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Período de Análise</span>
+                    </div>
+                    <div class="period-buttons">
+                        <button class="period-btn active" data-period="day">24 Horas</button>
+                        <button class="period-btn" data-period="week">7 Dias</button>
+                        <button class="period-btn" data-period="month">30 Dias</button>
+                        <button class="period-btn" data-period="all">Todo Período</button>
+                    </div>
+                </div>
+                
+                <!-- Apply Filters -->
+                <button class="btn btn-primary" onclick="carregarDados()" style="width: 100%;">
+                    <i class="fas fa-sync-alt"></i> Atualizar Análise
+                </button>
+            </div>
+            
+            <!-- Right Panel - Charts -->
+            <div class="charts-panel">
+                <!-- Main Chart -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Evolução de Custos por Rede</span>
+                        </div>
+                        <div class="header-actions">
+                            <button class="btn btn-secondary btn-sm" onclick="alternarTipoGrafico()">
+                                <i class="fas fa-exchange-alt"></i> Alternar Gráfico
+                            </button>
+                            <button class="btn btn-secondary btn-sm" onclick="downloadChart()">
+                                <i class="fas fa-download"></i> Baixar
+                            </button>
+                        </div>
+                    </div>
+                    <div class="chart-wrapper">
+                        <canvas id="mainChart"></canvas>
+                        <div id="chartLoading" class="loading-overlay" style="display: none;">
+                            <div class="loading-spinner"></div>
+                            <div>Carregando dados históricos...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistics -->
+                <div class="card">
+                    <div class="card-title">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Estatísticas Comparativas</span>
+                    </div>
+                    <div class="stats-grid" id="statsGrid">
+                        <div class="stat-card">
+                            <div class="stat-value">-</div>
+                            <div class="stat-label">Custo Médio</div>
+                            <div class="stat-network">Aguardando dados...</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Data Table -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <div class="chart-title">
+                            <i class="fas fa-table"></i>
+                            <span>Dados Históricos</span>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="toggleTable()">
+                            <i class="fas fa-eye"></i> Mostrar Tabela
+                        </button>
+                    </div>
+                    <div class="data-table-container" id="dataTableContainer" style="display: none;">
+                        <table class="data-table" id="dataTable">
+                            <thead>
+                                <tr>
+                                    <th>Rede</th>
+                                    <th>Data/Hora</th>
+                                    <th>Custo (BRL)</th>
+                                    <th>Gas Units</th>
+                                    <th>Gas Price (Gwei)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <tr>
+                                    <td colspan="5" style="text-align: center; padding: 20px;">
+                                        <i class="fas fa-database"></i> Clique em "Atualizar Análise" para carregar dados
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="dashboard-footer">
+            <div>
+                <i class="fas fa-database"></i>
+                <span>SmartAgro - Histórico de Custos Blockchain | Atualizado em tempo real</span>
+            </div>
+            <div class="copyright">
+                &copy; 2025 SmartAgro. Todos os direitos reservados.
+            </div>
+        </footer>
+    </div>
+    
+    <script>
+        // Debug inicial
+        console.log('🔧 Inicializando dashboard...');
+        console.log('📊 Chart.js version:', Chart.version);
+        console.log('🎯 Canvas disponível:', !!document.getElementById('mainChart'));
+        console.log('🎨 Contexto 2D:', document.getElementById('mainChart')?.getContext('2d'));
+
+        // Teste simples do Chart.js
+        function testarChartJS() {
+            try {
+                const testCanvas = document.createElement('canvas');
+                const testCtx = testCanvas.getContext('2d');
+                const testChart = new Chart(testCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['A', 'B', 'C'],
+                        datasets: [{
+                            label: 'Teste',
+                            data: [1, 2, 3]
+                        }]
+                    }
+                });
+                testChart.destroy();
+                console.log('✅ Chart.js funciona corretamente');
+                return true;
+            } catch (error) {
+                console.error('❌ Erro no Chart.js:', error.message);
+                return false;
+            }
+        }
+
+        // Execute o teste
+        testarChartJS();
+        
+        // Configuration
+        const networkColors = {
+            'Ethereum': '#627EEA',
+            'BNB Chain': '#F0B90B',
+            'Polygon': '#00C9A7',
+            'Hardhat': '#FF6B8B'
+        };
+        
+        let mainChart = null;
+        let historicalData = [];
+        
+        // Format currency
+        function formatCurrency(value) {
+            if (value === null || value === undefined) return 'R$ 0,00';
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 6
+            }).format(value);
+        }
+        
+        // Get selected networks
+        function getSelectedNetworks() {
+            const networks = [];
+            if (document.getElementById('network-ethereum').checked) networks.push('Ethereum');
+            if (document.getElementById('network-bnb').checked) networks.push('BNB Chain');
+            if (document.getElementById('network-polygon').checked) networks.push('Polygon');
+            if (document.getElementById('network-hardhat').checked) networks.push('Hardhat');
+            return networks;
+        }
+        
+        // Get selected period
+        function getSelectedPeriod() {
+            const activeBtn = document.querySelector('.period-btn.active');
+            return activeBtn ? activeBtn.dataset.period : 'day';
+        }
+        
+        // Get gas units
+        function getGasUnits() {
+            const val = document.getElementById('gasUnits').value;
+            return val ? parseInt(val) : 21000;
+        }
+        
+        // Load data
+        async function carregarDados() {
+            console.log('🔄 Iniciando carregamento de dados...');
+            
+            const loadingEl = document.getElementById('chartLoading');
+            loadingEl.style.display = 'flex';
+            
+            const networks = getSelectedNetworks();
+            const period = getSelectedPeriod();
+            const gasUnits = getGasUnits();
+            
+            if (networks.length === 0) {
+                alert('Por favor, selecione pelo menos uma rede blockchain.');
+                loadingEl.style.display = 'none';
+                return;
+            }
+            
+            // Build URL
+            let url = `/api/gas-history?period=${period}&gasUnits=${gasUnits}`;
+            networks.forEach(network => {
+                url += `&network=${encodeURIComponent(network)}`;
+            });
+            
+            console.log('📡 Fazendo request para:', url);
+            
+            try {
+                const response = await fetch(url);
+                console.log('📥 Status da resposta:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('✅ Dados recebidos:', data.length, 'registros');
+                
+                historicalData = data;
+                
+                if (data.length === 0) {
+                    mostrarDadosVazios();
+                } else {
+                    atualizarEstatisticas(data);
+                    atualizarTabela(data);
+                    criarGrafico(data);
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao carregar dados:', error);
+                mostrarErro(error.message || 'Erro desconhecido');
+            } finally {
+                loadingEl.style.display = 'none';
+            }
+        }
+        
+        // Create chart
+        // Substitua a função criarGrafico por esta versão simplificada:
+
+        // // Create chart
+        // function criarGrafico(data) {
+        //     console.log('🎨 Criando gráfico com', data.length, 'pontos de dados');
+            
+        //     const ctx = document.getElementById('mainChart').getContext('2d');
+            
+        //     // Destroy previous chart
+        //     if (mainChart) {
+        //         mainChart.destroy();
+        //     }
+            
+        //     // Group data by network
+        //     const groupedData = {};
+        //     data.forEach(item => {
+        //         if (!groupedData[item.network]) {
+        //             groupedData[item.network] = {
+        //                 labels: [],
+        //                 values: []
+        //             };
+        //         }
+        //         // Format date for display
+        //         const date = new Date(item.timestamp);
+        //         const timeLabel = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+                
+        //         groupedData[item.network].labels.push(timeLabel);
+        //         groupedData[item.network].values.push(parseFloat(item.gas_cost_brl));
+        //     });
+            
+        //     // Get all networks
+        //     const networks = Object.keys(groupedData);
+            
+        //     // Create datasets
+        //     const datasets = networks.map(network => {
+        //         const color = networkColors[network] || '#999999';
+                
+        //         return {
+        //             label: network,
+        //             data: groupedData[network].values,
+        //             borderColor: color,
+        //             backgroundColor: color + '20',
+        //             borderWidth: 2,
+        //             fill: false,
+        //             tension: 0.1,
+        //             pointRadius: 3,
+        //             pointHoverRadius: 6,
+        //             pointBackgroundColor: color
+        //         };
+        //     });
+            
+        //     // Use labels from first network (or combine them)
+        //     const labels = groupedData[networks[0]] ? groupedData[networks[0]].labels : [];
+            
+        //     console.log('📈 Datasets criados:', datasets.length);
+        //     console.log('🏷️ Labels:', labels.length);
+            
+        //     // Create chart
+        //     mainChart = new Chart(ctx, {
+        //         type: 'line',
+        //         data: {
+        //             labels: labels,
+        //             datasets: datasets
+        //         },
+        //         options: {
+        //             responsive: true,
+        //             maintainAspectRatio: false,
+        //             plugins: {
+        //                 legend: {
+        //                     position: 'top',
+        //                     labels: {
+        //                         color: '#E2E8F0',
+        //                         font: { size: 12 },
+        //                         padding: 20
+        //                     }
+        //                 },
+        //                 tooltip: {
+        //                     mode: 'index',
+        //                     intersect: false,
+        //                     callbacks: {
+        //                         label: function(context) {
+        //                             const label = context.dataset.label || '';
+        //                             const value = context.parsed.y;
+        //                             return `${label}: ${formatCurrency(value)}`;
+        //                         },
+        //                         title: function(context) {
+        //                             // Show full date in tooltip
+        //                             const index = context[0].dataIndex;
+        //                             if (data[index]) {
+        //                                 const date = new Date(data[index].timestamp);
+        //                                 return date.toLocaleString('pt-BR', {
+        //                                     day: '2-digit',
+        //                                     month: '2-digit',
+        //                                     hour: '2-digit',
+        //                                     minute: '2-digit'
+        //                                 });
+        //                             }
+        //                             return '';
+        //                         }
+        //                     },
+        //                     backgroundColor: 'rgba(30, 41, 59, 0.95)',
+        //                     titleColor: '#E2E8F0',
+        //                     bodyColor: '#E2E8F0',
+        //                     borderColor: '#475569',
+        //                     borderWidth: 1
+        //                 }
+        //             },
+        //             scales: {
+        //                 x: {
+        //                     ticks: {
+        //                         color: '#94A3B8',
+        //                         maxRotation: 45,
+        //                         callback: function(value, index) {
+        //                             // Show only some labels to avoid crowding
+        //                             if (index % Math.ceil(this.chart.data.labels.length / 10) === 0) {
+        //                                 return this.chart.data.labels[index];
+        //                             }
+        //                             return '';
+        //                         }
+        //                     },
+        //                     grid: {
+        //                         color: 'rgba(255, 255, 255, 0.05)'
+        //                     },
+        //                     title: {
+        //                         display: true,
+        //                         text: 'Horário',
+        //                         color: '#94A3B8'
+        //                     }
+        //                 },
+        //                 y: {
+        //                     beginAtZero: true,
+        //                     ticks: {
+        //                         color: '#94A3B8',
+        //                         callback: function(value) {
+        //                             return formatCurrency(value);
+        //                         }
+        //                     },
+        //                     grid: {
+        //                         color: 'rgba(255, 255, 255, 0.05)'
+        //                     },
+        //                     title: {
+        //                         display: true,
+        //                         text: 'Custo (BRL)',
+        //                         color: '#94A3B8'
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     });
+            
+        //     console.log('✅ Gráfico criado com sucesso!');
+        // }
+        // Create chart - VERSÃO OTIMIZADA SEM PONTOS
+function criarGrafico(data) {
+    console.log('🎨 Criando gráfico com', data.length, 'pontos de dados');
+    
+    const ctx = document.getElementById('mainChart').getContext('2d');
+    
+    // Destroy previous chart
+    if (mainChart) {
+        mainChart.destroy();
+    }
+    
+    // ⚡ Se não houver dados ou dados demais, otimizar
+    if (!data || data.length === 0) {
+        mostrarGraficoVazio(ctx);
+        return;
+    }
+    
+    // ⚡ OTIMIZAÇÃO: Para mais de 1000 pontos, reduzir dados
+    // let dadosParaGrafico = data;
+    // if (data.length > 1000) {
+    //     console.log(`⚡ Otimizando: ${data.length} pontos → reduzindo para melhor performance`);
+        
+    //     // Estratégia: pegar 1 ponto a cada N, mantendo a forma geral
+    //     const fatorReducao = Math.ceil(data.length / 800); // Máximo ~800 pontos
+    //     dadosParaGrafico = data.filter((_, index) => index % fatorReducao === 0);
+        
+    //     // Garantir que temos alguns pontos
+    //     if (dadosParaGrafico.length < 50) {
+    //         // Pegar os mais recentes se a redução foi muito agressiva
+    //         dadosParaGrafico = data.slice(-100);
+    //     }
+        
+    //     console.log(`⚡ Gráfico otimizado: ${dadosParaGrafico.length} pontos`);
+    // }
+    let dadosParaGrafico = data; // Usar todos os dados
+
+    
+    // Group data by network
+    const groupedData = {};
+    dadosParaGrafico.forEach(item => {
+        if (!groupedData[item.network]) {
+            groupedData[item.network] = {
+                labels: [],
+                values: []
+            };
+        }
+        // Format date for display
+        const date = new Date(item.timestamp);
+        const timeLabel = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+        
+        groupedData[item.network].labels.push(timeLabel);
+
+        
+        groupedData[item.network].values.push(parseFloat(item.gas_cost_brl));
+    });
+    
+    // Get all networks
+    const networks = Object.keys(groupedData);
+    
+    // ⚡ Create datasets SEM PONTOS (apenas linhas)
+    const datasets = networks.map(network => {
+        const color = networkColors[network] || '#999999';
+        
+        return {
+            label: network,
+            data: groupedData[network].values,
+            borderColor: color,
+            backgroundColor: 'transparent', // Sem preenchimento
+            borderWidth: 1.5, // Linha mais fina
+            fill: false,
+            tension: 0.1,
+            pointRadius: 0, // ⚡ SEM PONTOS
+            pointHoverRadius: 0, // ⚡ SEM PONTOS NO HOVER
+            pointBackgroundColor: 'transparent', // ⚡ SEM PONTOS
+            pointBorderColor: 'transparent', // ⚡ SEM PONTOS
+            showLine: true, // Apenas linhas
+            // ⚡ Otimizações para performance
+            cubicInterpolationMode: 'monotone',
+            spanGaps: true // Conecta gaps nos dados
+        };
+    });
+    
+    // Use labels from first network (or combine them)
+    const labels = groupedData[networks[0]] ? groupedData[networks[0]].labels : [];
+    
+    console.log('📈 Datasets criados:', datasets.length);
+    console.log('🏷️ Labels:', labels.length);
+    
+    // ⚡ Create chart com configuração otimizada
+    mainChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: datasets
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            // ⚡ Desativar animações para performance
+            animation: {
+                duration: 0
+            },
+            // ⚡ Desativar elementos pesados
+            elements: {
+                point: {
+                    radius: 0 // Garantir que pontos estão desativados
+                },
+                line: {
+                    tension: 0.1 // Pouca curvatura para performance
+                }
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        color: '#E2E8F0',
+                        font: { 
+                            size: 12 
+                        },
+                        padding: 15,
+                        usePointStyle: false // Não mostrar pontos na legenda
+                    }
+                },
+                tooltip: {
+                    mode: 'index',
+                    intersect: false,
+                    // ⚡ Desativar tooltip se muitos pontos
+                    // enabled: dadosParaGrafico.length < 2000,
+                    callbacks: {
+                        label: function(context) {
+                            const label = context.dataset.label || '';
+                            const value = context.parsed.y;
+                            return `${label}: ${formatCurrency(value)}`;
+                        },
+                        title: function(context) {
+                            // Show full date in tooltip
+                            const index = context[0].dataIndex;
+                            if (data[index]) {
+                                const date = new Date(dadosParaGrafico[index].timestamp);
+                                return date.toLocaleString('pt-BR', {
+                                    day: '2-digit',
+                                    month: '2-digit',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                            }
+                            return '';
+                        }
+                    },
+                    backgroundColor: 'rgba(30, 41, 59, 0.95)',
+                    titleColor: '#E2E8F0',
+                    bodyColor: '#E2E8F0',
+                    borderColor: '#475569',
+                    borderWidth: 1
+                }
+            },
+            scales: {
+                x: {
+                    ticks: {
+                        color: '#94A3B8',
+                        maxRotation: 45,
+                        autoSkip: true,
+                        maxTicksLimit: 10, // ⚡ Limitar número de labels
+                        callback: function(value, index) {
+                            // Show only some labels to avoid crowding
+                            const totalLabels = this.chart.data.labels.length;
+                            const showEvery = Math.max(1, Math.floor(totalLabels / 8));
+                            
+                            if (index % showEvery === 0 || index === 0 || index === totalLabels - 1) {
+                                return this.chart.data.labels[index];
+                            }
+                            return '';
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.03)', // ⚡ Grid mais suave
+                        drawBorder: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Horário',
+                        color: '#94A3B8',
+                        font: {
+                            size: 12
+                        }
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        color: '#94A3B8',
+                        callback: function(value) {
+                            return formatCurrency(value);
+                        },
+                        maxTicksLimit: 8 // ⚡ Limitar ticks no eixo Y
+                    },
+                    grid: {
+                        color: 'rgba(255, 255, 255, 0.03)', // ⚡ Grid mais suave
+                        drawBorder: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Custo (BRL)',
+                        color: '#94A3B8',
+                        font: {
+                            size: 12
+                        }
+                    }
+                }
+            },
+            // ⚡ Mais otimizações de performance
+            hover: {
+                mode: 'index',
+                intersect: false,
+                animationDuration: 0 // Sem animação no hover
+            },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            }
+        }
+    });
+    
+    console.log('✅ Gráfico criado com sucesso! (Otimizado para ' + data.length + ' pontos)');
+    
+    // ⚡ Se reduzimos muitos dados, mostrar aviso
+    if (data.length > 1000 && dadosParaGrafico.length < data.length * 0.5) {
+        mostrarAvisoOtimizacao(data.length, dadosParaGrafico.length);
+    }
+}
+
+// ⚡ Função para mostrar gráfico vazio
+function mostrarGraficoVazio(ctx) {
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    
+    // Fundo
+    ctx.fillStyle = '#1E293B';
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    
+    // Mensagem
+    ctx.fillStyle = '#94A3B8';
+    ctx.font = '16px "Segoe UI"';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('Nenhum dado disponível', ctx.canvas.width / 2, ctx.canvas.height / 2);
+}
+
+// ⚡ Função para mostrar aviso de otimização
+function mostrarAvisoOtimizacao(total, mostrados) {
+    // Remover aviso anterior se existir
+    const avisoAnterior = document.getElementById('aviso-otimizacao');
+    if (avisoAnterior) avisoAnterior.remove();
+    
+    const aviso = document.createElement('div');
+    aviso.id = 'aviso-otimizacao';
+    aviso.innerHTML = `
+        <div style="
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(245, 158, 11, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            z-index: 1000;
+            max-width: 250px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        ">
+            <i class="fas fa-info-circle" style="margin-right: 5px;"></i>
+            Gráfico otimizado: ${mostrados} de ${total} pontos
+            <div style="font-size: 10px; opacity: 0.9; margin-top: 3px;">
+                (Performance melhorada)
+            </div>
+        </div>
+    `;
+    
+    const chartContainer = document.querySelector('.chart-wrapper');
+    if (chartContainer) {
+        chartContainer.style.position = 'relative';
+        chartContainer.appendChild(aviso);
+        
+        // Remover após 8 segundos
+        setTimeout(() => {
+            if (aviso.parentNode) {
+                aviso.style.transition = 'opacity 0.5s';
+                aviso.style.opacity = '0';
+                setTimeout(() => aviso.remove(), 500);
+            }
+        }, 8000);
+    }
+}
+        
+        
+        
+        // Update statistics
+        function atualizarEstatisticas(data) {
+            const statsGrid = document.getElementById('statsGrid');
+            
+            if (!data || data.length === 0) {
+                statsGrid.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value">-</div>
+                        <div class="stat-label">Nenhum dado</div>
+                        <div class="stat-network">Selecione redes</div>
+                    </div>
+                `;
+                return;
+            }
+            
+            // Group by network
+            const networkStats = {};
+            data.forEach(item => {
+                const network = item.network;
+                const cost = parseFloat(item.gas_cost_brl);
+                
+                if (!networkStats[network]) {
+                    networkStats[network] = {
+                        values: [],
+                        network: network
+                    };
+                }
+                networkStats[network].values.push(cost);
+            });
+            
+            // Create stat cards
+            let statsHTML = '';
+            Object.values(networkStats).forEach(stats => {
+                if (stats.values.length === 0) return;
+                
+                const avg = stats.values.reduce((a, b) => a + b, 0) / stats.values.length;
+                const min = Math.min(...stats.values);
+                const max = Math.max(...stats.values);
+                const last = stats.values[stats.values.length - 1];
+                const color = networkColors[stats.network] || '#999';
+                
+                statsHTML += `
+                    <div class="stat-card">
+                        <div class="stat-value" style="color: ${color}">${formatCurrency(avg)}</div>
+                        <div class="stat-label">Custo Médio</div>
+                        <div class="stat-network" style="color: ${color}">${stats.network}</div>
+                        <div style="margin-top: 10px; font-size: 11px; color: #94A3B8;">
+                            <div>Mín: ${formatCurrency(min)}</div>
+                            <div>Máx: ${formatCurrency(max)}</div>
+                            <div>Último: ${formatCurrency(last)}</div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            statsGrid.innerHTML = statsHTML;
+        }
+        
+        // Update table
+        function atualizarTabela(data) {
+            const tableBody = document.getElementById('tableBody');
+            
+            if (!data || data.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 20px;">
+                            <i class="fas fa-database"></i> Nenhum dado disponível
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            // Get latest data (max 50 entries)
+            const latestData = [...data].slice(-50).reverse(); // Show newest first
+            
+            let tableHTML = '';
+            latestData.forEach(item => {
+                const date = new Date(item.timestamp);
+                const formattedDate = `${date.toLocaleDateString('pt-BR')} ${date.toLocaleTimeString('pt-BR', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                })}`;
+                
+                tableHTML += `
+                    <tr>
+                        <td>
+                            <div class="network-badge">
+                                <div class="badge-dot" style="background-color: ${networkColors[item.network] || '#999'}"></div>
+                                ${item.network}
+                            </div>
+                        </td>
+                        <td>${formattedDate}</td>
+                        <td><strong>${formatCurrency(item.gas_cost_brl)}</strong></td>
+                        <td>${getGasUnits().toLocaleString('pt-BR')}</td>
+                        <td>${item.gas_gwei ? parseFloat(item.gas_gwei).toFixed(2) : '0.00'} Gwei</td>
+                    </tr>
+                `;
+            });
+            
+            tableBody.innerHTML = tableHTML;
+        }
+        
+        // Show empty state
+        function mostrarDadosVazios() {
+            console.log('📭 Mostrando estado vazio');
+            
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            if (mainChart) {
+                mainChart.destroy();
+            }
+            
+            // Clear canvas and show message
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.fillStyle = '#1E293B';
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            
+            ctx.fillStyle = '#94A3B8';
+            ctx.font = '16px "Segoe UI"';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Nenhum dado encontrado', ctx.canvas.width / 2, ctx.canvas.height / 2);
+            ctx.font = '14px "Segoe UI"';
+            ctx.fillText('Tente ajustar os filtros ou período', ctx.canvas.width / 2, ctx.canvas.height / 2 + 30);
+            
+            atualizarEstatisticas([]);
+            atualizarTabela([]);
+        }
+        
+        // Show error
+        function mostrarErro(mensagem) {
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            
+            ctx.fillStyle = '#1E293B';
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            
+            ctx.fillStyle = '#EF4444';
+            ctx.font = 'bold 16px "Segoe UI"';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Erro ao carregar dados', ctx.canvas.width / 2, ctx.canvas.height / 2 - 20);
+            
+            ctx.fillStyle = '#94A3B8';
+            ctx.font = '14px "Segoe UI"';
+            ctx.fillText(mensagem.substring(0, 50), ctx.canvas.width / 2, ctx.canvas.height / 2 + 10);
+        }
+        
+        // Toggle table visibility
+        function toggleTable() {
+            const tableContainer = document.getElementById('dataTableContainer');
+            const toggleBtn = document.querySelector('[onclick="toggleTable()"]');
+            const icon = toggleBtn.querySelector('i');
+            
+            if (tableContainer.style.display === 'none' || !tableContainer.style.display) {
+                tableContainer.style.display = 'block';
+                icon.className = 'fas fa-eye-slash';
+                toggleBtn.innerHTML = '<i class="fas fa-eye-slash"></i> Ocultar Tabela';
+            } else {
+                tableContainer.style.display = 'none';
+                icon.className = 'fas fa-eye';
+                toggleBtn.innerHTML = '<i class="fas fa-eye"></i> Mostrar Tabela';
+            }
+        }
+        
+        // Export data
+        function exportarDados() {
+            if (!historicalData || historicalData.length === 0) {
+                alert('Nenhum dado disponível para exportar.');
+                return;
+            }
+            
+            const headers = ['Rede', 'Data/Hora', 'Custo (BRL)', 'Gas Units', 'Gas Price (Gwei)'];
+            const csvRows = [
+                headers.join(','),
+                ...historicalData.map(row => [
+                    `"${row.network}"`,
+                    new Date(row.timestamp).toISOString(),
+                    parseFloat(row.gas_cost_brl),
+                    getGasUnits(),
+                    row.gas_gwei || 0
+                ].join(','))
+            ];
+            
+            const csvContent = csvRows.join('\n');
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            
+            link.href = URL.createObjectURL(blob);
+            link.download = `gas_history_${new Date().toISOString().slice(0, 10)}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            
+            console.log('📤 Dados exportados:', historicalData.length, 'registros');
+        }
+        
+        // Toggle chart type
+        function alternarTipoGrafico() {
+            if (!mainChart) return;
+            
+            const newType = mainChart.config.type === 'line' ? 'bar' : 'line';
+            mainChart.config.type = newType;
+            mainChart.update();
+            
+            const btn = document.querySelector('[onclick="alternarTipoGrafico()"]');
+            btn.innerHTML = `<i class="fas fa-exchange-alt"></i> ${newType === 'line' ? 'Barras' : 'Linhas'}`;
+        }
+        
+        // Download chart as image
+        function downloadChart() {
+            if (!mainChart) {
+                alert('Nenhum gráfico disponível para download.');
+                return;
+            }
+            
+            const link = document.createElement('a');
+            link.download = `gas_chart_${new Date().toISOString().slice(0, 10)}.png`;
+            link.href = document.getElementById('mainChart').toDataURL('image/png');
+            link.click();
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📊 Dashboard pronto - Modo manual');
+            
+            // Apenas configura os controles, sem carregar dados
+            document.querySelectorAll('.period-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+            
+            // Mostrar estado inicial
+            const ctx = document.getElementById('mainChart').getContext('2d');
+            ctx.fillStyle = '#1E293B';
+            ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.fillStyle = '#94A3B8';
+            ctx.font = '16px "Segoe UI"';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('Clique em "Atualizar Análise" para carregar dados', 
+                        ctx.canvas.width/2, ctx.canvas.height/2);
+});
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     console.log('🚀 Dashboard inicializado');
+            
+        //     // Set up period buttons
+        //     document.querySelectorAll('.period-btn').forEach(btn => {
+        //         btn.addEventListener('click', function() {
+        //             document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+        //             this.classList.add('active');
+        //         });
+        //     });
+            
+        //     // Set up network checkboxes
+        //     document.querySelectorAll('.network-checkbox').forEach(checkbox => {
+        //         checkbox.addEventListener('click', function(e) {
+        //             if (e.target.type === 'checkbox') return;
+        //             const input = this.querySelector('input[type="checkbox"]');
+        //             input.checked = !input.checked;
+        //         });
+        //     });
+            
+        //     // Auto-load data after 1 second
+        //     setTimeout(() => {
+        //         console.log('⏱️ Carregando dados automaticamente...');
+        //         carregarDados();
+        //     }, 1000);
+            
+        //     // Auto-refresh every 2 minutes
+        //     setInterval(carregarDados, 2 * 60 * 1000);
+        // });
+    </script>
+</body>
+</html>

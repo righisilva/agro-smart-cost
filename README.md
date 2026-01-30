@@ -88,3 +88,16 @@ pm2 stop hardhat-node
 ```
 
 
+'''
+psql "postgresql://neondb_owner:npg_ihVfEra6tbX1@ep-cold-term-acrc0q94-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require"
+'''
+
+
+'''
+SELECT * FROM networks;
+SELECT * FROM gas_history;
+'''
+
+'''
+TRUNCATE TABLE gas_history, networks RESTART IDENTITY;
+'''

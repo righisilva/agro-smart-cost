@@ -5,8 +5,15 @@ const createCsvWriter = require("csv-writer").createObjectCsvWriter;
 const axios = require("axios");
 const { ethers } = require("ethers");
 const { google } = require("googleapis");
-const networks = require("./networks.json");
+const { Pool } = require("pg");
 
+// === CONFIG DB ===
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false }, // ok para NeonDB
+});
+
+// === CONFIG CSV ===
 const csvFilePath = path.resolve(__dirname, "cotacoes_blockchain.csv");
 const csvWriter = createCsvWriter({
   path: csvFilePath,
@@ -23,18 +30,15 @@ const csvWriter = createCsvWriter({
 
 // === CONFIG GOOGLE SHEETS ===
 const auth = new google.auth.GoogleAuth({
-  keyFile: "credentials.json", // chave JSON da Service Account
+  keyFile: "credentials.json",
   scopes: ["https://www.googleapis.com/auth/spreadsheets"],
 });
 
-// ID da planilha (pegue da URL do Google Sheets)
 const SPREADSHEET_ID = process.env.SHEET_ID;
 
-// Função que grava dados na planilha
 async function saveToGoogleSheets(data) {
   const client = await auth.getClient();
   const sheets = google.sheets({ version: "v4", auth: client });
-
   const values = data.map((item) => [
     item.timestamp,
     item.rede,
@@ -46,7 +50,7 @@ async function saveToGoogleSheets(data) {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: SPREADSHEET_ID,
-    range: "Página1!A:F",
+    range: "Página4!A:F",
     valueInputOption: "USER_ENTERED",
     requestBody: { values },
   });
@@ -54,7 +58,7 @@ async function saveToGoogleSheets(data) {
   console.log("✅ Dados também salvos no Google Sheets!");
 }
 
-// === PREÇOS DE TOKENS ===
+// === TOKEN PRICES ===
 async function getTokenPrices() {
   const url =
     "https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,polygon-ecosystem-token&vs_currencies=usd,brl";
@@ -62,50 +66,79 @@ async function getTokenPrices() {
   return res.data;
 }
 
-// === PREÇOS DO GAS ===
+// === GAS PRICES ===
+const networks = require("./networks.json"); // JSON com RPCs e tokens
+
+// === GAS PRICES ===
 async function getGasPricesFromNetworks() {
-    const gasPrices = {};
+  const gasPrices = {};
 
-    for (const [key, net] of Object.entries(networks)) {
-        if (key === "localhost") continue;
+  for (const [key, net] of Object.entries(networks)) {
+    if (key === "localhost") continue;
 
-        try {
-            // Permite um ou mais RPCs (fallback automático)
-            const rpcList = Array.isArray(net.rpc) ? net.rpc : [net.rpc];
-            let provider, gasPrice;
-
-            // Tenta RPCs alternativos até conseguir um resultado válido
-            for (const rpc of rpcList) {
-                try {
-                    provider = new ethers.providers.JsonRpcProvider(rpc);
-                    gasPrice = await provider.getGasPrice();
-                    if (gasPrice) break;
-                } catch (e) {
-                    console.warn(`⚠️  RPC ${rpc} falhou para ${net.name}`);
-                }
-            }
-
-            if (!gasPrice) {
-                console.warn(`⚠️  Nenhum RPC válido para ${net.name}`);
-                continue;
-            }
-
-            const networkInfo = await provider.getNetwork();
-            console.log(`✅ Conectado à ${net.name} (chainId: ${networkInfo.chainId})`);
-
-            gasPrices[net.token] = {
-                name: net.name,
-                gasPrice,
-                tokenId: net.token
-            };
-
-        } catch (err) {
-            console.log(`⚠️  Falha ao buscar gasPrice da rede ${net.name}: ${err.message}`);
-        }
+    const rpcList = net.rpcs || (net.rpc ? [net.rpc] : []);
+    if (!rpcList.length) {
+      console.warn(`⚠️ Nenhum RPC definido para ${net.name}`);
+      continue;
     }
 
-    return gasPrices;
+    let gasPrice;
+    let provider;
+    for (const rpc of rpcList) {
+      try {
+        provider = new ethers.providers.JsonRpcProvider(rpc);
+        gasPrice = await provider.getGasPrice();
+        if (gasPrice) break;
+      } catch (e) {
+        console.warn(`⚠️ RPC ${rpc} falhou para ${net.name}`);
+      }
+    }
+
+    if (!gasPrice) {
+      console.warn(`⚠️ Nenhum RPC válido para ${net.name}`);
+      continue;
+    }
+
+    gasPrices[net.token] = { name: net.name, gasPrice, token: net.token };
+  }
+
+  return gasPrices;
 }
+
+
+
+// === DB HELPERS ===
+async function getOrCreateNetworkId(name, token) {
+  const client = await pool.connect();
+  try {
+    const res = await client.query(
+      "SELECT id FROM networks WHERE token = $1",
+      [token]
+    );
+    if (res.rows.length > 0) return res.rows[0].id;
+
+    const insertRes = await client.query(
+      "INSERT INTO networks (name, token) VALUES ($1, $2) RETURNING id",
+      [name, token]
+    );
+    return insertRes.rows[0].id;
+  } finally {
+    client.release();
+  }
+}
+
+async function insertGasHistory(networkId, gasGwei, priceUsd, priceBrl) {
+  const client = await pool.connect();
+  try {
+    await client.query(
+      "INSERT INTO gas_history (network_id, gas_gwei, price_usd, price_brl) VALUES ($1, $2, $3, $4)",
+      [networkId, gasGwei, priceUsd, priceBrl]
+    );
+  } finally {
+    client.release();
+  }
+}
+
 // === MAIN ===
 async function main() {
   const tokenPrices = await getTokenPrices();
@@ -127,15 +160,27 @@ async function main() {
     };
 
     console.log(`🌍 ${data.name}`);
-    console.log(`   🪙  1 ${token} = U$ ${row.cotacaoUsd} | R$ ${row.cotacaoBrl}`);
+    console.log(`   🪙 1 ${token} = U$ ${row.cotacaoUsd} | R$ ${row.cotacaoBrl}`);
     console.log(`   ⛽ Gas Price: ${row.gasPrice} gwei\n`);
 
     // salva no CSV
     await csvWriter.writeRecords([row]);
 
-    // salva no Google Sheets
-    await saveToGoogleSheets([row]);
+    // salva no Google Sheets TODO TO DO 
+    // await saveToGoogleSheets([row]);
+
+    // salva no DB
+    const networkId = await getOrCreateNetworkId(data.name, token);
+    await insertGasHistory(
+      networkId,
+      parseFloat(ethers.utils.formatUnits(data.gasPrice, "gwei")),
+      tokenPrice.usd,
+      tokenPrice.brl
+    );
   }
+
+  console.log("✅ Tudo registrado com sucesso!");
+  await pool.end();
 }
 
-main();
+main().catch((err) => console.error(err));

@@ -13,6 +13,12 @@ const app = express();
 const upload = multer({ dest: "uploads/" });
 const networksJson = require("./networks.json");
 
+const gasHistoryRoutes = require("./routes/gasHistoryRoutes");
+const ibgeRoutes = require("./routes/ibgeRoutes");
+
+
+
+
 // --- Variáveis globais ---
 let gasPricesByNetwork = null;
 let tokenPrices = null;
@@ -131,66 +137,11 @@ function parseArgument(arg) {
 // --- 1️⃣ Dashboard IBGE ---
 
 // Serve arquivos estáticos da pasta "public" na raiz "/"
-app.use("/dashboard", express.static("public/IBGE"));
+
 
 // Conecta ao banco de dados SQLite
 
 
-// Endpoint para consultar dados IBGE via API
-app.get("/api/ibge", (req, res) => {
-    // Extrai filtros e parâmetros da query string
-    const { regiao, classificacao, familiar, obrigatorio, top, orderBy } = req.query;
-
-    // Monta query base
-    let query = `
-        SELECT i.id, r.nome AS regiao, p.nome AS produto, c.nome AS classificacao,
-               i.estabelecimentos, i.valor_vendas, i.familiar, i.obrigatorio
-        FROM ibge_dados i
-        JOIN produtos p ON i.produto_id = p.id
-        JOIN classificacoes_ibge c ON p.classificacao_id = c.id
-        JOIN regioes r ON i.regiao_id = r.id
-        WHERE 1=1
-    `;
-    const params = {};
-
-    // Adiciona filtros opcionais
-    if (regiao) { query += " AND r.nome = @regiao"; params.regiao = regiao; }
-    if (classificacao) { query += " AND c.nome = @classificacao"; params.classificacao = classificacao; }
-    if (familiar !== undefined) { query += " AND i.familiar = @familiar"; params.familiar = Number(familiar); }
-    if (obrigatorio !== undefined) { query += " AND i.obrigatorio = @obrigatorio"; params.obrigatorio = Number(obrigatorio); }
-
-    // Executa a query no banco
-    let dados = db.prepare(query).all(params);
-
-    // Define chave para ordenação (padrão "valor_vendas")
-    const chaveOrdenacao = orderBy === "estabelecimentos" ? "estabelecimentos" : "valor_vendas";
-
-    // Agrupa dados por produto
-    const agregados = {};
-    dados.forEach(d => {
-        agregados[d.produto] = (agregados[d.produto] || 0) + (d[chaveOrdenacao] || 0);
-    });
-
-    // Ordena produtos do maior para o menor
-    let produtosOrdenados = Object.entries(agregados)
-        .sort((a, b) => b[1] - a[1]);
-
-    // Limita aos top N se fornecido
-    const topN = top ? Number(top) : produtosOrdenados.length;
-    produtosOrdenados = produtosOrdenados.slice(0, topN);
-
-    // Reconstrói array de objetos para enviar como resultado
-    const resultado = produtosOrdenados.map(([produto, valor]) => {
-        const registros = dados.filter(d => d.produto === produto);
-        return registros.reduce((acc, r) => ({
-            ...r,
-            [chaveOrdenacao]: valor
-        }), registros[0]);
-    });
-
-    // Retorna JSON para o frontend
-    res.json(resultado);
-});
 
 
 // --- 2️⃣ Gas Estimator automático ---
@@ -240,6 +191,11 @@ app.use("/interface", express.static(path.join(__dirname, "public/interface-cont
 
 // Permite receber JSON no body das requisições
 app.use(express.json());
+
+app.use("/dashboard", express.static("public/IBGE"));
+app.use("/api/ibge", ibgeRoutes(db));
+app.use("/gas-history", express.static(path.join(__dirname, "public/gas-history")));
+app.use("/api/gas-history", gasHistoryRoutes);
 
 
 // --- 1️⃣ Carregar ABI e deploy automático ---
@@ -486,7 +442,7 @@ app.get("/api/results", (req, res) => {
       functionName,
     } = req.query;
 
-    console.log("📥 Query recebida:", req.query);
+    // console.log("📥 Query recebida:", req.query);
 
     // --- 1️⃣ Query base do IBGE ---
     let queryIBGE = `
@@ -506,12 +462,12 @@ app.get("/api/results", (req, res) => {
     if (familiar !== undefined) { queryIBGE += " AND i.familiar = @familiar"; paramsIBGE.familiar = Number(familiar); }
     if (obrigatorio !== undefined) { queryIBGE += " AND i.obrigatorio = @obrigatorio"; paramsIBGE.obrigatorio = Number(obrigatorio); }
 
-    console.log("🧾 Query IBGE:", queryIBGE);
-    console.log("📌 Params IBGE:", paramsIBGE);
+    // console.log("🧾 Query IBGE:", queryIBGE);
+    // console.log("📌 Params IBGE:", paramsIBGE);
 
 
     const dadosIBGE = db.prepare(queryIBGE).all(paramsIBGE);
-    console.log("📊 Dados IBGE:", dadosIBGE);
+    // console.log("📊 Dados IBGE:", dadosIBGE);
 
     if (!dadosIBGE.length) return res.json([]);
     //Até aqui filtrou os dados do IBGE
@@ -540,12 +496,12 @@ app.get("/api/results", (req, res) => {
     if (network) { queryContratos += " AND n.name LIKE @network"; paramsContratos.network = `%${network}%`; }
     if (functionName) { queryContratos += " AND f.name LIKE @functionName"; paramsContratos.functionName = `%${functionName}%`; }
 
-    console.log("📜 Query Contratos:", queryContratos);
-    console.log("📌 Params Contratos:", paramsContratos);
+    // console.log("📜 Query Contratos:", queryContratos);
+    // console.log("📌 Params Contratos:", paramsContratos);
 
 
     const dadosContratos = db.prepare(queryContratos).all(paramsContratos);
-    console.log("💰 Dados Contratos:", dadosContratos);
+    // console.log("💰 Dados Contratos:", dadosContratos);
 
     if (!dadosContratos.length) return res.json([]);
 
@@ -626,13 +582,13 @@ app.get("/api/results", (req, res) => {
     });
 
 
-        console.log(
-    resultado.slice(0, 5).map(r => ({
-        produto: r.produto,
-        valor_vendas: r.valor_vendas,
-        tipo: typeof r.valor_vendas
-    }))
-    );
+    //     console.log(
+    // resultado.slice(0, 5).map(r => ({
+    //     produto: r.produto,
+    //     valor_vendas: r.valor_vendas,
+    //     tipo: typeof r.valor_vendas
+    // }))
+    // );
 
     switch (orderBy) {
   case "estabelecimentos":
@@ -751,6 +707,13 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+
+
+
+
+
+
+
 // --- Servidor ---
 
 const PORT = 3000;
@@ -762,6 +725,7 @@ app.listen(PORT, () => {
 - Gas Estimator:       http://localhost:${PORT}/gas
 - Interface Contratos: http://localhost:${PORT}/interface
 - Resultados:          http://localhost:${PORT}/results
+- Histórico:          http://localhost:${PORT}/gas-history
 `);
 });
 
