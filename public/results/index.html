@@ -1,3 +1,4 @@
+<!-- public/results/index.html -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -439,9 +440,9 @@
         }
         
         /* Responsive */
-        @media (max-width: 1024px) {
+        @media (max-width: 768px) {
             .filters-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: 1fr;
             }
         }
         
@@ -573,6 +574,25 @@
             }
         }
 
+        /* Estatísticas - Novo ícone para Gas */
+        .stat-icon-gas {
+            background-color: #FF5722; /* Laranja para representar "fogo" */
+            color: white;
+        }
+
+        /* Ajuste para responsividade na seção de estatísticas */
+        @media (max-width: 768px) {
+            .stats-section {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-section {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
     </style>
 </head>
 <body>
@@ -604,15 +624,17 @@
                             <option value="Brasil">Brasil</option>
                             <option value="Sul">Sul</option>
                             <option value="RS">Rio Grande do Sul</option>
-                            <option value="Alegrete">Alegrete</option>
+                            <option value="Alegrete" selected>Alegrete</option>
                         </select>
                     </div>
                     
                     <div class="filter-group">
-                        <label class="filter-label"><i class="fas fa-tags"></i> Classificação</label>
+                        <label class="filter-label">
+                            <i class="fas fa-tags"></i> Classificação
+                        </label>
                         <select class="filter-select" id="filtroClassificacao">
                             <option value="">Todas as classificações</option>
-                            <option value="Agricultura">Agricultura</option>
+                            <option value="Agricultura" selected>Agricultura</option>
                             <option value="Pecuária">Pecuária</option>
                             <option value="Silvicultura">Silvicultura</option>
                             <option value="Extração Vegetal">Extração Vegetal</option>
@@ -620,6 +642,16 @@
                             <option value="Agroindústria">Agroindústria</option>
                         </select>
                     </div>
+                    
+                    <div class="filter-group">
+                        <label class="filter-label">
+                            <i class="fas fa-layer-group"></i> Subclassificação
+                        </label>
+                        <select class="filter-select" id="filtroSubclassificacao" disabled>
+                            <option value="">Todas as subclassificações</option>
+                        </select>
+                    </div>
+                    
                     
                     <div class="filter-group">
                         <label class="filter-label required"><i class="fas fa-home"></i> Somente Familiar</label>
@@ -651,6 +683,20 @@
                         <select class="filter-select" id="filtroRede" required>
                             <option value="" disabled selected>Selecione uma rede</option>
                         </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label class="filter-label required">
+                            <i class="fas fa-chart-bar"></i> Tipo de Cálculo
+                        </label>
+                        <select class="filter-select" id="filtroTipoCalculo" required>
+                            <option value="" disabled selected>Selecione o tipo</option>
+                            <option value="ultima" selected>Última Execução</option>
+                            <option value="day">Média Últimas 24h</option>
+                            <option value="week">Média Última Semana</option>
+                            <option value="month">Média Último Mês</option>
+                            <option value="all">Média Histórica</option>
+                        </select>              
                     </div>
                     
                     <div class="filter-group">
@@ -720,6 +766,13 @@
                     <div class="stat-value">-</div>
                     <div class="stat-label">Cenário Simulado</div>
                 </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon stat-icon-gas">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="stat-value">-</div>
+                    <div class="stat-label">Gás por Contrato</div>      </div>
             </section>
             
             <!-- Chart Section -->
@@ -889,6 +942,7 @@
                 { id: 'filtroFamiliar', nome: 'Familiar' },
                 { id: 'filtroContrato', nome: 'Contrato' },
                 { id: 'filtroRede', nome: 'Rede Blockchain' },
+                { id: 'filtroTipoCalculo', nome: 'Tipo de Cálculo' },
                 { id: 'filtroOrderBy', nome: 'Ordenar por' }
             ];
             
@@ -907,6 +961,48 @@
             
             return true;
         }
+
+        const subclassificacoes = {
+            "Agricultura": [
+                "Floricultura",
+                "Horticultura",
+                "Lavouras permanentes",
+                "Lavouras temporárias"
+            ],
+            "Pecuária": [
+                "Animais",
+                "Produtos primários"
+            ],
+            "Silvicultura": ["Não especificada"],
+            "Extração Vegetal": ["Não especificada"],
+            "Aquicultura": ["Não especificada"],
+            "Agroindústria": ["Não especificada"]
+        };
+
+        const filtroClassificacao = document.getElementById("filtroClassificacao");
+        const filtroSubclassificacao = document.getElementById("filtroSubclassificacao");
+        
+        filtroClassificacao.addEventListener("change", () => {
+            const classificacao = filtroClassificacao.value;
+
+            filtroSubclassificacao.innerHTML =
+                `<option value="">Todas as subclassificações</option>`;
+
+            if (!classificacao || !subclassificacoes[classificacao]) {
+                filtroSubclassificacao.disabled = true;
+                return;
+            }
+
+            subclassificacoes[classificacao].forEach(sub => {
+                const option = document.createElement("option");
+                option.value = sub;
+                option.textContent = sub;
+                filtroSubclassificacao.appendChild(option);
+            });
+
+            filtroSubclassificacao.disabled = false;
+        });
+
         
         // Carregar resultados
         async function carregarResultados() {
@@ -922,26 +1018,31 @@
                 </tr>
             `;
             
+            
             const params = new URLSearchParams();
             params.append("regiao", document.getElementById("filtroRegiao").value);
             params.append("familiar", document.getElementById("filtroFamiliar").value);
             params.append("contract", document.getElementById("filtroContrato").value);
             params.append("network", document.getElementById("filtroRede").value);
+            params.append("tipo_calculo", document.getElementById("filtroTipoCalculo").value);
             params.append("orderBy", document.getElementById("filtroOrderBy").value);
             
             
             const classificacao = document.getElementById("filtroClassificacao").value;
+            const subclassificacao = document.getElementById("filtroSubclassificacao").value;
             const obrigatorio = document.getElementById("filtroObrigatorio").value;
             const network = document.getElementById("filtroRede").value;
+            const tipo_calculo = document.getElementById("filtroTipoCalculo").value;
             const functionName = document.getElementById("filtroFuncao").value;
             const top = document.getElementById("filtroTop").value;
             
             if (classificacao) params.append("classificacao", classificacao);
+            if (subclassificacao) params.append("subclassificacao", subclassificacao);
             if (obrigatorio === "1") params.append("obrigatorio", obrigatorio);
             // if (network) params.append("network", network);
             if (functionName) params.append("functionName", functionName);
             if (top) params.append("top", top);
-            
+            console.log("FILTRO CLASSIFICAÇÃO:", subclassificacao);
             try {
                 const res = await fetch(`/api/results?${params.toString()}`);
                 if (!res.ok) throw new Error(`Erro ${res.status}: ${res.statusText}`);
@@ -975,6 +1076,8 @@
         
         // Atualizar estatísticas
         function atualizarEstatisticas(dados) {
+            console.log("TAMANHO ARRAY:", dados.length);
+            // console.log("ATUALIZANDO STATS COM:", dados.length);
             const totalEstimado = dados.reduce((sum, d) => {
                 const valor = parseFloat(d.total_estimado_brl) || 0;
                 return sum + valor;
@@ -984,6 +1087,10 @@
                 const valor = parseFloat(d.custo_total_funcoes_brl || d.custo_medio_contrato_brl) || 0;
                 return sum + valor;
             }, 0) / (dados.length || 1);
+
+            const gasContrato = dados.length > 0 ? (parseFloat(dados[0].gas_contrato) || 0) : 0;
+
+            console.log('Gás do contrato:', gasContrato);
             
             const statsCards = document.querySelectorAll('.stat-card');
             
@@ -1000,7 +1107,27 @@
             statsCards[3].querySelector('.stat-value').textContent = 
                 document.getElementById("filtroContrato").value || '-';
             statsCards[3].querySelector('.stat-label').textContent = `Contrato Selecionado`;
+
+            // Card 5: Gás do Contrato (apenas 1 contrato)
+            statsCards[4].querySelector('.stat-value').textContent = gasContrato;
+            //     isNaN(gasContrato) ? '-' : formatarGas(gasContrato);
+            // statsCards[4].querySelector('.stat-label').textContent = `Gás por Contrato`;
         }
+
+        function formatarGas(valor) {
+            if (isNaN(valor) || !isFinite(valor)) return '0';
+
+            // Se o valor for muito grande, formata
+            if (valor >= 1000000) {
+                return (valor / 1000000).toFixed(2) + 'M';
+            } else if (valor >= 1000) {
+                return (valor / 1000).toFixed(2) + 'K';
+            }
+
+            // Para valores pequenos, mostra com 2 casas decimais
+            return valor.toFixed(2);
+        }
+
         
         // Formatar moeda
         function formatarMoeda(valor) {
@@ -1323,7 +1450,7 @@
                             vertical-align: middle;
                         }
                         tr:nth-child(even) { background-color: #f9f9f9; }
-                        tr:hover { background-color: #f5f5f5; }
+                        tr:hover { background-color: window.addEventListener#f5f5f5; }
                         .total-row { 
                             font-weight: bold; 
                             background-color: #E8F5E9 !important; 
@@ -1590,17 +1717,19 @@
                     </td>
                 </tr>
             `;
-            
+
+            // Limpar todas as estatísticas
             document.querySelectorAll('.stat-value').forEach(el => el.textContent = '-');
             document.querySelectorAll('.stat-card')[0].querySelector('.stat-label').textContent = 'Total Estimado';
             document.querySelectorAll('.stat-card')[3].querySelector('.stat-label').textContent = 'Cenário Simulado';
-            
+            document.querySelectorAll('.stat-card')[4].querySelector('.stat-label').textContent = 'Gás por Contrato'; // Atualizado
+
             if (grafico) {
                 grafico.destroy();
                 grafico = null;
             }
         }
-        
+    
         // Mostrar erro
         function mostrarErro(mensagem) {
             document.getElementById('tabelaResultados').innerHTML = `

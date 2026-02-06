@@ -15,6 +15,8 @@ const networksJson = require("./networks.json");
 
 const gasHistoryRoutes = require("./routes/gasHistoryRoutes");
 const ibgeRoutes = require("./routes/ibgeRoutes");
+const resultsRoutes = require("./routes/resultsRoutes");
+
 
 
 
@@ -196,6 +198,9 @@ app.use("/dashboard", express.static("public/IBGE"));
 app.use("/api/ibge", ibgeRoutes(db));
 app.use("/gas-history", express.static(path.join(__dirname, "public/gas-history")));
 app.use("/api/gas-history", gasHistoryRoutes);
+app.use("/results", express.static(path.join(__dirname, "public/results")));
+app.use("/api/results", resultsRoutes(db));
+
 
 
 // --- 1️⃣ Carregar ABI e deploy automático ---
@@ -425,203 +430,11 @@ app.get("/api/accounts", async (req, res) => {
     }
 });
 
+
+
+
 app.use("/results", express.static(path.join(__dirname, "public/results")));
 
-// --- Endpoint combinado: IBGE + Custos de Contrato ---
-app.get("/api/results", (req, res) => {
-  try {
-    const {
-      regiao,
-      classificacao,
-      familiar,
-      obrigatorio,
-      top,
-      orderBy,
-      contract,
-      network,
-      functionName,
-    } = req.query;
-
-    // console.log("📥 Query recebida:", req.query);
-
-    // --- 1️⃣ Query base do IBGE ---
-    let queryIBGE = `
-      SELECT i.id, r.nome AS regiao, p.nome AS produto, c.nome AS classificacao,
-             i.estabelecimentos, i.valor_vendas, i.familiar, i.obrigatorio
-      FROM ibge_dados i
-      JOIN produtos p ON i.produto_id = p.id
-      JOIN classificacoes_ibge c ON p.classificacao_id = c.id
-      JOIN regioes r ON i.regiao_id = r.id
-      WHERE 1=1
-    `;
-    const paramsIBGE = {};
-
-    // --- Filtros IBGE (iguais ao endpoint original) ---
-    if (regiao) { queryIBGE += " AND r.nome = @regiao"; paramsIBGE.regiao = regiao; }
-    if (classificacao) { queryIBGE += " AND c.nome = @classificacao"; paramsIBGE.classificacao = classificacao; }
-    if (familiar !== undefined) { queryIBGE += " AND i.familiar = @familiar"; paramsIBGE.familiar = Number(familiar); }
-    if (obrigatorio !== undefined) { queryIBGE += " AND i.obrigatorio = @obrigatorio"; paramsIBGE.obrigatorio = Number(obrigatorio); }
-
-    // console.log("🧾 Query IBGE:", queryIBGE);
-    // console.log("📌 Params IBGE:", paramsIBGE);
-
-
-    const dadosIBGE = db.prepare(queryIBGE).all(paramsIBGE);
-    // console.log("📊 Dados IBGE:", dadosIBGE);
-
-    if (!dadosIBGE.length) return res.json([]);
-    //Até aqui filtrou os dados do IBGE
-    //Abaixo filtra os dados do contrato
-
-
-    // --- 2️⃣ Query base dos contratos ---
-    let queryContratos = `
-      SELECT
-        c.id AS contract_id,
-        c.name AS contract_name,
-        f.name AS function_name,
-        n.name AS network,
-        d.cost_usd,
-        d.cost_brl
-      FROM contracts c
-      JOIN contract_functions f ON f.contract_id = c.id
-      JOIN contract_function_costs d ON d.function_id = f.id
-      JOIN networks n ON n.id = d.network_id
-      WHERE 1=1
-    `;
-    const paramsContratos = {};
-
-    // --- Filtros Contratos ---
-    if (contract) { queryContratos += " AND c.name LIKE @contract"; paramsContratos.contract = `%${contract}%`; }
-    if (network) { queryContratos += " AND n.name LIKE @network"; paramsContratos.network = `%${network}%`; }
-    if (functionName) { queryContratos += " AND f.name LIKE @functionName"; paramsContratos.functionName = `%${functionName}%`; }
-
-    // console.log("📜 Query Contratos:", queryContratos);
-    // console.log("📌 Params Contratos:", paramsContratos);
-
-
-    const dadosContratos = db.prepare(queryContratos).all(paramsContratos);
-    // console.log("💰 Dados Contratos:", dadosContratos);
-
-    if (!dadosContratos.length) return res.json([]);
-
-    // --- 3️⃣ Cálculo do custo médio dos contratos selecionados ---
-    // const custoMedioBRL =
-      // dadosContratos.reduce((acc, d) => acc + (d.cost_brl || 0), 0) / dadosContratos.length;
-    const custoTotalBRL = dadosContratos.reduce((acc, d) => acc + (d.cost_brl || 0), 0);
-    console.log("💵 Custo total BRL:", custoTotalBRL);
-
-
-    // const chaveOrdenacao =
-    //   orderBy === "estabelecimentos" ? "estabelecimentos" : "valor_vendas";
-
-    // --- 4️⃣ Agregação de produtos (quantidade × custo) ---
-    // const agregados = {};
-    // dadosIBGE.forEach(d => {
-    //     const baseCalculo = Number(d.estabelecimentos) || 0;
-    //     agregados[d.produto] = (agregados[d.produto] || 0) + baseCalculo * custoTotalBRL;
-    // });
-    // console.log("📦 Agregados:", agregados)
-    // ;
-
-    // --- 4️⃣ Agregação de produtos (produto + classificação) ---
-    const agregados = {};
-
-    dadosIBGE.forEach(d => {
-        const estabelecimentos = Number(d.estabelecimentos) || 0;
-        const chave = `${d.produto} | ${d.classificacao}`;
-
-        if (!agregados[chave]) {
-            agregados[chave] = {
-                produto: d.produto,
-                classificacao: d.classificacao,
-                regiao: d.regiao,
-                familiar: d.familiar,
-                obrigatorio: d.obrigatorio,
-                estabelecimentos: 0,
-                total_estimado_brl: 0,
-                valor_vendas: d.valor_vendas
-            };
-        }
-
-        agregados[chave].estabelecimentos += estabelecimentos;
-        agregados[chave].total_estimado_brl += estabelecimentos * custoTotalBRL;
-    });
-
-
-
-
-
-    // --- 5️⃣ Ordenação e Top N ---
-    let produtosOrdenados = Object.entries(agregados);
-
-    // --- 6️⃣ Montagem do resultado final ---
-    const resultado = Object.values(agregados).map(d => {
-        const totalEstimado = d.total_estimado_brl;
-        const MIL = 1000;
-        const valorVendas = (Number(d.valor_vendas) || 0) * MIL;
-
-        const percentual = valorVendas > 0
-            ? Number(((totalEstimado / valorVendas) * 100).toFixed(2))
-            : 0;
-
-        return {
-            produto: d.produto,
-            regiao: d.regiao,
-            classificacao: d.classificacao,
-            familiar: d.familiar,
-            obrigatorio: d.obrigatorio,
-            estabelecimentos: d.estabelecimentos,
-            valor_vendas: valorVendas,
-            total_estimado_brl: Number(totalEstimado.toFixed(2)),
-            custo_medio_contrato_brl: Number(custoTotalBRL.toFixed(2)),
-
-            // 👇 NOVO CAMPO
-            percentual_custo: percentual
-        };
-    });
-
-
-    //     console.log(
-    // resultado.slice(0, 5).map(r => ({
-    //     produto: r.produto,
-    //     valor_vendas: r.valor_vendas,
-    //     tipo: typeof r.valor_vendas
-    // }))
-    // );
-
-    switch (orderBy) {
-  case "estabelecimentos":
-    resultado.sort((a, b) => b.estabelecimentos - a.estabelecimentos);
-    break;
-
-  case "valor_vendas":
-    resultado.sort((a, b) => b.valor_vendas - a.valor_vendas);
-    break;
-
-  case "total":
-  default:
-    resultado.sort((a, b) => b.total_estimado_brl - a.total_estimado_brl);
-    break;
-}
-
-
-    const topN = top ? Number(top) : resultado.length;
-    const resultadoFinal = resultado.slice(0, topN);
-
-
-
-
-    // console.log("✅ Resultado final:", resultadoFinal);
-
-
-    res.json(resultadoFinal);
-
-  } catch (err) {
-    console.error("Erro em /api/results:", err);
-    res.status(500).send("Erro ao gerar resultados combinados");
-  }
-});
 
 // 🔹 Listar contratos
 app.get("/api/contracts-list", (req, res) => {

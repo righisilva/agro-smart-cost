@@ -1,3 +1,4 @@
+// public/results/app.js
 // --- Preencher selects com dados do DB ---
 async function carregarFiltros() {
   const endpoints = {
@@ -19,6 +20,7 @@ async function carregarFiltros() {
       });
     } catch (err) {
       console.error(`Erro ao carregar ${id}:`, err);
+      
     }
   }
 }
@@ -62,6 +64,8 @@ function preencherTabela(dados) {
       <td><b>${d.total_estimado_brl}</b></td>
     `;
     tbody.appendChild(tr);
+
+    
   });
 }
 
@@ -84,6 +88,7 @@ function desenharGrafico(dados) {
         legend: { position: "top" },
         title: { display: true, text: "Estimativa de Valor Total (Produto × Custo Contrato)" }
       }
+      
     }
   });
 }
