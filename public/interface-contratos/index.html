@@ -391,12 +391,21 @@
         }
         
         /* Right Panel - Single Log Area */
+        /* .log-section {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        } */
+
         .log-section {
             display: flex;
             flex-direction: column;
             height: 100%;
+            /* max-height: calc(100vh - 120px); */
+            min-height: 0; /* 🔹 ESSENCIAL em layouts flex */
         }
-        
+
+
         .log-header {
             display: flex;
             justify-content: space-between;
@@ -406,17 +415,23 @@
         
         .log-content {
             flex: 1;
+            min-width: 0;              /* 🔥 essencial em layouts flex */
             background-color: #0D1117;
             border-radius: 8px;
             padding: 20px;
             overflow-y: auto;
+            overflow-x: auto;          /* permite rolagem horizontal se necessário */
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             font-size: 13px;
             line-height: 1.4;
             border: 1px solid var(--border);
+
             white-space: pre-wrap;
-            word-wrap: break-word;
+            overflow-wrap: anywhere;   /* 🔥 quebra strings longas */
+            word-break: break-word;    /* fallback */
         }
+
+
         
         /* Status Indicators */
         .status-badge {
@@ -526,7 +541,7 @@
                     </div>
                     <div class="upload-section">
                         <div class="file-input-wrapper">
-                            <input type="file" id="contrato" accept=".sol" onchange="atualizarNomeArquivo()">
+                            <input type="file" id="contrato" accept=".sol" multiple onchange="atualizarNomeArquivo()">
                             <div class="file-input-label">
                                 <i class="fas fa-cloud-upload-alt"></i>
                                 <span id="fileLabel">Selecione arquivo .sol</span>
@@ -598,7 +613,9 @@
             
             <!-- Right Panel - Single Log Area -->
             <div class="log-section">
-                <div class="card" style="flex: 1; display: flex; flex-direction: column;">
+                <!-- <div class="card" style="flex: 1; display: flex; flex-direction: column;"> -->
+                    <div class="card" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
+
                     <div class="log-header">
                         <div class="card-title">
                             <i class="fas fa-terminal"></i>
@@ -635,6 +652,21 @@
         let contratoDeployado = false;
         let contratosCarregados = [];
         let contratoSelecionado = null;
+
+        function log(msg) {
+            const logEl = document.getElementById("log");
+
+            const isAtBottom =
+                logEl.scrollHeight - logEl.scrollTop <= logEl.clientHeight + 5;
+
+            logEl.textContent += msg + "\n";
+
+            if (isAtBottom) {
+                logEl.scrollTop = logEl.scrollHeight;
+            }
+        }
+
+
         
         // Atualizar nome do arquivo selecionado
         function atualizarNomeArquivo() {
@@ -718,7 +750,10 @@
             log('\n📦 Iniciando carregamento do contrato...');
             
             const formData = new FormData();
-            formData.append("contrato", fileInput.files[0]);
+            // formData.append("contrato", fileInput.files[0]);
+            for (const file of fileInput.files) {
+                formData.append("contratos", file); // nome deve bater com multer
+            }
             
             try {
                 const res = await fetch("/api/load-abi", { method: "POST", body: formData });
@@ -902,6 +937,17 @@
                 // Ações da função
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'function-actions';
+
+                // 🔹 Campo quantidade de execuções (simulação)
+                const execCountInput = document.createElement('input');
+                execCountInput.type = 'number';
+                execCountInput.min = '1';
+                execCountInput.value = '1'; // padrão
+                execCountInput.className = 'input-field';
+                execCountInput.style.width = '80px';
+                execCountInput.title = 'Número de execuções';
+                execCountInput.id = `${contrato.nome}_${f.name}_execCount`;
+
                 
                 const autoFillBtn = document.createElement('button');
                 autoFillBtn.className = 'btn btn-secondary btn-sm';
@@ -914,8 +960,21 @@
                 executeBtn.innerHTML = '<i class="fas fa-play"></i> Executar Função';
                 executeBtn.disabled = !contratoDeployado;
                 executeBtn.title = contratoDeployado ? "Executar função" : "Contrato não deployado";
-                executeBtn.onclick = () => executarFuncao(contrato.nome, f.name, f.inputs.length);
+                // executeBtn.onclick = () => executarFuncao(contrato.nome, f.name, f.inputs.length);
+                executeBtn.onclick = () => {
+                    const execCount =
+                        document.getElementById(`${contrato.nome}_${f.name}_execCount`).value;
+
+                    executarFuncao(
+                        contrato.nome,
+                        f.name,
+                        f.inputs.length,
+                        execCount
+                    );
+                };
+
                 
+                actionsDiv.appendChild(execCountInput);
                 actionsDiv.appendChild(autoFillBtn);
                 actionsDiv.appendChild(executeBtn);
                 
@@ -970,17 +1029,25 @@
             const funcoesDiv = document.getElementById("funcoes");
             const inputs = funcoesDiv.querySelectorAll('.input-field');
             
-            inputs.forEach((input, idx) => {
+            let argIndex = 0;
+
+            inputs.forEach((input) => {
+
                 const tipo = input.getAttribute('data-type');
+                if (!tipo) return; // 🔹 ignora campo de execuções
+
                 const nome = input.getAttribute('data-name');
-                input.value = fakeValueForType(tipo, idx, accounts, nome);
+                input.value = fakeValueForType(tipo, argIndex, accounts, nome);
+
+                argIndex++;
             });
+
             
             log(`✨ Todas as funções foram pré-preenchidas com valores de exemplo!`);
         }
         
         // Executar função
-        async function executarFuncao(nomeContrato, nomeFuncao, numArgs) {
+        async function executarFuncao(nomeContrato, nomeFuncao, numArgs, execCount = 1) {
             if (!contratoDeployado) {
                 alert('O contrato precisa ser deployado antes de executar funções.');
                 return;
@@ -1000,7 +1067,7 @@
                 const res = await fetch("/api/execute-function", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ nomeContrato, nomeFuncao, args })
+                    body: JSON.stringify({ nomeContrato, nomeFuncao, args, execCount: Number(execCount)})
                 });
                 
                 if (!res.ok) {

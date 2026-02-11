@@ -6,14 +6,19 @@ module.exports = (db) => {
   // 🔹 GET /api/ibge
   router.get("/", (req, res) => {
     try {
-      const { regiao, classificacao, familiar, obrigatorio, top, orderBy } = req.query;
+      const { regiao, classificacao, subclassificacao, familiar, obrigatorio, top, orderBy } = req.query;
+      
+      console.log("🔧 Subclassificação:", subclassificacao);
 
       let query = `
-          SELECT i.id, r.nome AS regiao, p.nome AS produto, c.nome AS classificacao,
-                 i.estabelecimentos, i.valor_vendas, i.familiar, i.obrigatorio
+          SELECT i.id, r.nome AS regiao, p.nome AS produto, c.nome AS classificacao, s.nome AS subclassificacao,
+                 i.estabelecimentos, i.valor_vendas, i.familiar, p.rastreabilidade_obrigatoria AS obrigatorio
           FROM ibge_dados i
           JOIN produtos p ON i.produto_id = p.id
-          JOIN classificacoes_ibge c ON p.classificacao_id = c.id
+          LEFT JOIN subclassificacoes_ibge s 
+                ON p.subclassificacao_id = s.id
+          LEFT JOIN classificacoes_ibge c 
+                ON s.classificacao_id = c.id
           JOIN regioes r ON i.regiao_id = r.id
           WHERE 1=1
       `;
@@ -22,8 +27,13 @@ module.exports = (db) => {
 
       if (regiao) { query += " AND r.nome = @regiao"; params.regiao = regiao; }
       if (classificacao) { query += " AND c.nome = @classificacao"; params.classificacao = classificacao; }
+      if (classificacao) { query += " AND c.nome = @classificacao"; params.classificacao = classificacao; }
+      if (subclassificacao && subclassificacao !== "undefined") {
+        query += " AND s.nome = @subclassificacao";
+        params.subclassificacao = subclassificacao;
+      }      
       if (familiar !== undefined) { query += " AND i.familiar = @familiar"; params.familiar = Number(familiar); }
-      if (obrigatorio !== undefined) { query += " AND i.obrigatorio = @obrigatorio"; params.obrigatorio = Number(obrigatorio); }
+      if (obrigatorio !== undefined) { query += " AND p.rastreabilidade_obrigatoria = @obrigatorio"; params.obrigatorio = Number(obrigatorio); }
 
       const dados = db.prepare(query).all(params);
 

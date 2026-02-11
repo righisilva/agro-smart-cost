@@ -349,7 +349,7 @@
         <div class="container">
             <div class="header-content">
                 <div class="header-title">
-                    <h1><i class="fas fa-chart-bar"></i> Dashboard IBGE - SmartAgro</h1>
+                    <h1><i class="fas fa-chart-bar"></i> Dashboard IBGE - Smart Agro Cost</h1>
                     <p>Análise avançada dos dados do Censo Agropecuário</p>
                 </div>
                 <div class="header-actions">
@@ -392,6 +392,14 @@
                         <option value="Extração Vegetal">Extração Vegetal</option>
                         <option value="Aquicultura">Aquicultura</option>
                         <option value="Agroindústria">Agroindústria</option>
+                    </select>
+
+                </div><div class="filter-group">
+                    <label class="filter-label">
+                        <i class="fas fa-layer-group"></i> Subclassificação
+                    </label>
+                    <select class="filter-select" id="filtroSubclassificacao" disabled>
+                        <option value="">Todas as subclassificações</option>
                     </select>
                 </div>
                 
@@ -505,6 +513,50 @@
             'graficoEstabelecimentos': 'bar'
         };
 
+
+
+    const subclassificacoes = {
+        "Agricultura": [
+            "Floricultura",
+            "Horticultura",
+            "Lavouras permanentes",
+            "Lavouras temporárias"
+        ],
+        "Pecuária": [
+            "Animais",
+            "Produtos primários"
+        ],
+        "Silvicultura": ["Não especificada"],
+        "Extração Vegetal": ["Não especificada"],
+        "Aquicultura": ["Não especificada"],
+        "Agroindústria": ["Não especificada"]
+    };
+
+    const filtroClassificacao = document.getElementById("filtroClassificacao");
+    const filtroSubclassificacao = document.getElementById("filtroSubclassificacao");
+
+    filtroClassificacao.addEventListener("change", () => {
+        const classificacao = filtroClassificacao.value;
+
+        filtroSubclassificacao.innerHTML =
+            `<option value="">Todas as subclassificações</option>`;
+
+        if (!classificacao || !subclassificacoes[classificacao]) {
+            filtroSubclassificacao.disabled = true;
+            return;
+        }
+
+        subclassificacoes[classificacao].forEach(sub => {
+            const option = document.createElement("option");
+            option.value = sub;
+            option.textContent = sub;
+            filtroSubclassificacao.appendChild(option);
+        });
+
+        filtroSubclassificacao.disabled = false;
+    });
+
+
         async function atualizarDashboard() {
             // Validar filtros obrigatórios
             const regiao = document.getElementById("filtroRegiao").value;
@@ -517,6 +569,7 @@
             }
             
             const classificacao = document.getElementById("filtroClassificacao").value;
+            const subclassificacao = document.getElementById("filtroSubclassificacao").value;
             const top = document.getElementById("filtroTop").value;
             const obrigatorio = document.getElementById("filtroObrigatorio").value;
 
@@ -536,6 +589,7 @@
             params.append("orderBy", orderBy);
             
             if (classificacao) params.append("classificacao", classificacao);
+            if (subclassificacao) params.append("subclassificacao", subclassificacao);
             if (top) params.append("top", top);
             
             // ENVIA o filtro obrigatório independentemente do valor (vazio, 1 ou 0)

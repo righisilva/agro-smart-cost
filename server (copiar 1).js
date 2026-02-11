@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const Database = require("better-sqlite3");
 const { analisarContrato } = require("./index.js");
-const { analisarContratoManual, listDeployedContracts, getDeployedContract, getGasPricesFromNetworks, getTokenPrices, registerDeployedContract } = require("./contractService");
+const { analisarContratoManual, listDeployedContracts, getDeployedContract, getGasPricesFromNetworks, getTokenPrices } = require("./contractService");
 const { ethers } = require("ethers");
 const solc = require("solc");
 
@@ -19,53 +19,6 @@ const resultsRoutes = require("./routes/resultsRoutes");
 
 
 
-
-
-
-// ---  Gas Estimator automático ---
-
-// Endpoint para analisar contrato enviado pelo usuário
-app.post("/analisar", upload.single("contrato"), async (req, res) => {
-    // Verifica se um arquivo foi enviado
-    if (!req.file) return res.status(400).send("❌ Nenhum arquivo enviado.");
-
-    // Configura resposta para envio em chunks (texto HTML)
-    res.writeHead(200, {
-        "Content-Type": "text/html; charset=utf-8",
-        "Transfer-Encoding": "chunked"
-    });
-
-    // Função de log que escreve no console e no cliente
-    const log = (msg) => {
-        console.log(msg);
-      
-        const texto =
-          typeof msg === "string"
-            ? msg
-            : JSON.stringify(msg, null, 2);
-      
-        res.write(texto.replace(/\n/g, "<br>") + "<br>");
-      };
-      
-
-    try {
-        // Analisa o contrato
-        await analisarContrato(req.file.path, log);
-
-        // Deleta arquivo temporário
-        fs.unlink(req.file.path, err => {
-            if (err) console.warn("⚠️ Não foi possível deletar arquivo temporário:", err.message);
-        });
-
-        res.write("<br>✅ Análise concluída!<br>");
-        res.end();
-    } catch (err) {
-        res.write(`<br>❌ Erro: ${err.message}<br>`);
-        res.end();
-    }
-});
-
-// ---  Fim de Gas Estimator automático ---
 
 
 // --- Variáveis globais ---
@@ -92,11 +45,6 @@ for (const [key, n] of Object.entries(networksJson)) {
     }
 }
 
-
-
-// ---  Gas Estimator iterativo ---
-
-
 // --- Funções auxiliares para DB ---
 function salvarContractNoDB(name, address) {
     const existing = db.prepare("SELECT id FROM contracts WHERE name = ?").get(name);
@@ -111,6 +59,20 @@ function salvarFuncaoContratoNoDB(contractId, nomeFuncao) {
     const result = db.prepare("INSERT INTO contract_functions (contract_id, name) VALUES (?, ?)").run(contractId, nomeFuncao);
     return result.lastInsertRowid;
 }
+
+function salvarDeployNoDB(contractId, networkId, gasUsed, costUSD, costBRL) {
+    db.prepare(`
+        INSERT INTO contract_deploy_costs (contract_id, network_id, gas_used, cost_usd, cost_brl)
+        VALUES (?, ?, ?, ?, ?)
+    `).run(contractId, networkId, gasUsed, costUSD, costBRL);
+}
+
+// function salvarFuncaoNoDB(functionId, networkId, gasUsed, costUSD, costBRL) {
+//     db.prepare(`
+//         INSERT INTO contract_function_costs (function_id, network_id, gas_used, cost_usd, cost_brl)
+//         VALUES (?, ?, ?, ?, ?)
+//     `).run(functionId, networkId, gasUsed, costUSD, costBRL);
+// }
 
 function salvarFuncaoNoDB(functionId, networkId, gasUsed, costUSD, costBRL) {
   db.prepare(`
@@ -174,17 +136,62 @@ function parseArgument(arg) {
 
     return arg;
 }
+// --- 1️⃣ Dashboard IBGE ---
+
+// Serve arquivos estáticos da pasta "public" na raiz "/"
+
+
+// Conecta ao banco de dados SQLite
 
 
 
 
+// --- 2️⃣ Gas Estimator automático ---
+
+// Serve arquivos estáticos da pasta "gas-estimator" na rota "/gas"
+app.use("/gas", express.static("public/gas-estimator"));
+
+// Endpoint para analisar contrato enviado pelo usuário
+app.post("/analisar", upload.single("contrato"), async (req, res) => {
+    // Verifica se um arquivo foi enviado
+    if (!req.file) return res.status(400).send("❌ Nenhum arquivo enviado.");
+
+    // Configura resposta para envio em chunks (texto HTML)
+    res.writeHead(200, {
+        "Content-Type": "text/html; charset=utf-8",
+        "Transfer-Encoding": "chunked"
+    });
+
+    // Função de log que escreve no console e no cliente
+    const log = (msg) => {
+        console.log(msg);
+        res.write(msg.replace(/\n/g, "<br>") + "<br>");
+    };
+
+    try {
+        // Analisa o contrato
+        await analisarContrato(req.file.path, log);
+
+        // Deleta arquivo temporário
+        fs.unlink(req.file.path, err => {
+            if (err) console.warn("⚠️ Não foi possível deletar arquivo temporário:", err.message);
+        });
+
+        res.write("<br>✅ Análise concluída!<br>");
+        res.end();
+    } catch (err) {
+        res.write(`<br>❌ Erro: ${err.message}<br>`);
+        res.end();
+    }
+});
 
 
-
-
+// --- 3️⃣ Interface de Contratos (execução manual) ---
 
 // Serve arquivos estáticos da interface de contratos
+app.use("/interface", express.static(path.join(__dirname, "public/interface-contratos")));
 
+// Permite receber JSON no body das requisições
 app.use(express.json());
 
 app.use("/dashboard", express.static("public/IBGE"));
@@ -193,87 +200,139 @@ app.use("/gas-history", express.static(path.join(__dirname, "public/gas-history"
 app.use("/api/gas-history", gasHistoryRoutes);
 app.use("/results", express.static(path.join(__dirname, "public/results")));
 app.use("/api/results", resultsRoutes(db));
-app.use("/interface", express.static(path.join(__dirname, "public/interface-contratos")));
-app.use("/gas", express.static("public/gas-estimator"));
-
 
 
 
 // --- 1️⃣ Carregar ABI e deploy automático ---
 
-app.post("/api/load-abi", upload.array("contratos", 20), async (req, res) => {
+app.post("/api/load-abi", upload.single("contrato"), async (req, res) => {
+    const solc = require("solc");
     const { analisarContratoManual } = require("./contractService");
-
-    if (!req.files || req.files.length === 0)
-        return res.status(400).send("❌ Nenhum arquivo enviado.");
-
-    let contratosResponse = [];
+    const { registerDeployedContract } = require("./contractService");
+    let filePath;
 
     try {
+        if (!req.file) return res.status(400).send("❌ Nenhum arquivo enviado.");
 
-        // carregar preços uma vez só
+        // ------------------------------
+        // 🔹 Buscar gasPrices e preços dos tokens (uma vez só)
+        // ------------------------------
         gasPricesByNetwork = await getGasPricesFromNetworks();
         tokenPrices = await getTokenPrices();
+        console.log("🔹 Gas e preços carregados.");
 
-        for (const file of req.files) {
 
-            const filePath = file.path;
+        const filePath = req.file.path;
+        const source = fs.readFileSync(filePath, "utf8");
 
-            // deploy contratos do arquivo atual
-            const deployedContracts = await analisarContratoManual(filePath, console.log);
-            if (!deployedContracts.length) continue;
+        // ------------------------------
+        // 🔹 Faz deploy do contrato e mede gas
+        // ------------------------------
+        const deployedContracts = await analisarContratoManual(filePath, console.log);
+        if (!deployedContracts.length)
+          return res.status(500).send("❌ Nenhum contrato foi deployado.");
 
-            for (const c of deployedContracts) {
 
-                const contractId = salvarContractNoDB(c.contractName, c.address);
+//TODO
 
-                registerDeployedContract(c.contractName, {
-                    id: contractId,
-                    address: c.address,
-                    abi: c.abi,
-                    name: c.contractName
-                });
+        
+     
+     
+        const contratosResponse = []; // ← array para acumular tudo
 
-                // calcular custos por rede
-                const custosPorRede = {};
 
-                for (const [token, data] of Object.entries(gasPricesByNetwork)) {
-                    const tokenPrice = tokenPrices[token];
-                    if (!tokenPrice) continue;
+        // salva cada contrato no banco
+        for (const c of deployedContracts) {
+          const contractId = salvarContractNoDB(c.contractName, c.address);
+          c.id = contractId;
+          currentDeployedContract = c;
+        
+          registerDeployedContract(c.contractName, {
+            id: contractId,
+            address: c.address,
+            abi: c.abi,
+            name: c.contractName
+          });
+        
 
-                    const costInToken = ethers.utils.formatEther(c.gasUsed.mul(data.gasPrice));
-                    const costUSD = parseFloat(costInToken) * tokenPrice.usd;
-                    const costBRL = parseFloat(costInToken) * tokenPrice.brl;
 
-                    custosPorRede[token] = {
-                        name: data.name,
-                        token,
-                        gasPrice: ethers.utils.formatUnits(data.gasPrice, "gwei") + " Gwei",
-                        custoTotalToken: costInToken,
-                        custoUSD: `$${costUSD.toFixed(4)}`,
-                        custoBRL: `R$${costBRL.toFixed(4)}`,
-                        cotacao: tokenPrice
-                    };
-                }
 
-                contratosResponse.push({
-                    nome: c.contractName,
-                    endereco: c.address,
-                    gas: c.gasUsed.toString(),
-                    custosPorRede,
-                    abi: c.abi
-                });
+
+        // ------------------------------
+        // 🔹 Calcular custo total do deploy por rede
+        // ------------------------------
+        const custosPorRede = {};
+        const insertDeploy = db.transaction(() => {
+
+            for (const [token, data] of Object.entries(gasPricesByNetwork)) {
+                const tokenPrice = tokenPrices[token];
+                if (!tokenPrice) continue;
+
+                const costInToken = ethers.utils.formatEther(c.gasUsed.mul(data.gasPrice));
+                const costUSD = parseFloat(costInToken) * tokenPrice.usd;
+                const costBRL = parseFloat(costInToken) * tokenPrice.brl;
+
+                const networkId = networks[token].id;
+                // salvarDeployNoDB(contractId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
+                //TODO
+                const functionId = salvarFuncaoContratoNoDB(contractId, "deploy");
+                salvarFuncaoNoDB(functionId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
+
+                salvarNetworkCosts(networkId, parseFloat(ethers.utils.formatUnits(data.gasPrice, "gwei")), tokenPrice.usd, tokenPrice.brl);
+
+                custosPorRede[token] = {
+                    name: data.name,
+                    token: token,
+                    gasPrice: ethers.utils.formatUnits(data.gasPrice, "gwei") + " Gwei",
+                    custoTotalToken: costInToken,
+                    custoUSD: costUSD ? `$${costUSD.toFixed(4)}` : "N/A",
+                    custoBRL: costBRL ? `R$${costBRL.toFixed(4)}` : "N/A",
+                    cotacao: { usd: tokenPrice.usd, brl: tokenPrice.brl }
+                };
             }
-
-            // remover arquivo temporário
-            fs.unlink(filePath, () => {});
+        });
+        insertDeploy();
+        
+          // Adiciona contrato atual ao array final
+          contratosResponse.push({
+            nome: c.contractName,
+            endereco: c.address,
+            gas: c.gasUsed.toString(),
+            custosPorRede,
+            abi: c.abi
+          });
         }
-
+        
         res.json({ contratos: contratosResponse });
 
+        // ------------------------------
+        // 🔹 Retorna ABI e custos do deploy
+        // ------------------------------
+        // res.json({
+        //     abi: c.abi,
+        //     contractName: c.contractName,
+        //     deployedAddress: c.address,
+        //     deployGas: c.gasUsed.toString(),
+        //     funcao: "deploy",
+        //     custosPorRede
+        // });
+        
+//TODO
+
     } catch (err) {
-        console.error(err);
-        res.status(500).send("❌ Erro ao processar arquivos.");
+        console.error("Erro ao compilar ou deployar contrato:", err);
+        res.status(500).send("❌ Erro inesperado ao compilar ou deployar contrato.");
+    } finally {
+        // 🧹 Limpeza do arquivo temporário
+        if (filePath) {
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.error("Erro ao remover arquivo temporário:", err);
+                } else {
+                    console.log("🧹 Arquivo temporário removido:", filePath);
+                }
+            });
+        }
     }
 });
 
@@ -281,7 +340,7 @@ app.post("/api/load-abi", upload.array("contratos", 20), async (req, res) => {
 // --- 2️⃣ Executar funções do contrato deployado ---
 
 app.post("/api/execute-function", async (req, res) => {
-    const {nomeContrato, nomeFuncao, args, execCount = 1 } = req.body;
+    const {nomeContrato, nomeFuncao, args } = req.body;
     const contratoSelecionado = getDeployedContract(nomeContrato);
 
     if (!contratoSelecionado)
@@ -305,7 +364,6 @@ app.post("/api/execute-function", async (req, res) => {
         // Executa função
         const tx = await contract[nomeFuncao](...processedArgs);
         const receipt = await tx.wait();
-        const gasTotalSimulado = receipt.gasUsed.mul(execCount);
 
 
 
@@ -321,7 +379,7 @@ app.post("/api/execute-function", async (req, res) => {
                 // console.log(data);
                 const tokenPrice = tokenPrices[token]; if (!tokenPrice) continue;
                  console.log(tokenPrice);
-                const costInToken = ethers.utils.formatEther(gasTotalSimulado.mul(data.gasPrice));
+                const costInToken = ethers.utils.formatEther(receipt.gasUsed.mul(data.gasPrice));
                 const costUSD = parseFloat(costInToken) * tokenPrice.usd;
                 const costBRL = parseFloat(costInToken) * tokenPrice.brl;
 
@@ -338,7 +396,7 @@ app.post("/api/execute-function", async (req, res) => {
                 };
 
                 const networkId = networks[token].id;
-                salvarFuncaoNoDB(functionId, networkId, gasTotalSimulado.toNumber(), costUSD, costBRL);
+                salvarFuncaoNoDB(functionId, networkId, receipt.gasUsed.toNumber(), costUSD, costBRL);
 
             }
         });
@@ -348,13 +406,8 @@ app.post("/api/execute-function", async (req, res) => {
         // ------------------------------
         res.json({
             funcao: nomeFuncao,
-            execucoes: execCount,
-            // gasEstimado: estimatedGas.toString(),
-            gasEstimado: receipt.gasUsed.toString(),
-            // gasReal: receipt.gasUsed.toString(),
-            gasReal: gasTotalSimulado.toString(),
-            
-        
+            gasEstimado: estimatedGas.toString(),
+            gasReal: receipt.gasUsed.toString(),
             custosPorRede
         });
 
@@ -380,6 +433,7 @@ app.get("/api/accounts", async (req, res) => {
 
 
 
+app.use("/results", express.static(path.join(__dirname, "public/results")));
 
 
 // 🔹 Listar contratos
@@ -461,14 +515,12 @@ app.get("/api/deployed-contracts", (req, res) => {
     }
 });
 
-// ---  Fim Gas Estimator iterativo ---
-
-
-
 
 app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
+
 
 
 

@@ -10,7 +10,7 @@ const pool = new Pool({
 });
 
 // ================= CSV =================
-const csvFilePath = path.resolve(__dirname, "cotacoes_antigas.csv");
+const csvFilePath = path.resolve(__dirname, "cotacoes_blockchain1.csv");
 
 // ================= NUMBER PARSER SEGURO =================
 function parseSafeNumber(value) {
@@ -80,7 +80,7 @@ async function main() {
       console.log("⚠️ Linha ignorada (formato inválido):", line);
       continue;
     }
-
+    
     const [timestamp, rede, token, usd, brl, gas] = parts;
 
     const priceUsd = parseSafeNumber(usd);

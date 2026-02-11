@@ -4,7 +4,7 @@ const Database = require("better-sqlite3");
 const csvParser = require("csv-parser");
 
 const db = new Database("smartagro.db");
-const csvFile = path.resolve(__dirname, "ibge_classificacao2.csv");
+const csvFile = path.resolve(__dirname, "ibge_classificacao3.csv");
 
 const insertIbge = db.prepare(`
   INSERT INTO ibge_dados (

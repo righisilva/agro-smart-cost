@@ -31,7 +31,7 @@ const pgPool = new Pool({
       } = req.query;
 
       console.log("🔧 Tipo de cálculo selecionado:", tipo_calculo);
-      console.log("🔧 Tipo de cálculo selecionado:", subclassificacao);
+      console.log("🔧 Subclassificação:", subclassificacao);
 
       // ---------------- IBGE ----------------
       let queryIBGE = `

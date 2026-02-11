@@ -82,7 +82,7 @@ async function analisarContrato(filePath, log = console.log) {
         // const url = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,matic-network&vs_currencies=usd,brl`;
         const url = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,polygon-ecosystem-token&vs_currencies=usd,brl`;
         const res = await axios.get(url);
-        log(res);
+        // log(res.data);
         return res.data;
     }
 
