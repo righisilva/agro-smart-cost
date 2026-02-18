@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Gas Estimator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            margin-right: 10px;
+        }
+
+        pre {
+            width: 100%;
+            max-width: 900px;
+            background: #222;
+            padding: 15px;
+            border-radius: 8px;
+            overflow-y: auto;
+            height: 500px;
+            box-sizing: border-box;
+        }
+
+        .success {
+            color: #4CAF50;
+        }
+
+        .warning {
+            color: #FFC107;
+        }
+
+        .error {
+            color: #F44336;
+        }
+
+        .info {
+            color: #2196F3;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Gas Estimator</h1>
+    <form id="uploadForm">
+        <input type="file" id="contrato" name="contrato" accept=".sol" required />
+        <button type="submit">Enviar</button>
+    </form>
+    <pre id="log"></pre>
+
+    <script>
+        const form = document.getElementById("uploadForm");
+        const logElem = document.getElementById("log");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            logElem.textContent = ""; // limpa logs
+            const fileInput = document.getElementById("contrato");
+            if (!fileInput.files.length) return alert("Selecione um arquivo Solidity.");
+
+            const formData = new FormData();
+            formData.append("contrato", fileInput.files[0]);
+
+            // Envia via fetch e lê streaming
+            const response = await fetch("/analisar", {
+                method: "POST",
+                body: formData
+            });
+
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder("utf-8");
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                logElem.innerHTML += decoder.decode(value, { stream: true });
+                logElem.scrollTop = logElem.scrollHeight;
+            }
+        });
+    </script>
+</body>
+
+</html>

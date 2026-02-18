@@ -264,64 +264,44 @@
             margin-top: 20px;
         }
 
-        /* Log Area - Padrão igual à tela anterior */
-        .log-section {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            min-height: 0;
-            margin-top: 20px;
-        }
-
-        .log-card {
+        /* Log Area */
+        .log-container {
             background-color: var(--card-bg);
             border-radius: 12px;
             border: 1px solid var(--border);
             overflow: hidden;
-            box-shadow: var(--shadow);
         }
 
         .log-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 10px;
             padding: 15px 20px;
             background-color: var(--card-bg-light);
             border-bottom: 1px solid var(--border);
         }
 
-        .log-header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .log-header-left i {
+        .log-header i {
             color: var(--accent);
             font-size: 18px;
         }
 
-        .log-header-left span {
+        .log-header span {
             font-weight: 600;
             color: var(--text);
         }
 
         .log-content {
             padding: 20px;
-            background-color: #0D1117;
+            background-color: var(--card-bg);
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             font-size: 14px;
             line-height: 1.6;
-            height: 400px;
+            height: 500px;
             overflow-y: auto;
+            color: var(--text);
             white-space: pre-wrap;
             word-wrap: break-word;
-            color: #E2E8F0;
-        }
-
-        .light-mode .log-content {
-            background-color: #F8FAFC;
-            color: #1E293B;
         }
 
         /* Status Colors */
@@ -346,12 +326,10 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 12px;
-            background-color: var(--card-bg);
+            padding: 8px 16px;
+            background-color: var(--card-bg-light);
             border-radius: 20px;
             color: var(--text-light);
-            font-size: 12px;
-            border: 1px solid var(--border);
         }
 
         .loading i {
@@ -362,6 +340,16 @@
             to {
                 transform: rotate(360deg);
             }
+        }
+
+        /* Footer */
+        .dashboard-footer {
+            text-align: center;
+            padding: 25px 0;
+            color: var(--text-light);
+            font-size: 14px;
+            border-top: 1px solid var(--border);
+            margin-top: 40px;
         }
 
         /* Scrollbar */
@@ -412,10 +400,6 @@
             .upload-area h3 {
                 font-size: 18px;
             }
-
-            .log-content {
-                height: 350px;
-            }
         }
 
         @media (max-width: 480px) {
@@ -438,29 +422,6 @@
             .btn {
                 width: 100%;
             }
-
-            .log-content {
-                height: 300px;
-            }
-        }
-
-        /* Footer */
-        .dashboard-footer {
-            text-align: center;
-            padding: 25px 0;
-            color: var(--text-light);
-            font-size: 14px;
-            border-top: 1px solid var(--border);
-            margin-top: 40px;
-        }
-
-        /* KBD Style */
-        kbd {
-            background: var(--card-bg-light);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Consolas', monospace;
-            border: 1px solid var(--border);
         }
     </style>
 </head>
@@ -527,22 +488,18 @@
             </div>
         </div>
 
-        <!-- Log Section - Padrão igual à tela anterior -->
-        <div class="log-section">
-            <div class="log-card">
-                <div class="log-header">
-                    <div class="log-header-left">
-                        <i class="fas fa-terminal"></i>
-                        <span>Logs de Análise</span>
-                    </div>
-                    <div id="loadingIndicator" class="loading" style="display: none;">
-                        <i class="fas fa-spinner"></i>
-                        Processando...
-                    </div>
+        <!-- Log Container -->
+        <div class="log-container">
+            <div class="log-header">
+                <i class="fas fa-terminal"></i>
+                <span>Logs de Análise</span>
+                <div id="loadingIndicator" class="loading" style="display: none;">
+                    <i class="fas fa-spinner"></i>
+                    Processando...
                 </div>
-                <div id="log" class="log-content">
-                    <span class="info"><i class="fas fa-info-circle"></i> Aguardando upload do contrato...</span>
-                </div>
+            </div>
+            <div id="log" class="log-content">
+                <span class="info"><i class="fas fa-info-circle"></i> Aguardando upload do contrato...</span>
             </div>
         </div>
 
@@ -610,6 +567,7 @@
         // FUNCIONALIDADE DO GAS ESTIMATOR
         // ============================================
 
+        const form = document.getElementById("uploadForm");
         const logElem = document.getElementById("log");
         const fileInput = document.getElementById("contrato");
         const uploadArea = document.getElementById("uploadArea");
@@ -695,34 +653,16 @@
             });
 
             let icon = '';
-            let className = '';
-
             switch (tipo) {
-                case 'success':
-                    icon = 'fa-check-circle';
-                    className = 'success';
-                    break;
-                case 'warning':
-                    icon = 'fa-exclamation-triangle';
-                    className = 'warning';
-                    break;
-                case 'error':
-                    icon = 'fa-times-circle';
-                    className = 'error';
-                    break;
-                default:
-                    icon = 'fa-info-circle';
-                    className = 'info';
+                case 'success': icon = 'fa-check-circle'; break;
+                case 'warning': icon = 'fa-exclamation-triangle'; break;
+                case 'error': icon = 'fa-times-circle'; break;
+                default: icon = 'fa-info-circle';
             }
 
-            // Remover a mensagem inicial se ainda existir
-            if (logElem.innerHTML.includes('Aguardando upload do contrato...')) {
-                logElem.innerHTML = '';
-            }
-
-            const logLine = `<div class="${className}" style="margin-bottom: 6px; line-height: 1.5;">
-                <span style="color: var(--text-light); opacity: 0.8;">[${timestamp}]</span>
-                <i class="fas ${icon}" style="margin: 0 8px; width: 16px;"></i>
+            const logLine = `<div class="${tipo}" style="margin-bottom: 4px;">
+                <span style="color: var(--text-light);">[${timestamp}]</span>
+                <i class="fas ${icon}" style="margin: 0 8px;"></i>
                 ${mensagem}
             </div>`;
 
@@ -732,6 +672,7 @@
 
         function limparLogs() {
             logElem.innerHTML = '<span class="info"><i class="fas fa-info-circle"></i> Logs limpos. Aguardando nova análise...</span>';
+            adicionarLog('info', 'Logs limpos com sucesso.');
         }
 
         // Analyze button handler
@@ -751,7 +692,7 @@
                 return;
             }
 
-            adicionarLog('info', `📦 Iniciando análise do contrato: <strong>${file.name}</strong>`);
+            adicionarLog('info', `Iniciando análise do contrato: <strong>${file.name}</strong>`);
 
             const formData = new FormData();
             formData.append("contrato", file);
@@ -776,7 +717,7 @@
                 while (true) {
                     const { done, value } = await reader.read();
                     if (done) {
-                        adicionarLog('success', '✅ Análise concluída com sucesso!');
+                        adicionarLog('success', 'Análise concluída com sucesso!');
                         break;
                     }
 
@@ -800,7 +741,7 @@
                 }
 
             } catch (error) {
-                adicionarLog('error', `❌ Erro ao analisar contrato: ${error.message}`);
+                adicionarLog('error', `Erro ao analisar contrato: ${error.message}`);
                 console.error('Erro:', error);
             } finally {
                 // Hide loading
@@ -835,9 +776,9 @@
             btnAnalisar.disabled = true;
 
             // Welcome log
-            adicionarLog('info', '🎯 Bem-vindo ao Gas Estimator!');
-            adicionarLog('info', '📁 Faça upload de um contrato Solidity para iniciar a análise.');
-            adicionarLog('info', '⌨️ Atalho: <kbd>Ctrl+Enter</kbd> para analisar rapidamente.');
+            adicionarLog('info', 'Bem-vindo ao Gas Estimator!');
+            adicionarLog('info', 'Faça upload de um contrato Solidity para iniciar a análise.');
+            adicionarLog('info', '<kbd style="background: var(--card-bg-light); padding: 2px 6px; border-radius: 4px;">Ctrl+Enter</kbd> para analisar rapidamente.');
         });
     </script>
 </body>

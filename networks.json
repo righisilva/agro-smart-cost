@@ -15,7 +15,12 @@
   },
   "polygon": {
     "name": "Polygon",
-    "rpc": "https://polygon-rpc.com",
+    "rpcs": [
+      "https://polygon-rpc.com",
+      "https://rpc.ankr.com/polygon",
+      "https://polygon-mainnet.public.blastapi.io",
+      "https://1rpc.io/matic"
+    ],
     "token": "polygon-ecosystem-token"
   },
   "localhost": {

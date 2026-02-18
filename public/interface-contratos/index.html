@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,13 +9,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
+            /* Variáveis para modo escuro (padrão) */
             --primary: #2E7D32;
             --primary-dark: #1B5E20;
             --primary-light: #4CAF50;
             --secondary: #FF9800;
             --accent: #2196F3;
-            --text: #333333;
-            --text-light: #666666;
+            --text: #E2E8F0;
+            --text-light: #94A3B8;
             --background: #0F172A;
             --card-bg: #1E293B;
             --card-bg-light: #334155;
@@ -25,27 +27,39 @@
             --warning: #F59E0B;
             --error: #EF4444;
         }
-        
+
+        /* Variáveis para modo claro */
+        .light-mode {
+            --text: #1E293B;
+            --text-light: #64748B;
+            --background: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --card-bg-light: #F1F5F9;
+            --border: #E2E8F0;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Segoe UI', 'Inter', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--background);
-            color: #E2E8F0;
+            color: var(--text);
             line-height: 1.6;
             min-height: 100vh;
+            transition: var(--transition);
         }
-        
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         /* Header */
         .dashboard-header {
             background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -54,31 +68,31 @@
             border-radius: 12px;
             box-shadow: var(--shadow);
         }
-        
+
         .header-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .header-title h1 {
             font-size: 24px;
             font-weight: 700;
             margin-bottom: 5px;
             color: white;
         }
-        
+
         .header-title p {
             opacity: 0.9;
             font-size: 13px;
             color: rgba(255, 255, 255, 0.8);
         }
-        
+
         .header-actions {
             display: flex;
             gap: 12px;
         }
-        
+
         .btn {
             padding: 8px 16px;
             border-radius: 8px;
@@ -91,39 +105,85 @@
             gap: 8px;
             font-size: 13px;
         }
-        
+
         .btn-primary {
             background-color: var(--accent);
             color: white;
         }
-        
+
         .btn-primary:hover {
             background-color: #0D8BF2;
             transform: translateY(-2px);
             box-shadow: 0 6px 12px rgba(33, 150, 243, 0.2);
         }
-        
+
         .btn-secondary {
             background-color: rgba(255, 255, 255, 0.1);
             color: white;
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-        
+
         .btn-secondary:hover {
             background-color: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
         }
-        
+
+        /* Botão de auto-preenchimento específico (opcional) */
+        .btn-auto {
+            background-color: var(--card-bg);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-auto:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
         .btn-success {
             background-color: var(--success);
             color: white;
         }
-        
+
         .btn-success:hover {
             background-color: #0DA675;
             transform: translateY(-2px);
         }
-        
+
+        /* Toggle Theme Button */
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(15deg);
+        }
+
+        .theme-toggle i {
+            font-size: 18px;
+            color: white;
+        }
+
+        .light-mode .theme-toggle {
+            background: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.2);
+        }
+
+        .light-mode .theme-toggle:hover {
+            background: rgba(0, 0, 0, 0.2);
+        }
+
         /* Main Layout - 2 Colunas */
         .main-content {
             display: grid;
@@ -131,14 +191,14 @@
             gap: 25px;
             height: calc(100vh - 180px);
         }
-        
+
         /* Left Panel */
         .left-panel {
             display: flex;
             flex-direction: column;
             gap: 25px;
         }
-        
+
         /* Cards */
         .card {
             background-color: var(--card-bg);
@@ -146,44 +206,45 @@
             padding: 20px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
+            transition: var(--transition);
         }
-        
+
         .scrollable-card {
             flex: 1;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
-        
+
         .card-title {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 15px;
-            color: #E2E8F0;
+            color: var(--text);
             font-size: 16px;
             font-weight: 600;
         }
-        
+
         .card-title i {
             color: var(--accent);
             font-size: 18px;
         }
-        
+
         /* Upload Section */
         .upload-section {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        
+
         .file-input-wrapper {
             position: relative;
             overflow: hidden;
             display: inline-block;
             width: 100%;
         }
-        
+
         .file-input-wrapper input[type=file] {
             position: absolute;
             left: 0;
@@ -193,7 +254,7 @@
             height: 100%;
             cursor: pointer;
         }
-        
+
         .file-input-label {
             display: flex;
             align-items: center;
@@ -207,92 +268,93 @@
             cursor: pointer;
             transition: var(--transition);
             font-size: 13px;
+            color: var(--text);
         }
-        
+
         .file-input-label:hover {
             border-color: var(--accent);
             background-color: rgba(33, 150, 243, 0.1);
         }
-        
+
         .file-name {
             margin-top: 8px;
             font-size: 12px;
             color: var(--text-light);
             text-align: center;
         }
-        
+
         /* Contracts Section */
         .contracts-list {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        
+
         .contract-select-wrapper {
             display: flex;
             gap: 8px;
         }
-        
+
         .contract-select {
             flex-grow: 1;
             padding: 10px 12px;
             background-color: var(--card-bg-light);
             border: 1px solid var(--border);
             border-radius: 8px;
-            color: #E2E8F0;
+            color: var(--text);
             font-size: 13px;
             transition: var(--transition);
         }
-        
+
         .contract-select:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
         }
-        
+
         .contract-info {
             background-color: var(--card-bg-light);
             border-radius: 8px;
             padding: 12px;
             margin-top: 12px;
         }
-        
+
         .info-row {
             display: flex;
             justify-content: space-between;
             margin-bottom: 6px;
             font-size: 12px;
         }
-        
+
         .info-label {
             color: var(--text-light);
         }
-        
+
         .info-value {
-            color: #E2E8F0;
+            color: var(--text);
             font-weight: 500;
         }
-        
+
         .address-value {
             font-family: 'Courier New', monospace;
             font-size: 11px;
             color: var(--accent);
         }
-        
+
         /* Functions Section */
         .functions-container {
             flex: 1;
             overflow-y: auto;
             padding-right: 5px;
         }
-        
+
         .functions-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .function-card {
             background-color: var(--card-bg-light);
             border-radius: 8px;
@@ -300,35 +362,35 @@
             border-left: 4px solid var(--accent);
             margin-bottom: 12px;
         }
-        
+
         .function-title {
             display: flex;
             align-items: center;
             gap: 8px;
             margin-bottom: 12px;
-            color: #E2E8F0;
+            color: var(--text);
         }
-        
+
         .function-name {
             font-family: 'Courier New', monospace;
             font-weight: 600;
             color: var(--accent);
             font-size: 14px;
         }
-        
+
         .function-inputs {
             display: flex;
             flex-direction: column;
             gap: 10px;
             margin-bottom: 15px;
         }
-        
+
         .input-group {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-        
+
         .input-label {
             font-size: 12px;
             color: var(--text-light);
@@ -336,7 +398,7 @@
             align-items: center;
             gap: 5px;
         }
-        
+
         .input-type {
             font-family: 'Courier New', monospace;
             font-size: 11px;
@@ -345,66 +407,69 @@
             padding: 2px 6px;
             border-radius: 4px;
         }
-        
+
         .input-field {
-            padding: 8px 10px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            color: #E2E8F0;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            transition: var(--transition);
-        }
-        
-        .input-field:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
-        }
-        
+    padding: 8px 10px;
+    background-color: var(--card-bg-light);  /* Muda com o tema */
+    border: 1px solid var(--border);         /* Já está usando variável */
+    border-radius: 6px;
+    color: var(--text);                       /* Já está usando variável */
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    transition: var(--transition);
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+}
+
+/* Opcional: se quiser um fundo um pouco diferente para inputs */
+.input-field {
+    background-color: var(--card-bg);  /* ou var(--card-bg-light) */
+}
+
+/* Ou se quiser um efeito de "profundidade" diferente em cada modo */
+.light-mode .input-field {
+    background-color: #FFFFFF;  /* branco puro no modo claro */
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1); /* sombra interna suave */
+}
+
         .function-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .btn-sm {
             padding: 6px 12px;
             font-size: 12px;
         }
-        
+
         .btn-execute {
             background-color: var(--primary);
             color: white;
         }
-        
+
         .btn-execute:hover {
             background-color: var(--primary-dark);
             transform: translateY(-2px);
         }
-        
+
         .btn-execute:disabled {
             background-color: #4B5563;
             cursor: not-allowed;
             transform: none;
         }
-        
-        /* Right Panel - Single Log Area */
-        /* .log-section {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        } */
 
+        /* Right Panel - Single Log Area */
         .log-section {
             display: flex;
             flex-direction: column;
             height: 100%;
-            /* max-height: calc(100vh - 120px); */
-            min-height: 0; /* 🔹 ESSENCIAL em layouts flex */
+            min-height: 0;
         }
-
 
         .log-header {
             display: flex;
@@ -412,27 +477,30 @@
             align-items: center;
             margin-bottom: 15px;
         }
-        
+
         .log-content {
             flex: 1;
-            min-width: 0;              /* 🔥 essencial em layouts flex */
+            min-width: 0;
             background-color: #0D1117;
             border-radius: 8px;
             padding: 20px;
             overflow-y: auto;
-            overflow-x: auto;          /* permite rolagem horizontal se necessário */
+            overflow-x: auto;
             font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
             font-size: 13px;
             line-height: 1.4;
             border: 1px solid var(--border);
-
             white-space: pre-wrap;
-            overflow-wrap: anywhere;   /* 🔥 quebra strings longas */
-            word-break: break-word;    /* fallback */
+            overflow-wrap: anywhere;
+            word-break: break-word;
+            color: #E2E8F0;
         }
 
+        .light-mode .log-content {
+            background-color: #F8FAFC;
+            color: #1E293B;
+        }
 
-        
         /* Status Indicators */
         .status-badge {
             display: inline-flex;
@@ -443,17 +511,17 @@
             font-size: 11px;
             font-weight: 600;
         }
-        
+
         .status-deployed {
             background-color: rgba(16, 185, 129, 0.1);
             color: var(--success);
         }
-        
+
         .status-undeployed {
             background-color: rgba(245, 158, 11, 0.1);
             color: var(--warning);
         }
-        
+
         /* Footer */
         .dashboard-footer {
             text-align: center;
@@ -463,52 +531,73 @@
             border-top: 1px solid var(--border);
             margin-top: 25px;
         }
-        
+
         /* Responsive */
         @media (max-width: 1024px) {
             .main-content {
                 grid-template-columns: 1fr;
                 height: auto;
             }
-            
+
             .log-section {
                 height: 500px;
             }
         }
-        
+
         @media (max-width: 768px) {
             .container {
                 padding: 15px;
             }
-            
+
             .header-content {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 15px;
             }
-            
+
             .header-actions {
                 width: 100%;
                 flex-wrap: wrap;
             }
-            
+
             .btn {
                 flex-grow: 1;
                 justify-content: center;
             }
-            
+
             .function-actions {
                 flex-direction: column;
                 gap: 8px;
                 align-items: stretch;
             }
-            
+
             .contract-select-wrapper {
                 flex-direction: column;
             }
         }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--card-bg-light);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Header -->
@@ -519,6 +608,10 @@
                     <p>Modo Iterativo - Controle manual das execuções</p>
                 </div>
                 <div class="header-actions">
+                    <!-- Botão de Alternar Tema -->
+                    <div class="theme-toggle" id="themeToggle" title="Alternar modo claro/escuro">
+                        <i class="fas fa-moon"></i>
+                    </div>
                     <button class="btn btn-secondary" onclick="location.href='/'">
                         <i class="fas fa-home"></i> Voltar ao Início
                     </button>
@@ -528,7 +621,7 @@
                 </div>
             </div>
         </header>
-        
+
         <!-- Main Content -->
         <div class="main-content">
             <!-- Left Panel -->
@@ -553,7 +646,7 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <!-- Contracts Section -->
                 <div class="card">
                     <div class="card-title">
@@ -569,7 +662,7 @@
                                 <i class="fas fa-sync-alt"></i>
                             </button>
                         </div>
-                        
+
                         <div id="contractInfo" class="contract-info" style="display: none;">
                             <div class="info-row">
                                 <span class="info-label">Status:</span>
@@ -586,36 +679,37 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Functions Section -->
                 <div class="card scrollable-card">
                     <div class="card-title">
                         <i class="fas fa-cogs"></i>
                         <span>3. Funções do Contrato</span>
                         <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
-                            <span id="functionsCount" style="font-size: 12px; color: var(--text-light);">0 funções</span>
-                            <button class="btn btn-success btn-sm" onclick="preencherTodasFuncoes()" title="Pré-preencher todas as funções">
+                            <span id="functionsCount" style="font-size: 12px; color: var(--text-light);">0
+                                funções</span>
+                            <button class="btn btn-success btn-sm" onclick="preencherTodasFuncoes()"
+                                title="Pré-preencher todas as funções">
                                 <i class="fas fa-magic"></i> Pré-preencher
                             </button>
                         </div>
                     </div>
-                    
+
                     <div class="functions-container" id="funcoesContainer">
                         <div id="funcoes">
                             <div style="text-align: center; padding: 40px 20px; color: var(--text-light);">
-                                <i class="fas fa-code-branch" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
+                                <i class="fas fa-code-branch"
+                                    style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
                                 <p style="font-size: 14px;">Carregue um contrato para ver as funções disponíveis</p>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Right Panel - Single Log Area -->
             <div class="log-section">
-                <!-- <div class="card" style="flex: 1; display: flex; flex-direction: column;"> -->
-                    <div class="card" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
-
+                <div class="card" style="flex: 1; display: flex; flex-direction: column; min-height: 0;">
                     <div class="log-header">
                         <div class="card-title">
                             <i class="fas fa-terminal"></i>
@@ -631,49 +725,75 @@
                         </div>
                     </div>
                     <div class="log-content" id="log">
-// Aguardando carregamento do contrato...
+                        // Aguardando carregamento do contrato...
                     </div>
                 </div>
             </div>
         </div>
-        
-        <!--<footer class="dashboard-footer">-->
-        <!--    <div>-->
-        <!--        <i class="fas fa-network-wired"></i>-->
-        <!--        <span>SmartAgro - Interface de Contratos Inteligentes | Modo Iterativo</span>-->
-        <!--    </div>-->
-        <!--    <div class="copyright">-->
-        <!--        &copy; 2025 SmartAgro. Todos os direitos reservados.-->
-        <!--    </div>-->
-        <!--</footer>-->
     </div>
-    
+
     <script>
+        // ============================================
+        // FUNCIONALIDADE DE TEMA CLARO/ESCURO
+        // ============================================
+
+        let isDarkMode = true;
+
+        function toggleTheme() {
+            const body = document.body;
+            const themeToggle = document.getElementById('themeToggle');
+            const icon = themeToggle.querySelector('i');
+
+            isDarkMode = !isDarkMode;
+
+            if (isDarkMode) {
+                body.classList.remove('light-mode');
+                icon.className = 'fas fa-moon';
+                themeToggle.title = 'Alternar para modo claro';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.add('light-mode');
+                icon.className = 'fas fa-sun';
+                themeToggle.title = 'Alternar para modo escuro';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        function loadSavedTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeToggle = document.getElementById('themeToggle');
+
+            if (!themeToggle) return;
+
+            const icon = themeToggle.querySelector('i');
+
+            if (savedTheme === 'light') {
+                isDarkMode = false;
+                document.body.classList.add('light-mode');
+                icon.className = 'fas fa-sun';
+                themeToggle.title = 'Alternar para modo escuro';
+            } else {
+                isDarkMode = true;
+                document.body.classList.remove('light-mode');
+                icon.className = 'fas fa-moon';
+                themeToggle.title = 'Alternar para modo claro';
+            }
+        }
+
+        // ============================================
+        // FUNCIONALIDADE EXISTENTE (NÃO MODIFICADA)
+        // ============================================
+
         let contratoDeployado = false;
         let contratosCarregados = [];
         let contratoSelecionado = null;
 
-        function log(msg) {
-            const logEl = document.getElementById("log");
-
-            const isAtBottom =
-                logEl.scrollHeight - logEl.scrollTop <= logEl.clientHeight + 5;
-
-            logEl.textContent += msg + "\n";
-
-            if (isAtBottom) {
-                logEl.scrollTop = logEl.scrollHeight;
-            }
-        }
-
-
-        
         // Atualizar nome do arquivo selecionado
         function atualizarNomeArquivo() {
             const fileInput = document.getElementById('contrato');
             const fileName = document.getElementById('fileName');
             const fileLabel = document.getElementById('fileLabel');
-            
+
             if (fileInput.files.length > 0) {
                 const nome = fileInput.files[0].name;
                 fileName.textContent = `Arquivo selecionado: ${nome}`;
@@ -683,12 +803,12 @@
                 fileLabel.textContent = 'Selecione arquivo .sol';
             }
         }
-        
+
         // Limpar logs
         function limparLogs() {
             document.getElementById('log').innerHTML = '// Logs limpos em ' + new Date().toLocaleTimeString('pt-BR');
         }
-        
+
         // Copiar logs
         async function copiarLogs() {
             try {
@@ -699,46 +819,46 @@
                 alert('Erro ao copiar logs: ' + err.message);
             }
         }
-        
+
         // Atualizar lista de contratos do servidor
         async function atualizarContratos() {
             const select = document.getElementById("contratoSelect");
             select.innerHTML = "<option>Carregando...</option>";
-            
+
             try {
                 const res = await fetch("/api/deployed-contracts");
                 if (!res.ok) throw new Error("Erro ao buscar contratos.");
-                
+
                 const contratos = await res.json();
                 select.innerHTML = '<option value="">Selecione um contrato...</option>';
-                
+
                 if (!contratos.length) {
                     select.innerHTML += '<option>Nenhum contrato encontrado</option>';
                     return;
                 }
-                
+
                 contratos.forEach(c => {
                     const opt = document.createElement("option");
                     opt.value = c.name || c.address;
                     opt.textContent = `${c.name || "Sem nome"} ${c.address ? `(Deployado)` : ''}`;
                     select.appendChild(opt);
                 });
-                
+
                 log(`✅ Lista de contratos atualizada (${contratos.length} encontrados)`);
-                
+
             } catch (err) {
                 log(`❌ Erro ao atualizar contratos: ${err.message}`);
                 select.innerHTML = '<option value="">Erro ao carregar</option>';
             }
         }
-        
+
         // Função de log única
         function log(mensagem) {
             const logArea = document.getElementById('log');
             logArea.innerHTML += `\n${mensagem}`;
             logArea.scrollTop = logArea.scrollHeight;
         }
-        
+
         // Carregar contrato e ABI
         async function carregarContrato() {
             const fileInput = document.getElementById("contrato");
@@ -746,69 +866,62 @@
                 alert("Selecione um arquivo Solidity.");
                 return;
             }
-            
+
             log('\n📦 Iniciando carregamento do contrato...');
-            
+
             const formData = new FormData();
-            // formData.append("contrato", fileInput.files[0]);
             for (const file of fileInput.files) {
-                formData.append("contratos", file); // nome deve bater com multer
+                formData.append("contratos", file);
             }
-            
+
             try {
                 const res = await fetch("/api/load-abi", { method: "POST", body: formData });
-                
+
                 if (!res.ok) {
                     throw new Error("Erro ao carregar ABI.");
                 }
-                
+
                 const data = await res.json();
                 contratosCarregados = data.contratos || [];
-                
+
                 if (contratosCarregados.length === 0) {
                     throw new Error("Nenhum contrato encontrado no arquivo.");
                 }
-                
-                // Atualizar select com contratos carregados
+
                 const select = document.getElementById("contratoSelect");
                 select.innerHTML = '<option value="">Selecione um contrato...</option>';
-                
+
                 contratosCarregados.forEach(c => {
                     const opt = document.createElement("option");
                     opt.value = c.nome;
                     opt.textContent = `${c.nome} ${c.endereco ? '(Deployado)' : '(Não deployado)'}`;
                     select.appendChild(opt);
                 });
-                
-                // LOG DOS CUSTOS DE DEPLOY
+
                 log(`\n✅ ${data.contratos.length} contrato(s) carregado(s):`);
-                
-                // Itera sobre todos os contratos retornados
+
                 for (const contrato of data.contratos) {
                     const { nome, endereco, gas, custosPorRede } = contrato;
-                    const abi = contrato.abi || data.abi;
-                
+
                     log(
-                      `\n📄 Contrato: ${nome}\n` +
-                      `🏠 Endereço: ${endereco || "Não disponível"}\n` +
-                      `⛽ Gas usado no deploy: ${gas || "N/A"}\n`
+                        `\n📄 Contrato: ${nome}\n` +
+                        `🏠 Endereço: ${endereco || "Não disponível"}\n` +
+                        `⛽ Gas usado no deploy: ${gas || "N/A"}\n`
                     );
-                
-                    // Mostra custos por rede
+
                     if (custosPorRede && Object.keys(custosPorRede).length > 0) {
                         log(`🌍 Custos por rede:\n`);
                         for (const [token, info] of Object.entries(custosPorRede)) {
                             log(
-                              `  • ${info.name}: ${info.custoTotalToken} ${info.token}` +
-                              ` ≈ ${info.custoUSD} / ${info.custoBRL}` +
-                              ` (gasPrice: ${info.gasPrice})` +
-                              ` | Cotação: U$${info.cotacao?.usd ?? "N/A"} / R$${info.cotacao?.brl ?? "N/A"}`
+                                `  • ${info.name}: ${info.custoTotalToken} ${info.token}` +
+                                ` ≈ ${info.custoUSD} / ${info.custoBRL}` +
+                                ` (gasPrice: ${info.gasPrice})` +
+                                ` | Cotação: U$${info.cotacao?.usd ?? "N/A"} / R$${info.cotacao?.brl ?? "N/A"}`
                             );
                         }
                     }
                 }
-                
-                // Atualizar flag global automaticamente
+
                 if (data.contratos.some(c => c.endereco)) {
                     contratoDeployado = true;
                     log(`\n✅ Contrato(s) deployado(s) detectado(s).`);
@@ -816,24 +929,23 @@
                     contratoDeployado = false;
                     log(`\n⚠️ Nenhum contrato com endereço detectado.`);
                 }
-                
-                // Mostrar informações do primeiro contrato
+
                 if (contratosCarregados.length > 0) {
                     selecionarContrato();
                 }
-                
+
             } catch (err) {
                 log(`\n❌ Erro ao carregar contrato: ${err.message}`);
             }
         }
-        
+
         // Selecionar contrato
         async function selecionarContrato() {
             const select = document.getElementById("contratoSelect");
             const nomeContrato = select.value;
             const funcoesDiv = document.getElementById("funcoes");
             const contractInfo = document.getElementById("contractInfo");
-            
+
             if (!nomeContrato) {
                 contractInfo.style.display = 'none';
                 funcoesDiv.innerHTML = `
@@ -844,64 +956,58 @@
                 `;
                 return;
             }
-            
-            // Busca contrato no array global
+
             const contrato = contratosCarregados.find(c => c.nome === nomeContrato);
             if (!contrato) {
                 log(`❌ Contrato não encontrado na lista carregada.`);
                 return;
             }
-            
+
             contratoSelecionado = contrato;
             contratoDeployado = !!contrato.endereco;
-            
-            // Atualizar informações do contrato
-            document.getElementById("contractStatus").innerHTML = contratoDeployado 
+
+            document.getElementById("contractStatus").innerHTML = contratoDeployado
                 ? '<span class="status-badge status-deployed"><i class="fas fa-check-circle"></i> Deployado</span>'
                 : '<span class="status-badge status-undeployed"><i class="fas fa-clock"></i> Não Deployado</span>';
-            
-            document.getElementById("contractAddress").textContent = contrato.endereco ? 
+
+            document.getElementById("contractAddress").textContent = contrato.endereco ?
                 `${contrato.endereco.substring(0, 10)}...${contrato.endereco.substring(38)}` : "N/A";
             document.getElementById("contractGas").textContent = contrato.gas ? contrato.gas.toLocaleString() : "N/A";
             contractInfo.style.display = 'block';
-            
-            // Carregar funções
+
             await carregarFuncoesContrato(contrato);
         }
-        
+
         // Carregar funções do contrato
         async function carregarFuncoesContrato(contrato) {
             const funcoesDiv = document.getElementById("funcoes");
             const functionsCount = document.getElementById("functionsCount");
-            
+
             funcoesDiv.innerHTML = "<div style='text-align: center; padding: 30px;'><i class='fas fa-spinner fa-spin'></i> Carregando funções...</div>";
-            
+
             const abi = contrato.abi;
             if (!abi || !Array.isArray(abi)) {
                 funcoesDiv.innerHTML = "<div style='color: var(--error); text-align: center; padding: 30px;'>ABI não disponível para este contrato.</div>";
                 functionsCount.textContent = "ABI não disponível";
                 return;
             }
-            
-            // Filtrar funções mutáveis
-            const functions = abi.filter(f => f.type === "function" && !["view","pure"].includes(f.stateMutability));
-            
+
+            const functions = abi.filter(f => f.type === "function" && !["view", "pure"].includes(f.stateMutability));
+
             functionsCount.textContent = `${functions.length} função(s) disponível(is)`;
-            
+
             if (!functions.length) {
                 funcoesDiv.innerHTML = "<div style='color: var(--warning); text-align: center; padding: 30px;'>Nenhuma função mutável disponível.</div>";
                 return;
             }
-            
-            // Criar interface para cada função
+
             funcoesDiv.innerHTML = '';
-            
+
             functions.forEach((f, index) => {
                 const functionCard = document.createElement('div');
                 functionCard.className = 'function-card';
                 functionCard.id = `func-${contrato.nome}-${f.name}`;
-                
-                // Título da função
+
                 const titleDiv = document.createElement('div');
                 titleDiv.className = 'function-title';
                 titleDiv.innerHTML = `
@@ -909,15 +1015,14 @@
                     <span class="function-name">${f.name}</span>
                     <span style="font-size: 12px; color: var(--text-light);">(${f.inputs.map(i => i.type).join(', ')})</span>
                 `;
-                
-                // Inputs da função
+
                 const inputsDiv = document.createElement('div');
                 inputsDiv.className = 'function-inputs';
-                
+
                 f.inputs.forEach((input, idx) => {
                     const inputGroup = document.createElement('div');
                     inputGroup.className = 'input-group';
-                    
+
                     inputGroup.innerHTML = `
                         <div class="input-label">
                             ${input.name || `arg${idx}`}
@@ -930,65 +1035,52 @@
                                data-type="${input.type}"
                                data-name="${input.name || `arg${idx}`}">
                     `;
-                    
+
                     inputsDiv.appendChild(inputGroup);
                 });
-                
-                // Ações da função
+
                 const actionsDiv = document.createElement('div');
                 actionsDiv.className = 'function-actions';
 
-                // 🔹 Campo quantidade de execuções (simulação)
                 const execCountInput = document.createElement('input');
                 execCountInput.type = 'number';
                 execCountInput.min = '1';
-                execCountInput.value = '1'; // padrão
+                execCountInput.value = '1';
                 execCountInput.className = 'input-field';
                 execCountInput.style.width = '80px';
                 execCountInput.title = 'Número de execuções';
                 execCountInput.id = `${contrato.nome}_${f.name}_execCount`;
 
-                
                 const autoFillBtn = document.createElement('button');
-                autoFillBtn.className = 'btn btn-secondary btn-sm';
+                autoFillBtn.className = 'btn btn-auto btn-sm';
                 autoFillBtn.innerHTML = '<i class="fas fa-bolt"></i> Auto-preenchimento';
                 autoFillBtn.title = "Preencher automaticamente";
                 autoFillBtn.onclick = () => autoPreencherInputs(contrato.nome, f.name, f.inputs);
-                
+
                 const executeBtn = document.createElement('button');
                 executeBtn.className = 'btn btn-execute btn-sm';
                 executeBtn.innerHTML = '<i class="fas fa-play"></i> Executar Função';
                 executeBtn.disabled = !contratoDeployado;
                 executeBtn.title = contratoDeployado ? "Executar função" : "Contrato não deployado";
-                // executeBtn.onclick = () => executarFuncao(contrato.nome, f.name, f.inputs.length);
                 executeBtn.onclick = () => {
-                    const execCount =
-                        document.getElementById(`${contrato.nome}_${f.name}_execCount`).value;
-
-                    executarFuncao(
-                        contrato.nome,
-                        f.name,
-                        f.inputs.length,
-                        execCount
-                    );
+                    const execCount = document.getElementById(`${contrato.nome}_${f.name}_execCount`).value;
+                    executarFuncao(contrato.nome, f.name, f.inputs.length, execCount);
                 };
 
-                
                 actionsDiv.appendChild(execCountInput);
                 actionsDiv.appendChild(autoFillBtn);
                 actionsDiv.appendChild(executeBtn);
-                
-                // Montar card
+
                 functionCard.appendChild(titleDiv);
                 functionCard.appendChild(inputsDiv);
                 functionCard.appendChild(actionsDiv);
-                
+
                 funcoesDiv.appendChild(functionCard);
             });
-            
+
             log(`✅ Funções do contrato "${contrato.nome}" carregadas com sucesso.`);
         }
-        
+
         // Auto-preenchimento de inputs
         async function autoPreencherInputs(contratoNome, funcaoNome, inputs) {
             let accounts = [];
@@ -998,7 +1090,7 @@
             } catch (err) {
                 accounts = ["0x0000000000000000000000000000000000000000"];
             }
-            
+
             inputs.forEach((input, idx) => {
                 const campo = document.getElementById(`${contratoNome}_${funcaoNome}_arg${idx}`);
                 if (campo) {
@@ -1007,17 +1099,17 @@
                     campo.value = fakeValueForType(tipo, idx, accounts, nome);
                 }
             });
-            
+
             log(`⚡ Inputs da função ${funcaoNome} auto-preenchidos.`);
         }
-        
+
         // Pré-preencher todas as funções
         async function preencherTodasFuncoes() {
             if (!contratoDeployado) {
                 alert("Contrato ainda não deployado.");
                 return;
             }
-            
+
             let accounts = [];
             try {
                 const res = await fetch("/api/accounts");
@@ -1025,64 +1117,59 @@
             } catch (err) {
                 accounts = ["0x0000000000000000000000000000000000000000"];
             }
-            
+
             const funcoesDiv = document.getElementById("funcoes");
             const inputs = funcoesDiv.querySelectorAll('.input-field');
-            
+
             let argIndex = 0;
 
             inputs.forEach((input) => {
-
                 const tipo = input.getAttribute('data-type');
-                if (!tipo) return; // 🔹 ignora campo de execuções
+                if (!tipo) return;
 
                 const nome = input.getAttribute('data-name');
                 input.value = fakeValueForType(tipo, argIndex, accounts, nome);
-
                 argIndex++;
             });
 
-            
             log(`✨ Todas as funções foram pré-preenchidas com valores de exemplo!`);
         }
-        
+
         // Executar função
         async function executarFuncao(nomeContrato, nomeFuncao, numArgs, execCount = 1) {
             if (!contratoDeployado) {
                 alert('O contrato precisa ser deployado antes de executar funções.');
                 return;
             }
-            
-            // Ler argumentos
+
             const args = [];
             for (let i = 0; i < numArgs; i++) {
                 const campo = document.getElementById(`${nomeContrato}_${nomeFuncao}_arg${i}`);
                 args.push(campo ? campo.value : "");
             }
-            
+
             log(`\n📘 Contrato selecionado: ${nomeContrato}`);
             log(`⚙️ Executando ${nomeFuncao}(${args.join(", ")})...\n`);
-            
+
             try {
                 const res = await fetch("/api/execute-function", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ nomeContrato, nomeFuncao, args, execCount: Number(execCount)})
+                    body: JSON.stringify({ nomeContrato, nomeFuncao, args, execCount: Number(execCount) })
                 });
-                
+
                 if (!res.ok) {
                     const msg = await res.text();
                     log(`❌ Erro: ${msg}\n`);
                     return;
                 }
-                
+
                 const out = await res.json();
-                
+
                 log(`✅ Função executada: ${out.funcao}`);
                 log(`⛽ Gas estimado: ${out.gasEstimado}`);
                 log(`🔥 Gas real usado: ${out.gasReal}`);
-                
-                // Mostrar custos por rede
+
                 if (out.custosPorRede) {
                     log(`\n🌍 Custos por rede:`);
                     for (const [key, info] of Object.entries(out.custosPorRede)) {
@@ -1093,25 +1180,25 @@
                         );
                     }
                 }
-                
+
                 log(`\n--------------------------------------------\n`);
-                
+
             } catch (err) {
                 log(`\n❌ Erro inesperado: ${err.message}\n`);
             }
         }
-        
+
         // Função para gerar valores fake
         function fakeValueForType(type, idx, accounts, paramName = "") {
             const name = paramName.toLowerCase();
-            
+
             if (type === "address" && (name.includes("owner") || name.includes("manager") || name.includes("admin"))) {
                 return accounts[0];
             }
-            
-            const isEnum = name.includes("type") || name.includes("status") || name.includes("role") || 
-                          name.includes("state") || (type === "uint8" && name !== "id" && name !== "index");
-            
+
+            const isEnum = name.includes("type") || name.includes("status") || name.includes("role") ||
+                name.includes("state") || (type === "uint8" && name !== "id" && name !== "index");
+
             switch (type) {
                 case "string":
                     return `exemplo_${idx}`;
@@ -1153,16 +1240,22 @@
                     return "";
             }
         }
-        
+
         // Inicialização
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
+            // Carregar tema salvo
+            loadSavedTheme();
+
+            // Configurar botão de tema
+            document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+
             log(`✅ Interface de Contratos Inteligentes inicializada.`);
             log(`⚙️ Modo: Iterativo (controle manual das execuções)`);
             log(`🕒 ${new Date().toLocaleString('pt-BR')}`);
             log(`────────────────────────────────────────────`);
             atualizarContratos();
         });
-        
+
         // Expor funções para uso global
         window.carregarContrato = carregarContrato;
         window.atualizarContratos = atualizarContratos;
@@ -1171,6 +1264,8 @@
         window.executarFuncao = executarFuncao;
         window.limparLogs = limparLogs;
         window.copiarLogs = copiarLogs;
+        window.atualizarNomeArquivo = atualizarNomeArquivo;
     </script>
 </body>
+
 </html>
