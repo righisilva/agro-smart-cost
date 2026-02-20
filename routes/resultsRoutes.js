@@ -192,7 +192,7 @@ const pgPool = new Pool({
           resultado.sort((a, b) => b.total_estimado_brl - a.total_estimado_brl);
       }
 
-      const topN = top ? Number(top) : resultado.length;h
+      const topN = top ? Number(top) : resultado.length;
       // console.log("JSON FINAL:", resultado[0]);
 
       res.json(resultado.slice(0, topN));
