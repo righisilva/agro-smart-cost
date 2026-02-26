@@ -31,22 +31,6 @@ const csvWriter = createCsvWriter({
     append: fs.existsSync(csvFilePath),
 });
 
-function getProvider() {
-    const rpc =
-      process.env.NODE_ENV === "production"
-        ? process.env.RPC_URL
-        : "http://127.0.0.1:8545";
-  
-    return new ethers.providers.JsonRpcProvider(rpc);
-  }
-  
-  function getSigner(provider) {
-    if (process.env.NODE_ENV === "production") {
-      return new ethers.Wallet(process.env.PRIVATE_KEY, provider);
-    }
-    return provider.getSigner(0);
-  }
-
 // ------------------------------
 // Contrato deployado em memória
 // ------------------------------
@@ -148,27 +132,28 @@ async function analisarContrato(filePath, log = console.log) {
 
 
     log(`🔌 Conectando ao Hardhat local...`);
-    const provider = getProvider();
-    const network = await provider.getNetwork();
-    log(`✅ Conectado à rede ${network.name} (chainId: ${network.chainId})`);
+    const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
+    const network = await provider.getNetwork().catch(() => { log("❌ Falha ao conectar ao Hardhat local."); return null; });
     if (!network) return;
 
     log(`✅ Conectado à ${network.name} (chainId: ${network.chainId})`);
-    const wallet = getSigner(provider);
+    const signer = (await provider.listAccounts())[0];
+    if (!signer) { log("❌ Nenhuma conta encontrada no Hardhat node."); return; }
+    const wallet = provider.getSigner(signer);
     const factory = new ethers.ContractFactory(abi, bytecode, wallet);
-    const signerAddress = await wallet.getAddress();
+
     const constructor = abi.find(item => item.type === "constructor");
     const fakeArgs = constructor?.inputs?.map((input, i) => {
         switch (input.type) {
             case "string": return `fake_string_${i}`;
             case "uint256": case "uint": case "int": case "int256": return 1000 + i;
-            case "address": return signerAddress;
+            case "address": return signer;
             case "bool": return i % 2 === 0;
             case "bytes32": return ethers.utils.formatBytes32String(`val${i}`);
             case "bytes": return ethers.utils.toUtf8Bytes(`data${i}`);
             case "string[]": return [`str1_${i}`, `str2_${i}`];
             case "uint256[]": return [1 + i, 2 + i];
-            case "address[]": return [signerAddress];
+            case "address[]": return [signer];
             default: return null;
         }
     }) || [];
@@ -224,7 +209,7 @@ async function analisarContrato(filePath, log = console.log) {
         const args = item.inputs.map((input, i) => {
             if (input.type.startsWith("uint")) return 1;
             if (input.type.startsWith("int")) return -1;
-            if (input.type === "address") return signerAddress;
+            if (input.type === "address") return signer;
             if (input.type === "string") return "exemplo";
             if (input.type === "bool") return false;
             if (input.type === "bytes32") return ethers.utils.formatBytes32String("ex");
