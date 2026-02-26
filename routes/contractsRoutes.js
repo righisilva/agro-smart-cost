@@ -114,6 +114,21 @@ function parseArgument(arg) {
     return arg;
 }
 
+function getProvider() {
+    const rpc =
+      process.env.NODE_ENV === "production"
+        ? process.env.RPC_URL
+        : "http://127.0.0.1:8545";
+  
+    return new ethers.providers.JsonRpcProvider(rpc);
+  }
+
+  function getSigner(provider) {
+    if (process.env.NODE_ENV === "production") {
+      return new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+    }
+    return provider.getSigner(0);
+  }
 
 
 router.post("/load-abi", upload.single("contrato"), async (req, res) => {
@@ -256,8 +271,8 @@ router.post("/execute-function", async (req, res) => {
         return res.status(400).send(`❌ Contrato "${nomeContrato}" não encontrado.`);
 
     // Constrói o contrato real com ethers
-    const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
-    const signer = provider.getSigner(0);
+    const provider = getProvider();
+    const signer = getSigner(provider);
     const contract = new ethers.Contract(
         contratoSelecionado.address,
         contratoSelecionado.abi,
@@ -331,8 +346,11 @@ router.post("/execute-function", async (req, res) => {
 
 router.get("/accounts", async (req, res) => {
     try {
-        const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
-        const accounts = await provider.listAccounts();
+        const provider = getProvider();
+        const accounts =
+            process.env.NODE_ENV === "production"
+                ? [new ethers.Wallet(process.env.PRIVATE_KEY).address]
+                : await provider.listAccounts();
         res.json(accounts);
     } catch (err) {
         res.status(500).send("Erro ao obter contas: " + err.message);

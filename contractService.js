@@ -50,6 +50,24 @@ function listDeployedContracts() {
 //     return deployedContract;
 // }
 
+
+
+function getProvider() {
+    const rpc =
+      process.env.NODE_ENV === "production"
+        ? process.env.RPC_URL
+        : "http://127.0.0.1:8545";
+  
+    return new ethers.providers.JsonRpcProvider(rpc);
+  }
+
+  function getSigner(provider) {
+    if (process.env.NODE_ENV === "production") {
+      return new ethers.Wallet(process.env.PRIVATE_KEY, provider);
+    }
+    return provider.getSigner(0);
+  }
+
 /**
  * Busca preços dos tokens em USD e BRL via CoinGecko
  */
@@ -157,10 +175,16 @@ async function analisarContratoManual(filePath, log = console.log) {
   }
 
   // Conecta ao nó Hardhat local
-  log("🔌 Conectando ao Hardhat local...");
-  const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
-  const accounts = await provider.listAccounts();
-  const wallet = provider.getSigner(accounts[0]);
+  log("🔌 Conectando ao provider...");
+
+  const provider = getProvider();
+  const wallet = getSigner(provider);
+
+  // endereço da wallet (para constructor args)
+  const walletAddress =
+    process.env.NODE_ENV === "production"
+      ? wallet.address
+      : (await provider.listAccounts())[0];
 
   const results = [];
 
@@ -182,13 +206,13 @@ async function analisarContratoManual(filePath, log = console.log) {
       switch (input.type) {
         case "string": return `fake_string_${i}`;
         case "uint256": case "uint": case "int": return 1000 + i;
-        case "address": return accounts[0];
+        case "address": return walletAddress;
         case "bool": return i % 2 === 0;
         case "bytes32": return ethers.utils.formatBytes32String(`val${i}`);
         case "bytes": return ethers.utils.toUtf8Bytes(`data${i}`);
         case "string[]": return [`str1_${i}`, `str2_${i}`];
         case "uint256[]": return [1 + i, 2 + i];
-        case "address[]": return [accounts[0]];
+        case "address[]": return [walletAddress];
         default: return null;
       }
     }) || [];
