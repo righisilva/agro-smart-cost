@@ -477,16 +477,18 @@ app.get("/", (req, res) => {
 
 // --- Servidor ---
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const BASE_URL = process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
+
 app.listen(PORT, () => {
     console.log(`
 🌍 Servidor unificado rodando!
-- Home:                http://localhost:${PORT}/
-- Dashboard IBGE:      http://localhost:${PORT}/dashboard
-- Gas Estimator:       http://localhost:${PORT}/gas
-- Interface Contratos: http://localhost:${PORT}/interface
-- Resultados:          http://localhost:${PORT}/results
-- Histórico:          http://localhost:${PORT}/gas-history
+- Home:                ${BASE_URL}/
+- Dashboard IBGE:      ${BASE_URL}/dashboard
+- Gas Estimator:       ${BASE_URL}/gas
+- Interface Contratos: ${BASE_URL}/interface
+- Resultados:          ${BASE_URL}/results
+- Histórico:           ${BASE_URL}/gas-history
 `);
 });
 
