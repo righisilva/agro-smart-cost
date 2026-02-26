@@ -1,6 +1,6 @@
 ```
 sudo apt install npm
-npm install ou npm install --save-dev hardhat @nomicfoundation/hardhat-toolbox --legacy-peer-deps
+npm install ou npm install --legacy-peer-deps
 npx hardhat node
 node index.js caminho_do_contrato
 node server.js
