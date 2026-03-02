@@ -32,7 +32,7 @@ function getDeployedContract(nameOrAddress) {
 // Registrar contrato
 function registerDeployedContract(nameOrAddress, contractInstance) {
     deployedContracts.set(nameOrAddress, contractInstance);
-    console.log("📦 Contratos deployados:", [...deployedContracts.entries()]);
+    // console.log("📦 Contratos deployados:", [...deployedContracts.entries()]);
 }
 
 // Retornar lista de todos

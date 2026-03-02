@@ -245,6 +245,17 @@ app.post("/api/load-abi", upload.array("contratos", 20), async (req, res) => {
                     const costUSD = parseFloat(costInToken) * tokenPrice.usd;
                     const costBRL = parseFloat(costInToken) * tokenPrice.brl;
 
+                    
+                    const networkId = networks[token].id;
+                    // salvarDeployNoDB(contractId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
+                    //TODO
+                    const functionId = salvarFuncaoContratoNoDB(contractId, "deploy");
+                    console.log("Function ID do deploy:", functionId);
+                    salvarFuncaoNoDB(functionId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
+
+                    salvarNetworkCosts(networkId, parseFloat(ethers.utils.formatUnits(data.gasPrice, "gwei")), tokenPrice.usd, tokenPrice.brl);
+
+
                     custosPorRede[token] = {
                         name: data.name,
                         token,

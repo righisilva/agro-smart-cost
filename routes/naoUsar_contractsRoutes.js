@@ -118,8 +118,6 @@ function parseArgument(arg) {
 
 router.post("/load-abi", upload.single("contrato"), async (req, res) => {
     const solc = require("solc");
-    const { analisarContratoManual } = require("./contractService");
-    const { registerDeployedContract } = require("./contractService");
     let filePath;
 
     try {
@@ -133,12 +131,14 @@ router.post("/load-abi", upload.single("contrato"), async (req, res) => {
         console.log("🔹 Gas e preços carregados.");
 
 
-        const filePath = req.file.path;
+        filePath = req.file.path;
         const source = fs.readFileSync(filePath, "utf8");
+
 
         // ------------------------------
         // 🔹 Faz deploy do contrato e mede gas
         // ------------------------------
+        console.log("🚀 Iniciando análise e deploy do contrato.. AAAAAAAAAAAAAA.");
         const deployedContracts = await analisarContratoManual(filePath, console.log);
         if (!deployedContracts.length)
           return res.status(500).send("❌ Nenhum contrato foi deployado.");
@@ -151,7 +151,7 @@ router.post("/load-abi", upload.single("contrato"), async (req, res) => {
      
         const contratosResponse = []; // ← array para acumular tudo
 
-
+        console.log("Contratos deployados:", deployedContracts);
         // salva cada contrato no banco
         for (const c of deployedContracts) {
           const contractId = salvarContractNoDB(c.contractName, c.address);
@@ -169,49 +169,57 @@ router.post("/load-abi", upload.single("contrato"), async (req, res) => {
 
 
 
-        // ------------------------------
-        // 🔹 Calcular custo total do deploy por rede
-        // ------------------------------
-        const custosPorRede = {};
-        const insertDeploy = db.transaction(() => {
+            // ------------------------------
+            // 🔹 Calcular custo total do deploy por rede
+            // ------------------------------
+            const custosPorRede = {};
+            console.log("Calculando custos para o deploy do contrato:", c.contractName);
+            const insertDeploy = db.transaction(() => {
 
-            for (const [token, data] of Object.entries(gasPricesByNetwork)) {
-                const tokenPrice = tokenPrices[token];
-                if (!tokenPrice) continue;
+                try {
+                    for (const [token, data] of Object.entries(gasPricesByNetwork)) {
+                        const tokenPrice = tokenPrices[token];
+                        if (!tokenPrice) continue;
+                        console.log(`Calculando custos para ${c.contractName} na rede ${data.name}...`);
 
-                const costInToken = ethers.utils.formatEther(c.gasUsed.mul(data.gasPrice));
-                const costUSD = parseFloat(costInToken) * tokenPrice.usd;
-                const costBRL = parseFloat(costInToken) * tokenPrice.brl;
+                        const costInToken = ethers.utils.formatEther(c.gasUsed.mul(data.gasPrice));
+                        const costUSD = parseFloat(costInToken) * tokenPrice.usd;
+                        const costBRL = parseFloat(costInToken) * tokenPrice.brl;
 
-                const networkId = networks[token].id;
-                // salvarDeployNoDB(contractId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
-                //TODO
-                const functionId = salvarFuncaoContratoNoDB(contractId, "deploy");
-                salvarFuncaoNoDB(functionId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
+                        const networkId = networks[token].id;
+                        // salvarDeployNoDB(contractId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
+                        //TODO
+                        const functionId = salvarFuncaoContratoNoDB(contractId, "deploy");
+                        console.log("Function ID do deploy:", functionId);
+                        salvarFuncaoNoDB(functionId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
 
-                salvarNetworkCosts(networkId, parseFloat(ethers.utils.formatUnits(data.gasPrice, "gwei")), tokenPrice.usd, tokenPrice.brl);
+                        salvarNetworkCosts(networkId, parseFloat(ethers.utils.formatUnits(data.gasPrice, "gwei")), tokenPrice.usd, tokenPrice.brl);
 
-                custosPorRede[token] = {
-                    name: data.name,
-                    token: token,
-                    gasPrice: ethers.utils.formatUnits(data.gasPrice, "gwei") + " Gwei",
-                    custoTotalToken: costInToken,
-                    custoUSD: costUSD ? `$${costUSD.toFixed(4)}` : "N/A",
-                    custoBRL: costBRL ? `R$${costBRL.toFixed(4)}` : "N/A",
-                    cotacao: { usd: tokenPrice.usd, brl: tokenPrice.brl }
-                };
-            }
-        });
-        insertDeploy();
-        
-          // Adiciona contrato atual ao array final
-          contratosResponse.push({
-            nome: c.contractName,
-            endereco: c.address,
-            gas: c.gasUsed.toString(),
-            custosPorRede,
-            abi: c.abi
-          });
+                        custosPorRede[token] = {
+                            name: data.name,
+                            token: token,
+                            gasPrice: ethers.utils.formatUnits(data.gasPrice, "gwei") + " Gwei",
+                            custoTotalToken: costInToken,
+                            custoUSD: costUSD ? `$${costUSD.toFixed(4)}` : "N/A",
+                            custoBRL: costBRL ? `R$${costBRL.toFixed(4)}` : "N/A",
+                            cotacao: { usd: tokenPrice.usd, brl: tokenPrice.brl }
+                        };
+                    }
+                } catch (err) {
+                   console.error("ERRO NA TRANSACTION:", err);
+                   throw err;
+                }
+            });
+            insertDeploy();
+            
+            // Adiciona contrato atual ao array final
+            contratosResponse.push({
+                nome: c.contractName,
+                endereco: c.address,
+                gas: c.gasUsed.toString(),
+                custosPorRede,
+                abi: c.abi
+            });
         }
         
         res.json({ contratos: contratosResponse });
