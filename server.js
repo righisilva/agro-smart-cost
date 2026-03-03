@@ -203,6 +203,7 @@ app.use("/gas", express.static("public/gas-estimator"));
 
 app.post("/api/load-abi", upload.array("contratos", 20), async (req, res) => {
     const { analisarContratoManual } = require("./contractService");
+    const tipo_calculo = req.body.tipo_calculo || "last";
 
     if (!req.files || req.files.length === 0)
         return res.status(400).send("❌ Nenhum arquivo enviado.");
@@ -213,7 +214,7 @@ app.post("/api/load-abi", upload.array("contratos", 20), async (req, res) => {
 
         // carregar preços uma vez só
         gasPricesByNetwork = await getGasPricesFromNetworks();
-        tokenPrices = await getTokenPrices();
+        tokenPrices = await getTokenPrices(tipo_calculo);
 
         for (const file of req.files) {
 
@@ -250,7 +251,7 @@ app.post("/api/load-abi", upload.array("contratos", 20), async (req, res) => {
                     // salvarDeployNoDB(contractId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
                     //TODO
                     const functionId = salvarFuncaoContratoNoDB(contractId, "deploy");
-                    console.log("Function ID do deploy:", functionId);
+                    // console.log("Function ID do deploy:", functionId);
                     salvarFuncaoNoDB(functionId, networks[token].id, c.gasUsed.toNumber(), costUSD, costBRL);
 
                     salvarNetworkCosts(networkId, parseFloat(ethers.utils.formatUnits(data.gasPrice, "gwei")), tokenPrice.usd, tokenPrice.brl);
@@ -465,7 +466,7 @@ app.get("/api/contract-abi", (req, res) => {
 app.get("/api/deployed-contracts", (req, res) => {
     try {
         const contratos = Array.from(listDeployedContracts().map(name => getDeployedContract(name)));
-        console.log("Contratos enviados ao frontend:", contratos);
+        // console.log("Contratos enviados ao frontend:", contratos);
         res.json(contratos);
     } catch (err) {
         res.status(500).send("Erro ao listar contratos em memória: " + err.message);

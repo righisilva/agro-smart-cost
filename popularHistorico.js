@@ -10,7 +10,7 @@ const pool = new Pool({
 });
 
 // ================= CSV =================
-const csvFilePath = path.resolve(__dirname, "cotacoes_blockchain1.csv");
+const csvFilePath = path.resolve(__dirname, "scripts/cotacoes_blockchain2.csv");
 
 // ================= NUMBER PARSER SEGURO =================
 function parseSafeNumber(value) {

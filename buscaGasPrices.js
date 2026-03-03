@@ -87,8 +87,7 @@ async function getGasPricesFromNetworks() {
     for (const rpc of rpcList) {
       try {
         provider = new ethers.providers.JsonRpcProvider(rpc);
-        const feeData = await provider.getFeeData();
-        gasPrice = feeData.maxFeePerGas || feeData.gasPrice;
+        gasPrice = await provider.getGasPrice();
         if (gasPrice) break;
       } catch (e) {
         console.warn(`⚠️ RPC ${rpc} falhou para ${net.name}`);

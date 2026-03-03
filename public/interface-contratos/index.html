@@ -641,6 +641,23 @@
                             </div>
                         </div>
                         <div id="fileName" class="file-name"></div>
+
+                        <!-- 🔥 NOVA CAIXA DE SELEÇÃO -->
+                        <div class="filter-group">
+                            <label class="filter-label required">
+                                Cotação das Redes
+                            </label>
+                            <select class="filter-select" id="filtroTipoCalculo" required>
+                                <option value="" disabled selected>Selecione o tipo</option>
+                                <option value="last" selected>Última Cotação</option>
+                                <option value="day">Média Últimas 24h</option>
+                                <option value="week">Média Última Semana</option>
+                                <option value="month">Média Último Mês</option>
+                                <option value="all">Média Histórica</option>
+                                <option value="current">Atual da Rede (CoinGecko)</option>
+                            </select>
+                        </div>
+                    
                         <button class="btn btn-primary" onclick="carregarContrato()">
                             <i class="fas fa-code"></i> Carregar ABI do Contrato
                         </button>
@@ -868,11 +885,16 @@
             }
 
             log('\n📦 Iniciando carregamento do contrato...');
+            const periodo = document.getElementById("filtroTipoCalculo").value;
 
             const formData = new FormData();
             for (const file of fileInput.files) {
                 formData.append("contratos", file);
             }
+
+
+            // 🔥 NOVO
+            formData.append("tipo_calculo", periodo);     // ou 7d, 30d etc
 
             try {
                 const res = await fetch("/api/load-abi", { method: "POST", body: formData });
