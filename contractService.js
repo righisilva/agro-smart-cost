@@ -165,6 +165,7 @@ async function getTokenPrices(periodo = "last") {
 
 async function getGasPricesFromNetworks() {
   const gasPrices = {};
+  console.log("⛽ Obtendo gas prices das redes...");
 
   for (const [key, net] of Object.entries(networks)) {
     if (key === "localhost") continue;
