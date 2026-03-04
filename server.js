@@ -476,8 +476,12 @@ app.get("/api/deployed-contracts", (req, res) => {
 // ---  Fim Gas Estimator iterativo ---
 
 
-app.get("/health", (req, res) => {
-    res.status(200).send("OK");
+app.get("/status", (req, res) => {
+    res.json({
+        status: "online",
+        timestamp: new Date(),
+        version: "1.0.0"
+    });
 });
 
 
