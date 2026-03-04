@@ -161,9 +161,101 @@ async function getTokenPrices(periodo = "last") {
   return await getHistoricalTokenPrices(periodo);
 }
 
+async function getGasPricesFromNetworks(periodo = "last") {
+  if (periodo === "current") {
+    return await getLiveGasPricesFromNetworks(); // CoinGecko
+  }
+
+  return await getHistoricalGasPrices(periodo);
+}
 
 
-async function getGasPricesFromNetworks() {
+async function getHistoricalGasPrices(tipo_calculo = "last") {
+  console.log("⛽ Usando gas histórico:", tipo_calculo);
+
+  try {
+
+    const redesValidas = Object.values(networks)
+      .filter(net => net.name !== "Local Hardhat")
+      .map(net => net.token);
+
+    if (redesValidas.length === 0) return {};
+
+    const intervals = {
+      day: "1 day",
+      week: "7 days",
+      month: "30 days"
+    };
+
+    const placeholders = redesValidas.map((_, i) => `$${i + 1}`).join(", ");
+
+    let query = "";
+
+    // 🔹 CASO 1: Último gas registrado
+    if (tipo_calculo === "last") {
+
+      query = `
+        SELECT DISTINCT ON (n.token)
+          n.name,
+          n.token,
+          g.gas_gwei
+        FROM gas_history g
+        JOIN networks n ON n.id = g.network_id
+        WHERE n.token IN (${placeholders})
+        ORDER BY n.token, g.timestamp DESC, g.id DESC
+      `;
+
+    } else {
+
+      // 🔹 CASO 2: Média
+      query = `
+        SELECT 
+          n.name,
+          n.token,
+          AVG(g.gas_gwei) AS gas_gwei
+        FROM gas_history g
+        JOIN networks n ON n.id = g.network_id
+        WHERE n.token IN (${placeholders})
+      `;
+
+      if (intervals[tipo_calculo]) {
+        query += ` AND g.timestamp >= NOW() - INTERVAL '${intervals[tipo_calculo]}'`;
+      }
+
+      query += ` GROUP BY n.name, n.token`;
+    }
+
+    const { rows } = await pgPool.query(query, redesValidas);
+
+    const resultado = {};
+
+    rows.forEach(row => {
+
+      if (!row.gas_gwei) return;
+
+      // 🔹 Converter gwei → wei
+      const gasPriceWei = ethers.utils.parseUnits(
+        Number(row.gas_gwei).toFixed(9), 
+        "gwei"
+      );
+
+      resultado[row.token] = {
+        name: row.name,
+        gasPrice: gasPriceWei,
+        token: row.token
+      };
+    });
+
+    return resultado;
+
+  } catch (err) {
+    console.error("⚠️ Erro ao buscar gas histórico:", err.message);
+    return {};
+  }
+}
+
+
+async function getLiveGasPricesFromNetworks() {
   const gasPrices = {};
   console.log("⛽ Obtendo gas prices das redes...");
 

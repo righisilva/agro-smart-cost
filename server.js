@@ -213,7 +213,7 @@ app.post("/api/load-abi", upload.array("contratos", 20), async (req, res) => {
     try {
 
         // carregar preços uma vez só
-        gasPricesByNetwork = await getGasPricesFromNetworks();
+        gasPricesByNetwork = await getGasPricesFromNetworks(tipo_calculo);
         tokenPrices = await getTokenPrices(tipo_calculo);
 
         for (const file of req.files) {
