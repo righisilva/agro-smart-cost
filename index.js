@@ -9,6 +9,12 @@ const solc = require("solc");
 const { ethers } = require("ethers");
 const networks = require("./networks.json");
 
+const { Pool } = require("pg");
+const pgPool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false },
+});
+
 // ------------------------------
 // CSV
 // ------------------------------
@@ -30,6 +36,262 @@ const csvWriter = createCsvWriter({
     ],
     append: fs.existsSync(csvFilePath),
 });
+
+
+
+async function getHistoricalTokenPrices(tipo_calculo = "last") {
+  console.log("📊 Usando preços históricos:", tipo_calculo);
+
+  try {
+    // 1️⃣ Filtra redes válidas (ignora localhost)
+    const redesValidas = Object.values(networks)
+      .filter(net => net.name !== "Local Hardhat")
+      .map(net => net.token);
+
+    if (redesValidas.length === 0) return {};
+
+    // 2️⃣ Define intervalos
+    const intervals = {
+      day: "1 day",
+      week: "7 days",
+      month: "30 days"
+    };
+    let query = "";
+    // 3️⃣ Cria placeholders dinâmicos
+    const placeholders = redesValidas.map((_, i) => `$${i + 1}`).join(", ");
+
+    if (tipo_calculo === "last") {
+      
+      query = `
+        SELECT DISTINCT ON (n.token)
+          n.name,
+          n.token,
+          g.price_usd AS avg_price_usd,
+          g.price_brl AS avg_price_brl
+        FROM gas_history g
+        JOIN networks n ON n.id = g.network_id
+        WHERE n.token IN (${placeholders})
+        ORDER BY n.token, g.timestamp DESC, g.id DESC
+      `;
+
+    } else {
+
+      // 4️⃣ Query base
+      query = `
+        SELECT 
+          n.name,
+          n.token,
+          AVG(g.price_usd) AS avg_price_usd,
+          AVG(g.price_brl) AS avg_price_brl
+        FROM gas_history g
+        JOIN networks n ON n.id = g.network_id
+        WHERE n.token IN (${placeholders})
+      `;
+    
+
+      // 5️⃣ Aplica filtro temporal se necessário
+      if (intervals[tipo_calculo]) {
+        query += ` AND g.timestamp >= NOW() - INTERVAL '${intervals[tipo_calculo]}'`;
+      }
+
+      query += ` GROUP BY n.name, n.token`;
+    }
+
+    // 6️⃣ Executa query
+    const { rows } = await pgPool.query(query, redesValidas);
+
+    // 7️⃣ Monta retorno no formato CoinGecko
+    const resultado = {};
+
+    rows.forEach(row => {
+      resultado[row.token] = {
+        usd: Number(row.avg_price_usd) || 0,
+        brl: Number(row.avg_price_brl) || 0
+      };
+    });
+
+    return resultado;
+
+  } catch (err) {
+    console.error("⚠️ Erro ao buscar preços históricos:", err.message);
+    return {};
+  }
+}
+
+
+async function getLiveTokenPrices() {
+    // const url = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,pol&vs_currencies=usd,brl`;
+    // const url = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,matic-network&vs_currencies=usd,brl`;
+    const url = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,polygon-ecosystem-token&vs_currencies=usd,brl`;
+    const res = await axios.get(url);
+    // log(res.data);
+    return res.data;
+}
+
+async function getTokenPrices(periodo = "last") {
+  if (periodo === "current") {
+    return await getLiveTokenPrices(); // CoinGecko
+  }
+
+  return await getHistoricalTokenPrices(periodo);
+}
+
+
+
+
+
+async function getHistoricalGasPrices(tipo_calculo = "last") {
+  console.log("⛽ Usando gas histórico:", tipo_calculo);
+
+  try {
+
+    const redesValidas = Object.values(networks)
+      .filter(net => net.name !== "Local Hardhat")
+      .map(net => net.token);
+
+    if (redesValidas.length === 0) return {};
+
+    const intervals = {
+      day: "1 day",
+      week: "7 days",
+      month: "30 days"
+    };
+
+    const placeholders = redesValidas.map((_, i) => `$${i + 1}`).join(", ");
+
+    let query = "";
+
+    // 🔹 CASO 1: Último gas registrado
+    if (tipo_calculo === "last") {
+
+      query = `
+        SELECT DISTINCT ON (n.token)
+          n.name,
+          n.token,
+          g.gas_gwei
+        FROM gas_history g
+        JOIN networks n ON n.id = g.network_id
+        WHERE n.token IN (${placeholders})
+        ORDER BY n.token, g.timestamp DESC, g.id DESC
+      `;
+
+    } else {
+
+      // 🔹 CASO 2: Média
+      query = `
+        SELECT 
+          n.name,
+          n.token,
+          AVG(g.gas_gwei) AS gas_gwei
+        FROM gas_history g
+        JOIN networks n ON n.id = g.network_id
+        WHERE n.token IN (${placeholders})
+      `;
+
+      if (intervals[tipo_calculo]) {
+        query += ` AND g.timestamp >= NOW() - INTERVAL '${intervals[tipo_calculo]}'`;
+      }
+
+      query += ` GROUP BY n.name, n.token`;
+    }
+
+    const { rows } = await pgPool.query(query, redesValidas);
+
+    const resultado = {};
+
+    rows.forEach(row => {
+
+      if (!row.gas_gwei) return;
+
+      // 🔹 Converter gwei → wei
+      const gasPriceWei = ethers.utils.parseUnits(
+        Number(row.gas_gwei).toFixed(9), 
+        "gwei"
+      );
+
+      resultado[row.token] = {
+        name: row.name,
+        gasPrice: gasPriceWei,
+        token: row.token
+      };
+    });
+
+    return resultado;
+
+  } catch (err) {
+    console.error("⚠️ Erro ao buscar gas histórico:", err.message);
+    return {};
+  }
+}
+
+
+async function getLiveGasPricesFromNetworks() {
+    const gasPrices = {};
+
+    for (const [key, net] of Object.entries(networks)) {
+        if (key === "localhost") continue;
+
+        try {
+            // Permite um ou mais RPCs (fallback automático)
+            const rpcList = Array.isArray(net.rpc) ? net.rpc : [net.rpc];
+            let provider, gasPrice;
+
+            // Tenta RPCs alternativos até conseguir um resultado válido
+            for (const rpc of rpcList) {
+                try {
+                    provider = new ethers.providers.JsonRpcProvider(rpc);
+                    gasPrice = await provider.getGasPrice();
+                    if (gasPrice) break;
+                } catch (e) {
+                    console.warn(`⚠️  RPC ${rpc} falhou para ${net.name}`);
+                }
+            }
+
+            if (!gasPrice) {
+                console.warn(`⚠️  Nenhum RPC válido para ${net.name}`);
+                continue;
+            }
+
+            const networkInfo = await provider.getNetwork();
+            console.log(`✅ Conectado à ${net.name} (chainId: ${networkInfo.chainId})`);
+
+            gasPrices[net.token] = {
+                name: net.name,
+                gasPrice,
+                tokenId: net.token
+            };
+
+        } catch (err) {
+            console.log(`⚠️  Falha ao buscar gasPrice da rede ${net.name}: ${err.message}`);
+        }
+    }
+
+    return gasPrices;
+}
+
+
+
+async function getGasPricesFromNetworks(periodo = "last") {
+  if (periodo === "current") {
+    return await getLiveGasPricesFromNetworks(); // CoinGecko
+  }
+
+  return await getHistoricalGasPrices(periodo);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // ------------------------------
 // Contrato deployado em memória
@@ -76,61 +338,6 @@ async function analisarContrato(filePath, log = console.log) {
     const contract = output.contracts[path.basename(filePath)][contractName];
     const abi = contract.abi;
     const bytecode = contract.evm.bytecode.object;
-
-    async function getTokenPrices() {
-        // const url = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,pol&vs_currencies=usd,brl`;
-        // const url = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,matic-network&vs_currencies=usd,brl`;
-        const url = `https://api.coingecko.com/api/v3/simple/price?ids=ethereum,binancecoin,polygon-ecosystem-token&vs_currencies=usd,brl`;
-        const res = await axios.get(url);
-        // log(res.data);
-        return res.data;
-    }
-
-    async function getGasPricesFromNetworks() {
-        const gasPrices = {};
-
-        for (const [key, net] of Object.entries(networks)) {
-            if (key === "localhost") continue;
-
-            try {
-                // Permite um ou mais RPCs (fallback automático)
-                const rpcList = Array.isArray(net.rpc) ? net.rpc : [net.rpc];
-                let provider, gasPrice;
-
-                // Tenta RPCs alternativos até conseguir um resultado válido
-                for (const rpc of rpcList) {
-                    try {
-                        provider = new ethers.providers.JsonRpcProvider(rpc);
-                        gasPrice = await provider.getGasPrice();
-                        if (gasPrice) break;
-                    } catch (e) {
-                        console.warn(`⚠️  RPC ${rpc} falhou para ${net.name}`);
-                    }
-                }
-
-                if (!gasPrice) {
-                    console.warn(`⚠️  Nenhum RPC válido para ${net.name}`);
-                    continue;
-                }
-
-                const networkInfo = await provider.getNetwork();
-                console.log(`✅ Conectado à ${net.name} (chainId: ${networkInfo.chainId})`);
-
-                gasPrices[net.token] = {
-                    name: net.name,
-                    gasPrice,
-                    tokenId: net.token
-                };
-
-            } catch (err) {
-                console.log(`⚠️  Falha ao buscar gasPrice da rede ${net.name}: ${err.message}`);
-            }
-        }
-
-        return gasPrices;
-    }
-
-
     log(`🔌 Conectando ao Hardhat local...`);
     const provider = new ethers.providers.JsonRpcProvider("http://127.0.0.1:8545");
     const network = await provider.getNetwork().catch(() => { log("❌ Falha ao conectar ao Hardhat local."); return null; });
@@ -183,7 +390,7 @@ async function analisarContrato(filePath, log = console.log) {
     // ------------------------------
     for (const [token, data] of Object.entries(gasPricesByNetwork)) {
         const tokenPrice = tokenPrices[token];
-        log(tokenPrice);
+        // log(tokenPrice);
         if (!tokenPrice) continue;
         const costInToken = ethers.utils.formatEther(deployTxReceipt.gasUsed.mul(data.gasPrice));
         const costUSD = parseFloat(costInToken) * tokenPrice.usd;

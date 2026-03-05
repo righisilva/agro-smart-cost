@@ -5,7 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const Database = require("better-sqlite3");
 const { analisarContrato } = require("./index.js");
-const { analisarContratoManual, listDeployedContracts, getDeployedContract, getGasPricesFromNetworks, getTokenPrices, registerDeployedContract } = require("./contractService");
+const { analisarContratoManual, listDeployedContracts, getDeployedContract, getGasPricesFromNetworks, getTokenPrices, registerDeployedContract, clearDeployedContracts } = require("./contractService");
 const { ethers } = require("ethers");
 const solc = require("solc");
 
@@ -202,7 +202,7 @@ app.use("/gas", express.static("public/gas-estimator"));
 // --- 1️⃣ Carregar ABI e deploy automático ---
 
 app.post("/api/load-abi", upload.array("contratos", 20), async (req, res) => {
-    const { analisarContratoManual } = require("./contractService");
+    clearDeployedContracts(); // limpa sessão anterior
     const tipo_calculo = req.body.tipo_calculo || "last";
 
     if (!req.files || req.files.length === 0)

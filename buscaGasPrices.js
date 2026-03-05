@@ -50,7 +50,7 @@ async function saveToGoogleSheets(data) {
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: SPREADSHEET_ID,
-    range: "Página4!A:F",
+    range: "testes!A:F",
     valueInputOption: "USER_ENTERED",
     requestBody: { values },
   });
@@ -86,8 +86,24 @@ async function getGasPricesFromNetworks() {
     let provider;
     for (const rpc of rpcList) {
       try {
-        provider = new ethers.providers.JsonRpcProvider(rpc);
+        provider = new ethers.providers.JsonRpcProvider({
+          url: rpc,
+          timeout: 5000
+        });
+
+        const network = await provider.getNetwork();
+        if (key === "polygon" && network.chainId !== 137) {
+          console.warn(`⚠️ RPC ${rpc} não é Polygon`);
+          continue;
+        }
+
         gasPrice = await provider.getGasPrice();
+
+        const gwei = parseFloat(ethers.utils.formatUnits(gasPrice, "gwei"));
+        if (key === "polygon" && gwei < 1) {
+          console.warn(`⚠️ Gas anormal para Polygon: ${gwei}`);
+          continue;
+        }
         if (gasPrice) break;
       } catch (e) {
         console.warn(`⚠️ RPC ${rpc} falhou para ${net.name}`);
@@ -167,7 +183,7 @@ async function main() {
     await csvWriter.writeRecords([row]);
 
     // salva no Google Sheets TODO TO DO 
-    // await saveToGoogleSheets([row]);
+    await saveToGoogleSheets([row]);
 
     // salva no DB
     const networkId = await getOrCreateNetworkId(data.name, token);

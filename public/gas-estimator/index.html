@@ -688,47 +688,62 @@
         }
 
         function adicionarLog(tipo, mensagem) {
-            const timestamp = new Date().toLocaleTimeString('pt-BR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
 
-            let icon = '';
-            let className = '';
-
-            switch (tipo) {
-                case 'success':
-                    icon = 'fa-check-circle';
-                    className = 'success';
-                    break;
-                case 'warning':
-                    icon = 'fa-exclamation-triangle';
-                    className = 'warning';
-                    break;
-                case 'error':
-                    icon = 'fa-times-circle';
-                    className = 'error';
-                    break;
-                default:
-                    icon = 'fa-info-circle';
-                    className = 'info';
-            }
-
-            // Remover a mensagem inicial se ainda existir
+            // Remove mensagem inicial se existir
             if (logElem.innerHTML.includes('Aguardando upload do contrato...')) {
                 logElem.innerHTML = '';
             }
 
-            const logLine = `<div class="${className}" style="margin-bottom: 6px; line-height: 1.5;">
-                <span style="color: var(--text-light); opacity: 0.8;">[${timestamp}]</span>
-                <i class="fas ${icon}" style="margin: 0 8px; width: 16px;"></i>
-                ${mensagem}
-            </div>`;
+            logElem.insertAdjacentHTML(
+                "beforeend",
+                `<div>${mensagem}</div>`
+            );
 
-            logElem.innerHTML += logLine;
             logElem.scrollTop = logElem.scrollHeight;
         }
+
+        // function adicionarLog(tipo, mensagem) {
+        //     const timestamp = new Date().toLocaleTimeString('pt-BR', {
+        //         hour: '2-digit',
+        //         minute: '2-digit',
+        //         second: '2-digit'
+        //     });
+
+        //     let icon = '';
+        //     let className = '';
+
+        //     switch (tipo) {
+        //         case 'success':
+        //             icon = 'fa-check-circle';
+        //             className = 'success';
+        //             break;
+        //         case 'warning':
+        //             icon = 'fa-exclamation-triangle';
+        //             className = 'warning';
+        //             break;
+        //         case 'error':
+        //             icon = 'fa-times-circle';
+        //             className = 'error';
+        //             break;
+        //         default:
+        //             icon = 'fa-info-circle';
+        //             className = 'info';
+        //     }
+
+        //     // Remover a mensagem inicial se ainda existir
+        //     if (logElem.innerHTML.includes('Aguardando upload do contrato...')) {
+        //         logElem.innerHTML = '';
+        //     }
+
+        //     const logLine = `<div class="${className}" style="margin-bottom: 6px; line-height: 1.5;">
+        //         <span style="color: var(--text-light); opacity: 0.8;">[${timestamp}]</span>
+        //         <i class="fas ${icon}" style="margin: 0 8px; width: 16px;"></i>
+        //         ${mensagem}
+        //     </div>`;
+
+        //     logElem.innerHTML += logLine;
+        //     logElem.scrollTop = logElem.scrollHeight;
+        // }
 
         function limparLogs() {
             logElem.innerHTML = '<span class="info"><i class="fas fa-info-circle"></i> Logs limpos. Aguardando nova análise...</span>';

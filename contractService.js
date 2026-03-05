@@ -31,7 +31,9 @@ const pgPool = new Pool({
   ssl: { rejectUnauthorized: false },
 });
 
-
+function clearDeployedContracts() {
+  deployedContracts.clear();
+}
 // Obter um contrato específico
 function getDeployedContract(nameOrAddress) {
     return deployedContracts.get(nameOrAddress) || null;
@@ -272,8 +274,23 @@ async function getLiveGasPricesFromNetworks() {
     let provider;
     for (const rpc of rpcList) {
       try {
-        provider = new ethers.providers.JsonRpcProvider(rpc);
+        provider = new ethers.providers.JsonRpcProvider({
+          url: rpc,
+          timeout: 5000
+        });
+        const network = await provider.getNetwork();
+        if (key === "polygon" && network.chainId !== 137) {
+          console.warn(`⚠️ RPC ${rpc} não é Polygon`);
+          continue;
+        }
         gasPrice = await provider.getGasPrice();
+
+        const gwei = parseFloat(ethers.utils.formatUnits(gasPrice, "gwei"));
+        if (key === "polygon" && gwei < 1) {
+          console.warn(`⚠️ Gas anormal para Polygon: ${gwei}`);
+          continue;
+        }
+
         if (gasPrice) break;
       } catch (e) {
         console.warn(`⚠️ RPC ${rpc} falhou para ${net.name}`);
@@ -413,6 +430,7 @@ module.exports = {
   registerDeployedContract,
   listDeployedContracts,
   getGasPricesFromNetworks,
-  getTokenPrices
+  getTokenPrices,
+  clearDeployedContracts
 };
 

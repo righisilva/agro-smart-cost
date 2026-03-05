@@ -15,11 +15,12 @@
   },
   "polygon": {
     "name": "Polygon",
-    "rpcs": [
+    "rpcs": [      
+      "https://1rpc.io/matic",
+      "https://polygon.llamarpc.com",
       "https://polygon-rpc.com",
       "https://rpc.ankr.com/polygon",
-      "https://polygon-mainnet.public.blastapi.io",
-      "https://1rpc.io/matic"
+      "https://polygon-mainnet.public.blastapi.io"
     ],
     "token": "polygon-ecosystem-token"
   },
