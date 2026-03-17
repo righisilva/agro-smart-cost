@@ -33,7 +33,8 @@ module.exports = (db) => {
         params.subclassificacao = subclassificacao;
       }      
       if (familiar !== undefined) { query += " AND i.familiar = @familiar"; params.familiar = Number(familiar); }
-      if (obrigatorio !== undefined) { query += " AND p.rastreabilidade_obrigatoria = @obrigatorio"; params.obrigatorio = Number(obrigatorio); }
+      console.log("🔧 Rastreabilidade Obrigatória:", obrigatorio);
+      if (obrigatorio !== "") { query += " AND p.rastreabilidade_obrigatoria = @obrigatorio"; params.obrigatorio = Number(obrigatorio); }
 
       const dados = db.prepare(query).all(params);
 

@@ -56,9 +56,21 @@ router.get("/", async (req, res) => {
         'month': '30 days'
       };
       
+      // if (intervals[period]) {
+      //   query += ` AND g.timestamp >= NOW() - INTERVAL '${intervals[period]}'`;
+      // }
+      
+
+      const referenceTime = "2026-02-27 19:15:00";
+  
       if (intervals[period]) {
-        query += ` AND g.timestamp >= NOW() - INTERVAL '${intervals[period]}'`;
+        query += ` 
+          AND g.timestamp >= TIMESTAMP '${referenceTime}' - INTERVAL '${intervals[period]}'
+          AND g.timestamp <= TIMESTAMP '${referenceTime}'
+        `;
       }
+
+
     }
 
     query += " ORDER BY g.timestamp ASC";
