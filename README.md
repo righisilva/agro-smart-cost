@@ -1,5 +1,8 @@
 # Agro Smart Cost
 
+🌐 Acesse a ferramenta:  
+https://agro-smart-cost.onrender.com/
+
 Ferramenta para estimar e comparar custos de execução de contratos inteligentes em redes blockchain, integrando medições on-chain com indicadores econômicos do agronegócio brasileiro.
 
 ---
@@ -36,6 +39,8 @@ A solução é composta por:
 - Backend Node.js (Express)
 - Banco de dados SQLite
 - Integração com APIs externas (preço e RPC)
+
+![Arquitetura](docs/imagens/Arquitetura.pdf)
 
 Fluxo:
 
