@@ -61,6 +61,20 @@ Fluxo:
 
 ## 🚀 Instalação
 
-```bash
+```
 sudo apt install npm
 npm install --legacy-peer-deps
+```
+
+---
+## ▶️ Execução
+
+### Iniciar node local (Hardhat)
+```
+npx hardhat node
+```
+
+### Iniciar servidor
+```
+node server.js
+```
