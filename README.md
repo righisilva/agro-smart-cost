@@ -74,13 +74,13 @@ Vai aparecer alguns avisos de incompatibilidade com a versão do Ethers 5.8.0. M
 ## ▶️ Execução Local
 
 ### Iniciar node local (Hardhat)
-```
+```bash
 npx hardhat node
 ```
 
 ### Iniciar servidor
 Em outra janela do terminal:
-```
+```bash
 node server.js
 ```
 Em um navegador, acessar http://localhost:3000/
@@ -88,7 +88,7 @@ Em um navegador, acessar http://localhost:3000/
 
 ### Ou iniciar node local (Hardhat) + servidor
 Se desejar utilizar apenas uma janela (a tela com os logs fica mais poluída):
-```
+```bash
 npm start
 ```
 Em um navegador, acessar http://localhost:3000/
@@ -99,29 +99,29 @@ Em um navegador, acessar http://localhost:3000/
 Para preferir deixar o Hardhat rodando continuamente, mesmo após reinicialização do sistema,  pode usar o gerenciador de processos PM2
 
 Para instalar
-```
+```bash
 sudo npm install -g pm2
 ```
 Para iniciar:
-```
+```bash
 pm2 start --name hardhat-node "npx hardhat node"
 pm2 save
 pm2 startup
 ```
 Conferir se funcionou:
-```
+```bash
 pm2 logs hardhat-node
 ```
 Para parar a execução:
-```
+```bash
 pm2 stop hardhat-node
 ```
 Para retomar a execução parada:
-```
+```bash
 pm2 start hardhat-node
 ```
 Para remover:
-```
+```bash
 pm2 delete hardhat-node
 ```
 ---
@@ -134,7 +134,7 @@ pm2 delete hardhat-node
 ```
 crontab -e
 ```
-```
+```bash
 */15 * * * * cd /SEU_CAMINHO/agro-smart-cost && /usr/bin/node buscaGas/buscaGasPrices.js >> buscaGas/cron.log 2>&1
 ```
 
