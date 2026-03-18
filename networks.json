@@ -2,6 +2,11 @@
   "ethereum": {
     "name": "Ethereum",
     "rpcs": [
+      "https://1rpc.io/eth",
+      "https://ethereum.blockpi.network/v1/rpc/public",
+      "https://eth.drpc.org",
+      "https://go.getblock.us/27eb23f40b964c9bb71b62f721e594e7",
+      "https://ethereum-mainnet.gateway.tatum.io",
       "https://eth.llamarpc.com",
       "https://rpc.ankr.com/eth",
       "https://cloudflare-eth.com"
