@@ -62,12 +62,16 @@ Fluxo:
 ## 🚀 Instalação
 
 ```
+git clone git@github.com:righisilva/agro-smart-cost.git
+cd agro-smart-cost/
 sudo apt install npm
 npm install --legacy-peer-deps
 ```
+Vai aparecer alguns avisos de incompatibilidade com a versão do Ethers 5.8.0. Mas isso não influencia no funcinamento da ferramenta.
 
 ---
-## ▶️ Execução
+
+## ▶️ Execução Local
 
 ### Iniciar node local (Hardhat)
 ```
@@ -75,6 +79,80 @@ npx hardhat node
 ```
 
 ### Iniciar servidor
+Em outra janela do terminal:
 ```
 node server.js
 ```
+Em um navegador, acessar http://localhost:3000/
+
+
+### Ou iniciar node local (Hardhat) + servidor
+Se desejar utilizar apenas uma janela (a tela com os logs fica mais poluída):
+```
+npm start
+```
+Em um navegador, acessar http://localhost:3000/
+
+---
+
+## 🔄 Execução contínua do Hardhat (PM2)
+Para preferir deixar o Hardhat rodando continuamente, mesmo após reinicialização do sistema,  pode usar o gerenciador de processos PM2
+
+Para instalar
+```
+sudo npm install -g pm2
+```
+Para iniciar:
+```
+pm2 start --name hardhat-node "npx hardhat node"
+pm2 save
+pm2 startup
+```
+Conferir se funcionou:
+```
+pm2 logs hardhat-node
+```
+Para parar a execução:
+```
+pm2 stop hardhat-node
+```
+Para retomar a execução parada:
+```
+pm2 start hardhat-node
+```
+Para remover:
+```
+pm2 delete hardhat-node
+```
+---
+
+
+
+
+
+## ⏱️ Execução automática (cron)
+```
+crontab -e
+```
+```
+*/15 * * * * cd /SEU_CAMINHO/agro-smart-cost && /usr/bin/node buscaGas/buscaGasPrices.js >> buscaGas/cron.log 2>&1
+```
+
+---
+
+## 🔄 Execução contínua (PM2)
+sudo npm install -g pm2
+
+    pm2 start --name hardhat-node "npx hardhat node"
+    pm2 save
+    pm2 startup
+
+    pm2 logs hardhat-node
+
+    pm2 stop hardhat-node
+
+---
+
+## 📄 Licença
+
+MIT
