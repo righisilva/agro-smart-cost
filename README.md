@@ -40,7 +40,11 @@ A solução é composta por:
 - Banco de dados SQLite
 - Integração com APIs externas (preço e RPC)
 
-![Arquitetura](docs/imagens/Arquitetura.pdf)
+![Arquitetura](docs/imagens/Arquitetura-1.png)
+
+<p align="center">
+  <img src="docs/imagens/Arquitetura-1.png" width="700"/>
+</p>
 
 Fluxo:
 
