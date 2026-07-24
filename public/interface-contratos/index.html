@@ -663,6 +663,30 @@
         ::-webkit-scrollbar-thumb:hover {
             background: var(--accent);
         }
+
+        .log-support-note {
+            font-size: 12px;
+            color: var(--text-light);
+            background-color: var(--card-bg-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .log-support-note a {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .log-support-note a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -815,6 +839,11 @@
                             </button>
                         </div>
                     </div>
+
+                    <!-- 🔥 NOVO: aviso de contato para reportar bugs -->
+                    <div class="log-support-note"></div>
+
+
                     <div class="log-content" id="log">
                         // <span data-i18n="logs.waiting">Aguardando carregamento do contrato...</span>
                     </div>
@@ -893,6 +922,8 @@
                 'logs.mode': 'Modo: Iterativo (controle manual das execuções)',
                 'functions.count_suffix': 'função(ões) disponível(is)',
                 'contracts.updated': '✅ Lista de contratos atualizada ({count} encontrados)',
+                'logs.support_note_text': 'Encontrou algum erro ou comportamento inesperado? Ajude a melhorar o sistema:',
+                'logs.report_bug': 'Se o erro persistir, entre em contato: fabiosilva@unipampa.edu.br',
                 'functions.enter_value': 'Digite o valor para'
             },
             'en': {
@@ -960,6 +991,8 @@
                 'logs.mode': 'Mode: Iterative (manual execution control)',
                 'functions.count_suffix': 'function(s) available',
                 'contracts.updated': '✅ Contract list updated ({count} found)',
+                'logs.support_note_text': 'Found a bug or unexpected behavior? Help us improve the system:',
+                'logs.report_bug': 'If the error persists, please contact: fabiosilva@unipampa.edu.br',
                 'functions.enter_value': 'Enter value for'
             },
             'es': {
@@ -1027,6 +1060,8 @@
                 'logs.mode': 'Modo: Iterativo (control manual de ejecuciones)',
                 'functions.count_suffix': 'función(es) disponible(s)',
                 'contracts.updated': '✅ Lista de contratos actualizada ({count} encontrados)',
+                'logs.support_note_text': '¿Encontró algún error o comportamiento inesperado? Ayude a mejorar el sistema:',
+                'logs.report_bug': 'Si el error persiste, por favor contacte: fabiosilva@unipampa.edu.br',
                 'functions.enter_value': 'Ingrese el valor para'
             }
         };
@@ -1054,6 +1089,11 @@
                 el.textContent = translations[lang][key];
             }
         });
+
+        const supportNote = document.querySelector('.log-support-note');
+        if (supportNote && translations[lang]['logs.support_note_text']) {
+            supportNote.innerHTML = `💡 ${translations[lang]['logs.support_note_text']} <a href="mailto:fabiosilva@unipampa.edu.br">fabiosilva@unipampa.edu.br</a>`;
+        }
 
         // Atualizar placeholders
         document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
@@ -1451,6 +1491,7 @@
 
             } catch (err) {
                 log(`\n${t['logs.error_load'] || '❌ Erro ao carregar contrato: '}${err.message}`);
+                log(`💬 ${t['logs.report_bug'] || 'Se o erro persistir, entre em contato: fabiosilva@unipampa.edu.br'}`);
             }
         }
 
@@ -1699,6 +1740,7 @@
                 if (!res.ok) {
                     const msg = await res.text();
                     log(`❌ Erro: ${msg}\n`);
+                    log(`💬 ${t['logs.report_bug'] || 'Se o erro persistir, entre em contato: fabiosilva@unipampa.edu.br'}`);
                     return;
                 }
 
@@ -1723,6 +1765,7 @@
 
             } catch (err) {
                 log(`\n${t['logs.error_unexpected'] || '❌ Erro inesperado: '}${err.message}\n`);
+                log(`💬 ${t['logs.report_bug'] || 'Se o erro persistir, entre em contato: fabiosilva@unipampa.edu.br'}`);
             }
         }
 
