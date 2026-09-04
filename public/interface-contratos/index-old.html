@@ -794,20 +794,11 @@
                     </div>
                 </div>
 
-                <!-- Deploy Section -->
-                <div class="card" id="deployCard" style="display: none;">
-                    <div class="card-title">
-                        <i class="fas fa-rocket"></i>
-                        <span data-i18n="deploy.title">3. Deploy do Contrato</span>
-                    </div>
-                    <div id="deployContainer"></div>
-                </div>
-
                 <!-- Functions Section -->
                 <div class="card scrollable-card">
                     <div class="card-title">
                         <i class="fas fa-cogs"></i>
-                        <span data-i18n="functions.title">4. Funções do Contrato</span>
+                        <span data-i18n="functions.title">3. Funções do Contrato</span>
                         <div style="margin-left: auto; display: flex; align-items: center; gap: 10px;">
                             <span id="functionsCount" style="font-size: 12px; color: var(--text-light);"
                                 data-i18n="functions.count">0 funções</span>
@@ -837,7 +828,7 @@
                     <div class="log-header">
                         <div class="card-title">
                             <i class="fas fa-terminal"></i>
-                            <span data-i18n="logs.title">5. Logs de Execução</span>
+                            <span data-i18n="logs.title">4. Logs de Execução</span>
                         </div>
                         <div class="header-actions">
                             <button class="btn btn-secondary btn-sm" onclick="limparLogs()">
@@ -891,10 +882,7 @@
                 'contracts.undeployed': 'Não Deployado',
                 'contracts.no_contracts': 'Nenhum contrato encontrado',
                 'contracts.no_abi': 'ABI não disponível para este contrato',
-                'deploy.title': '3. Deploy do Contrato',
-                'deploy.action': 'Fazer Deploy',
-                'deploy.no_params': 'Este contrato não possui parâmetros de construtor. Clique em "Fazer Deploy" para continuar.',
-                'functions.title': '4. Funções do Contrato',
+                'functions.title': '3. Funções do Contrato',
                 'functions.count': '0 funções',
                 'functions.prefill': 'Pré-preencher',
                 'functions.waiting': 'Carregue um contrato para ver as funções disponíveis',
@@ -903,13 +891,13 @@
                 'functions.auto_fill': 'Auto-preenchimento',
                 'functions.execute': 'Executar Função',
                 'functions.exec_count': 'Nº de execuções',
-                'logs.title': '5. Logs de Execução',
+                'logs.title': '4. Logs de Execução',
                 'logs.waiting': 'Aguardando carregamento do contrato...',
                 'logs.cleared': '// Logs limpos em ',
                 'logs.copied': 'Logs copiados para a área de transferência!',
                 'logs.error_copy': 'Erro ao copiar logs: ',
-                'logs.loading': '📦 Iniciando compilação do contrato...',
-                'logs.contract_loaded': 'contrato(s) compilado(s):',
+                'logs.loading': '📦 Iniciando carregamento do contrato...',
+                'logs.contract_loaded': 'contrato(s) carregado(s):',
                 'logs.contract': '📄 Contrato: ',
                 'logs.address': '🏠 Endereço: ',
                 'logs.gas_used': '⛽ Gas usado no deploy: ',
@@ -963,10 +951,7 @@
                 'contracts.undeployed': 'Not Deployed',
                 'contracts.no_contracts': 'No contracts found',
                 'contracts.no_abi': 'ABI not available for this contract',
-                'deploy.title': '3. Contract Deploy',
-                'deploy.action': 'Deploy',
-                'deploy.no_params': 'This contract has no constructor parameters. Click "Deploy" to continue.',
-                'functions.title': '4. Contract Functions',
+                'functions.title': '3. Contract Functions',
                 'functions.count': '0 functions',
                 'functions.prefill': 'Pre-fill',
                 'functions.waiting': 'Load a contract to see available functions',
@@ -975,13 +960,13 @@
                 'functions.auto_fill': 'Auto-fill',
                 'functions.execute': 'Execute Function',
                 'functions.exec_count': 'Executions #',
-                'logs.title': '5. Execution Logs',
+                'logs.title': '4. Execution Logs',
                 'logs.waiting': 'Waiting for contract loading...',
                 'logs.cleared': '// Logs cleared at ',
                 'logs.copied': 'Logs copied to clipboard!',
                 'logs.error_copy': 'Error copying logs: ',
-                'logs.loading': '📦 Starting contract compilation...',
-                'logs.contract_loaded': 'contract(s) compiled:',
+                'logs.loading': '📦 Starting contract loading...',
+                'logs.contract_loaded': 'contract(s) loaded:',
                 'logs.contract': '📄 Contract: ',
                 'logs.address': '🏠 Address: ',
                 'logs.gas_used': '⛽ Gas used in deploy: ',
@@ -1035,10 +1020,7 @@
                 'contracts.undeployed': 'No Desplegado',
                 'contracts.no_contracts': 'No se encontraron contratos',
                 'contracts.no_abi': 'ABI no disponible para este contrato',
-                'deploy.title': '3. Despliegue del Contrato',
-                'deploy.action': 'Desplegar',
-                'deploy.no_params': 'Este contrato no tiene parámetros de constructor. Haga clic en "Desplegar" para continuar.',
-                'functions.title': '4. Funciones del Contrato',
+                'functions.title': '3. Funciones del Contrato',
                 'functions.count': '0 funciones',
                 'functions.prefill': 'Pre-rellenar',
                 'functions.waiting': 'Cargue un contrato para ver las funciones disponibles',
@@ -1047,13 +1029,13 @@
                 'functions.auto_fill': 'Auto-rellenar',
                 'functions.execute': 'Ejecutar Función',
                 'functions.exec_count': 'Nº de ejecuciones',
-                'logs.title': '5. Logs de Ejecución',
+                'logs.title': '4. Logs de Ejecución',
                 'logs.waiting': 'Esperando carga del contrato...',
                 'logs.cleared': '// Logs limpiados en ',
                 'logs.copied': '¡Logs copiados al portapapeles!',
                 'logs.error_copy': 'Error al copiar logs: ',
-                'logs.loading': '📦 Iniciando compilación del contrato...',
-                'logs.contract_loaded': 'contrato(s) compilado(s):',
+                'logs.loading': '📦 Iniciando carga del contrato...',
+                'logs.contract_loaded': 'contrato(s) cargado(s):',
                 'logs.contract': '📄 Contrato: ',
                 'logs.address': '🏠 Dirección: ',
                 'logs.gas_used': '⛽ Gas usado en deploy: ',
@@ -1243,6 +1225,10 @@
                 const statusElement = document.getElementById("contractStatus");
 
                 if (statusElement) {
+                    const isDeployed = statusElement.innerHTML.includes('Deployado') ||
+                        statusElement.innerHTML.includes('Deployed') ||
+                        statusElement.innerHTML.includes('Desplegado');
+
                     if (contratoDeployado) {
                         statusElement.innerHTML = `<span class="status-badge status-deployed"><i class="fas fa-check-circle"></i> ${t['contracts.deployed'] || 'Deployado'}</span>`;
                     } else {
@@ -1385,7 +1371,7 @@
             }
         }
 
-        // Atualizar lista de contratos do servidor (contratos já deployados anteriormente)
+        // Atualizar lista de contratos do servidor
             async function atualizarContratos() {
                 const select = document.getElementById("contratoSelect");
                 const t = translations[currentLang];
@@ -1403,15 +1389,6 @@
                         return;
                     }
 
-                    // Guarda também em contratosCarregados, no mesmo formato usado por
-                    // carregarContrato(), para que selecionarContrato() encontre o contrato.
-                    contratosCarregados = contratos.map(c => ({
-                        nome: c.name,
-                        endereco: c.address,
-                        abi: c.abi,
-                        constructorInputs: [],
-                    }));
-
                     contratos.forEach(c => {
                         const opt = document.createElement("option");
                         opt.value = c.name || c.address;
@@ -1419,6 +1396,7 @@
                         select.appendChild(opt);
                     });
 
+                    // 🔥 CORRIGIDO: Usar tradução com contador
                     const msg = t['contracts.updated'] || '✅ Lista de contratos atualizada ({count} encontrados)';
                     log(msg.replace('{count}', contratos.length));
 
@@ -1428,7 +1406,7 @@
                 }
             }
 
-        // Compilar contrato(s) (NÃO deploya mais automaticamente)
+        // Carregar contrato e ABI
         async function carregarContrato() {
             const fileInput = document.getElementById("contrato");
             if (!fileInput.files.length) {
@@ -1437,7 +1415,7 @@
             }
 
             const t = translations[currentLang];
-            log(`\n${t['logs.loading'] || '📦 Iniciando compilação do contrato...'}`);
+            log(`\n${t['logs.loading'] || '📦 Iniciando carregamento do contrato...'}`);
             const periodo = document.getElementById("filtroTipoCalculo").value;
 
             const formData = new FormData();
@@ -1451,7 +1429,7 @@
                 const res = await fetch("/api/load-abi", { method: "POST", body: formData });
 
                 if (!res.ok) {
-                    throw new Error("Erro ao compilar contrato.");
+                    throw new Error("Erro ao carregar ABI.");
                 }
 
                 const data = await res.json();
@@ -1467,22 +1445,49 @@
                 contratosCarregados.forEach(c => {
                     const opt = document.createElement("option");
                     opt.value = c.nome;
-                    opt.textContent = `${c.nome} (${t['contracts.undeployed'] || 'Não deployado'})`;
+                    opt.textContent = `${c.nome} ${c.endereco ? `(${t['contracts.deployed'] || 'Deployado'})` : `(${t['contracts.undeployed'] || 'Não deployado'})`}`;
                     select.appendChild(opt);
                 });
 
-                log(`\n✅ ${contratosCarregados.length} ${t['logs.contract_loaded'] || 'contrato(s) compilado(s):'}`);
+                log(`\n✅ ${data.contratos.length} ${t['logs.contract_loaded'] || 'contrato(s) carregado(s):'}`);
 
-                contratosCarregados.forEach(c => {
-                    const numParams = (c.constructorInputs || []).length;
-                    log(`${t['logs.contract'] || '📄 Contrato: '}${c.nome} (${numParams} parâmetro(s) de construtor)`);
-                });
+                for (const contrato of data.contratos) {
+                    const { nome, endereco, gas, custosPorRede } = contrato;
 
-                contratoDeployado = false;
+                    log(
+                        `\n${t['logs.contract'] || '📄 Contrato: '}${nome}\n` +
+                        `${t['logs.address'] || '🏠 Endereço: '}${endereco || "Não disponível"}\n` +
+                        `${t['logs.gas_used'] || '⛽ Gas usado no deploy: '}${gas || "N/A"}\n`
+                    );
 
-                // Seleciona o primeiro contrato compilado automaticamente
-                select.value = contratosCarregados[0].nome;
-                await selecionarContrato();
+                    if (custosPorRede && Object.keys(custosPorRede).length > 0) {
+                        log(`${t['logs.costs'] || '🌍 Custos por rede:'}\n`);
+                        for (const [token, info] of Object.entries(custosPorRede)) {
+                            const custoTotalFormatado = typeof info.custoTotalToken === 'number' ?
+                                info.custoTotalToken.toFixed(4) : info.custoTotalToken;
+                            const cotacaoUSD = info.cotacao?.usd || 'N/A';
+                            const cotacaoBRL = info.cotacao?.brl || 'N/A';
+                            log(
+                                `  • ${info.name}: ${custoTotalFormatado} ${info.token}` +
+                                ` ≈ ${info.custoUSD || 'N/A'} / ${info.custoBRL || 'N/A'}` +
+                                ` (gasPrice: ${info.gasPrice})` +
+                                ` | Cotação: U$${cotacaoUSD} / R$${cotacaoBRL}`
+                            );
+                        }
+                    }
+                }
+
+                if (data.contratos.some(c => c.endereco)) {
+                    contratoDeployado = true;
+                    log(`\n${t['logs.deployed'] || '✅ Contrato(s) deployado(s) detectado(s).'}`);
+                } else {
+                    contratoDeployado = false;
+                    log(`\n${t['logs.undeployed'] || '⚠️ Nenhum contrato com endereço detectado.'}`);
+                }
+
+                if (contratosCarregados.length > 0) {
+                    selecionarContrato();
+                }
 
             } catch (err) {
                 log(`\n${t['logs.error_load'] || '❌ Erro ao carregar contrato: '}${err.message}`);
@@ -1496,12 +1501,10 @@
             const nomeContrato = select.value;
             const funcoesDiv = document.getElementById("funcoes");
             const contractInfo = document.getElementById("contractInfo");
-            const deployCard = document.getElementById("deployCard");
             const t = translations[currentLang];
 
             if (!nomeContrato) {
                 contractInfo.style.display = 'none';
-                deployCard.style.display = 'none';
                 funcoesDiv.innerHTML = `
                     <div style="text-align: center; padding: 40px 20px; color: var(--text-light);">
                         <i class="fas fa-code-branch" style="font-size: 48px; margin-bottom: 15px; opacity: 0.5;"></i>
@@ -1518,190 +1521,18 @@
             }
 
             contratoSelecionado = contrato;
-            const enderecoContrato = contrato.endereco || contrato.address;
-            contratoDeployado = !!enderecoContrato;
+            contratoDeployado = !!contrato.endereco;
 
             document.getElementById("contractStatus").innerHTML = contratoDeployado
                 ? `<span class="status-badge status-deployed"><i class="fas fa-check-circle"></i> ${t['contracts.deployed'] || 'Deployado'}</span>`
                 : `<span class="status-badge status-undeployed"><i class="fas fa-clock"></i> ${t['contracts.undeployed'] || 'Não Deployado'}</span>`;
 
-            document.getElementById("contractAddress").textContent = enderecoContrato ?
-                `${enderecoContrato.substring(0, 10)}...${enderecoContrato.substring(38)}` : "N/A";
+            document.getElementById("contractAddress").textContent = contrato.endereco ?
+                `${contrato.endereco.substring(0, 10)}...${contrato.endereco.substring(38)}` : "N/A";
             document.getElementById("contractGas").textContent = contrato.gas ? formatNumber(contrato.gas) : "N/A";
             contractInfo.style.display = 'block';
 
-            renderizarDeployCard(contrato);
             await carregarFuncoesContrato(contrato);
-        }
-
-        // Renderiza o card de deploy: campos do construtor + botão de
-        // auto-preenchimento + botão de deploy. Some quando o contrato já
-        // está deployado.
-        function renderizarDeployCard(contrato) {
-            const deployCard = document.getElementById('deployCard');
-            const deployContainer = document.getElementById('deployContainer');
-            const t = translations[currentLang];
-
-            const enderecoContrato = contrato.endereco || contrato.address;
-
-            if (enderecoContrato) {
-                deployCard.style.display = 'none';
-                deployContainer.innerHTML = '';
-                return;
-            }
-
-            deployCard.style.display = 'block';
-            deployContainer.innerHTML = '';
-
-            const inputs = contrato.constructorInputs || [];
-            const placeholderText = t['functions.enter_value'] || 'Digite o valor para';
-
-            const inputsDiv = document.createElement('div');
-            inputsDiv.className = 'function-inputs';
-
-            if (!inputs.length) {
-                const info = document.createElement('p');
-                info.style.fontSize = '13px';
-                info.style.color = 'var(--text-light)';
-                info.style.marginBottom = '10px';
-                info.textContent = t['deploy.no_params'] || 'Este contrato não possui parâmetros de construtor.';
-                inputsDiv.appendChild(info);
-            }
-
-            inputs.forEach((input, idx) => {
-                const inputGroup = document.createElement('div');
-                inputGroup.className = 'input-group';
-                inputGroup.innerHTML = `
-                    <div class="input-label">
-                        ${input.name || `arg${idx}`}
-                        <span class="input-type">${input.type}</span>
-                    </div>
-                    <input type="text"
-                           class="input-field"
-                           id="deploy_${contrato.nome}_arg${idx}"
-                           placeholder="${placeholderText} ${input.type}..."
-                           data-type="${input.type}"
-                           data-name="${input.name || `arg${idx}`}">
-                `;
-                inputsDiv.appendChild(inputGroup);
-            });
-
-            const actionsDiv = document.createElement('div');
-            actionsDiv.className = 'function-actions';
-
-            const autoFillBtn = document.createElement('button');
-            autoFillBtn.className = 'btn btn-auto btn-sm';
-            autoFillBtn.innerHTML = `<i class="fas fa-bolt"></i> ${t['functions.auto_fill'] || 'Auto-preenchimento'}`;
-            autoFillBtn.onclick = () => autoPreencherDeployInputs(contrato.nome, inputs);
-
-            const deployBtn = document.createElement('button');
-            deployBtn.className = 'btn btn-execute btn-sm';
-            deployBtn.innerHTML = `<i class="fas fa-rocket"></i> ${t['deploy.action'] || 'Fazer Deploy'}`;
-            deployBtn.onclick = () => deployarContrato(contrato.nome, inputs.length);
-
-            actionsDiv.appendChild(autoFillBtn);
-            actionsDiv.appendChild(deployBtn);
-
-            deployContainer.appendChild(inputsDiv);
-            deployContainer.appendChild(actionsDiv);
-        }
-
-        // Gera valores sintéticos para os parâmetros do construtor
-        async function autoPreencherDeployInputs(nomeContrato, inputs) {
-            let accounts = [];
-            try {
-                const res = await fetch("/api/accounts");
-                accounts = await res.json();
-            } catch (err) {
-                accounts = ["0x0000000000000000000000000000000000000000"];
-            }
-
-            inputs.forEach((input, idx) => {
-                const campo = document.getElementById(`deploy_${nomeContrato}_arg${idx}`);
-                if (campo) {
-                    const tipo = campo.getAttribute('data-type');
-                    const nome = campo.getAttribute('data-name');
-                    campo.value = fakeValueForType(tipo, idx, accounts, nome);
-                }
-            });
-
-            const t = translations[currentLang];
-            log(`${t['logs.auto_prefilled'] || '⚡ Inputs da função '}deploy${t['logs.auto_prefilled_end'] || ' auto-preenchidos.'}`);
-        }
-
-        // Deploya o contrato com os parâmetros informados (manuais ou sintéticos)
-        async function deployarContrato(nomeContrato, numArgs) {
-            const t = translations[currentLang];
-
-            const args = [];
-            for (let i = 0; i < numArgs; i++) {
-                const campo = document.getElementById(`deploy_${nomeContrato}_arg${i}`);
-                args.push(campo ? campo.value : "");
-            }
-
-            log(`\n🚀 Fazendo deploy de ${nomeContrato}(${args.join(", ")})...\n`);
-
-            try {
-                const res = await fetch("/api/deploy-contract", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ nomeContrato, args })
-                });
-
-                if (!res.ok) {
-                    const msg = await res.text();
-                    log(`❌ Erro: ${msg}\n`);
-                    log(`💬 ${t['logs.report_bug'] || 'Se o erro persistir, entre em contato: fabiosilva@unipampa.edu.br'}`);
-                    return;
-                }
-
-                const data = await res.json();
-
-                const contrato = contratosCarregados.find(c => c.nome === nomeContrato);
-                if (contrato) {
-                    contrato.endereco = data.endereco;
-                    contrato.gas = data.gas;
-                }
-
-                const select = document.getElementById("contratoSelect");
-                const opt = Array.from(select.options).find(o => o.value === nomeContrato);
-                if (opt) {
-                    opt.textContent = `${nomeContrato} (${t['contracts.deployed'] || 'Deployado'})`;
-                }
-
-                contratoDeployado = true;
-
-                document.getElementById("contractStatus").innerHTML =
-                    `<span class="status-badge status-deployed"><i class="fas fa-check-circle"></i> ${t['contracts.deployed'] || 'Deployado'}</span>`;
-                document.getElementById("contractAddress").textContent =
-                    `${data.endereco.substring(0, 10)}...${data.endereco.substring(38)}`;
-                document.getElementById("contractGas").textContent = formatNumber(data.gas);
-
-                log(`✅ Contrato deployado: ${data.endereco}`);
-                log(`⛽ Gas usado no deploy: ${data.gas}`);
-
-                if (data.custosPorRede && Object.keys(data.custosPorRede).length > 0) {
-                    log(`${t['logs.costs'] || '🌍 Custos por rede:'}`);
-                    for (const [token, info] of Object.entries(data.custosPorRede)) {
-                        log(
-                            `  • ${info.name}: ${info.custoTotalToken} ${info.token}` +
-                            ` ≈ ${info.custoUSD} / ${info.custoBRL}` +
-                            ` (gasPrice: ${info.gasPrice})`
-                        );
-                    }
-                }
-
-                // Deploy concluído: esconde o card de deploy e libera a
-                // execução das funções (que dependem do endereço deployado).
-                document.getElementById('deployCard').style.display = 'none';
-                if (contrato) {
-                    await carregarFuncoesContrato(contrato);
-                }
-
-            } catch (err) {
-                log(`\n❌ Erro inesperado: ${err.message}\n`);
-                log(`💬 ${t['logs.report_bug'] || 'Se o erro persistir, entre em contato: fabiosilva@unipampa.edu.br'}`);
-            }
         }
 
         // Carregar funções do contrato
@@ -1721,6 +1552,7 @@
 
         const functions = abi.filter(f => f.type === "function" && !["view", "pure"].includes(f.stateMutability));
 
+        // 🔥 USAR A TRADUÇÃO CORRETA
         const countSuffix = t['functions.count_suffix'] || 'função(ões) disponível(is)';
         functionsCount.textContent = `${functions.length} ${countSuffix}`;
 
@@ -1993,6 +1825,9 @@
         // ============================================
         // INICIALIZAÇÃO
         // ============================================
+    // ============================================
+    // INICIALIZAÇÃO
+    // ============================================
     window.addEventListener('DOMContentLoaded', function () {
         // Carregar tema salvo
         loadSavedTheme();
@@ -2007,6 +1842,7 @@
         const t = translations[currentLang];
         const data = new Date().toLocaleString(t.locale || 'pt-BR');
 
+        // 🔥 USAR AS TRADUÇÕES NAS MENSAGENS INICIAIS
         log(`✅ ${t['logs.initialized'] || 'Interface de Contratos Inteligentes inicializada.'}`);
         log(`⚙️ ${t['logs.mode'] || 'Modo: Iterativo (controle manual das execuções)'}`);
         log(`🕒 ${data}`);
@@ -2021,7 +1857,6 @@
         window.selecionarContrato = selecionarContrato;
         window.preencherTodasFuncoes = preencherTodasFuncoes;
         window.executarFuncao = executarFuncao;
-        window.deployarContrato = deployarContrato;
         window.limparLogs = limparLogs;
         window.copiarLogs = copiarLogs;
         window.atualizarNomeArquivo = atualizarNomeArquivo;
